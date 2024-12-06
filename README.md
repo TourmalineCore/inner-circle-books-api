@@ -1,8 +1,7 @@
 # Books API
 
 ## Database scheme 
-
-<!--
+```plantuml
 @startuml
 entity Book{
   * id: bigint
@@ -42,4 +41,4 @@ Author }|-- BooksAuthors
 Book }|-- BooksLanguages
 Language }|-- BooksLanguages
 @enduml
--->
+```
