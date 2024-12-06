@@ -11,7 +11,7 @@ namespace Application.Queries
         {
             _context = context;
         }
-        public async Task<List<ToDo>> GetAllAsync()
+        public async Task<List<Book>> GetAllAsync()
         {
             var toDoList = await _context.ToDos.ToListAsync();
             return toDoList;

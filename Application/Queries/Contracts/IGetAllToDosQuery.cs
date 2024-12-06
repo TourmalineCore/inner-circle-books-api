@@ -4,5 +4,5 @@ namespace Application.Queries.Contracts;
 
 public interface IGetAllToDosQuery
 {
-    Task<List<ToDo>> GetAllAsync();
+    Task<List<Book>> GetAllAsync();
 }

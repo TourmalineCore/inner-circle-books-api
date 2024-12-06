@@ -21,9 +21,9 @@ public class GetAllToDosQueryTests
     [Fact]
     public async Task GetAllAsync_ShouldReturnAllToDos()
     {
-        var toDo1 = new ToDo { Id = 1, Name = "Test ToDo 1" };
-        var toDo2 = new ToDo { Id = 2, Name = "Test ToDo 2" };
-        var toDo3 = new ToDo { Id = 3, Name = "Test ToDo 3" };
+        var toDo1 = new Book { Id = 1, Name = "Test ToDo 1" };
+        var toDo2 = new Book { Id = 2, Name = "Test ToDo 2" };
+        var toDo3 = new Book { Id = 3, Name = "Test ToDo 3" };
 
         _context.ToDos.AddRange(toDo1, toDo2, toDo3);
         await _context.SaveChangesAsync();

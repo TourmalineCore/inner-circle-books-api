@@ -22,7 +22,7 @@ public class GetToDoByIdQueryTests
     [Fact]
     public async Task GetByIdAsync_ShouldReturnToDo_WhenToDoExists()
     {
-        var toDo = new ToDo { Id = 1, Name = "Test ToDo" };
+        var toDo = new Book { Id = 1, Name = "Test ToDo" };
         _context.ToDos.Add(toDo);
         await _context.SaveChangesAsync();
 

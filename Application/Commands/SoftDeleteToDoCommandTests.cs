@@ -30,7 +30,7 @@ public class SoftDeleteToDoCommandTests
         var currentInstant = Instant.FromUtc(2024, 8, 28, 12, 0, 0);
         _clockMock.Setup(c => c.GetCurrentInstant()).Returns(currentInstant);
 
-        var toDo = new ToDo { Id = 1, Name = "Test ToDo", DeletedAtUtc = null };
+        var toDo = new Book { Id = 1, Name = "Test ToDo", DeletedAtUtc = null };
         _context.ToDos.Add(toDo);
         await _context.SaveChangesAsync();
 

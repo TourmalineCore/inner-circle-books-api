@@ -16,14 +16,16 @@ public class AppDbContext : DbContext
     {
     }
 
-    public virtual DbSet<ToDo> ToDos { get; set; }
+    public virtual DbSet<Book> Books { get; set; }
+    public virtual DbSet<Author> Authors { get; set; }
+    public virtual DbSet<Status> Statuses { get; set; }
+    public virtual DbSet<Language> Languages { get; set; }
+    public virtual DbSet<Category> Categories { get; set; }
+    public virtual DbSet<Tag> Tags { get; set; }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         modelBuilder.ApplyConfigurationsFromAssembly(GetType().Assembly);
-        modelBuilder.Entity<ToDo>()
-            .Property(f => f.Id)
-            .ValueGeneratedOnAdd();
         base.OnModelCreating(modelBuilder);
     }
 }

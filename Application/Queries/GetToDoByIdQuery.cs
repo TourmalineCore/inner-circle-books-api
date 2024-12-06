@@ -11,7 +11,7 @@ namespace Application.Queries
         {
             _context = context;
         }
-        public async Task<ToDo> GetByIdAsync(long id)
+        public async Task<Book> GetByIdAsync(long id)
         {
             var toDo = await _context.ToDos
                 .Where(x => x.Id == id)

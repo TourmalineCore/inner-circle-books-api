@@ -37,7 +37,7 @@ namespace Api.Controllers
         [Fact]
         public async Task GetAllToDosAsync_ShouldReturnToDosResponse()
         {
-            var toDoItems = new List<Core.Entities.ToDo>
+            var toDoItems = new List<Core.Entities.Book>
             {
                 new () { Id = 1, Name = "Test ToDo 1" },
                 new()  { Id = 2, Name = "Test ToDo 2" }

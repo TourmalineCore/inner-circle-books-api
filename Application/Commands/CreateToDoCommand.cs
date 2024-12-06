@@ -18,7 +18,7 @@ namespace Application.Commands
 
         public async Task<long> CreateAsync(AddToDoRequest addToDoRequest)
         {
-            var toDo = new ToDo(addToDoRequest.Name, _clock);
+            var toDo = new Book(addToDoRequest.Name, _clock);
             await _context.ToDos.AddAsync(toDo);
             await _context.SaveChangesAsync();
             return toDo.Id;

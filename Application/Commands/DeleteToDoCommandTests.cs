@@ -22,7 +22,7 @@ public class DeleteToDoCommandTests
     [Fact]
     public async Task DeleteAsync_ShouldRemoveToDoFromDbSet()
     {
-        var toDo = new ToDo { Id = 1, Name = "Test ToDo" };
+        var toDo = new Book { Id = 1, Name = "Test ToDo" };
         _context.ToDos.Add(toDo);
         await _context.SaveChangesAsync();
 

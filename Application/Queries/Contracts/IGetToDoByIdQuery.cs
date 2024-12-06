@@ -4,5 +4,5 @@ namespace Application.Queries.Contracts;
 
 public interface IGetToDoByIdQuery
 {
-    Task<ToDo> GetByIdAsync(long id);
+    Task<Book> GetByIdAsync(long id);
 }
