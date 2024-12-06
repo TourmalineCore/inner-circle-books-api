@@ -1,6 +1,8 @@
 # Books API
 
 ## Database scheme 
+![](https://www.plantuml.com/plantuml/png/dP2zJiD048JxUueh0SaDKXfN2LH820gK1rZR6-UK-q7hkI14ykvSuhEm8xkXykxCVkkvNNSWGNHMiOV1jtuAuV2Zj7xGfYbrPLhZaTgYk6emi5pg8qcz9xbxNAtkaqxU1n1CyBTMGcfX0ZSRR56NkaarZECB9VWASjYAdQ5yT1NB--uvV1hkojohyn3p0uJOBGSzaeqtGV_WJSG-o3AyYzQ-aLlaNyctaLh-p-_pYRi-Gtv1bPINqPeaqTKVYLDyYB2ymEQ9oOeBgq-deiW7x8Lp4YQfLF-TCSRpunXgg6RDDVicEliB)
+<!--
 ```plantuml
 @startuml
 entity Book{
@@ -42,3 +44,4 @@ Book }|-- BooksLanguages
 Language }|-- BooksLanguages
 @enduml
 ```
+-->
