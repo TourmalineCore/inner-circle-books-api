@@ -57,7 +57,7 @@ namespace Api.Controllers
         [Fact]
         public async Task AddToDoAsync_ShouldReturnCreatedToDoId()
         {
-            var request = new AddToDoRequest { Name = "New ToDo" };
+            var request = new AddBookRequest { Name = "New ToDo" };
             _createToDoCommandMock
                 .Setup(command => command.CreateAsync(request))
                 .ReturnsAsync(1);

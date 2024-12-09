@@ -54,11 +54,11 @@ public class ToDoController : Controller
     /// <summary>
     ///     Adds TodoItem.
     /// </summary>
-    /// <param name="addToDoRequest"></param>
+    /// <param name="addBookRequest"></param>
     [HttpPost("to-dos")]
-    public Task<long> AddToDoAsync([FromBody] AddToDoRequest addToDoRequest)
+    public Task<long> AddToDoAsync([FromBody] AddBookRequest addBookRequest)
     {
-        return _createToDoCommand.CreateAsync(addToDoRequest);
+        return _createToDoCommand.CreateAsync(addBookRequest);
     }
 
     /// <summary>

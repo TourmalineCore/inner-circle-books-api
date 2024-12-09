@@ -20,8 +20,6 @@ public class AppDbContext : DbContext
     public virtual DbSet<Author> Authors { get; set; }
     public virtual DbSet<Status> Statuses { get; set; }
     public virtual DbSet<Language> Languages { get; set; }
-    public virtual DbSet<Category> Categories { get; set; }
-    public virtual DbSet<Tag> Tags { get; set; }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {

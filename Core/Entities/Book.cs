@@ -12,7 +12,11 @@ namespace Core.Entities
 
         public Author Author { get; set; }
 
+        public long LanguageId { get; set; }
+        public Language Language { get; set; }
+
         public DateTime CreatedAtUtc { get; set; }
+        public DateTime? DeletedAtUtc { get; set; } = null;
 
         public string ArtworkUrl { get; set; }
 
@@ -22,30 +26,22 @@ namespace Core.Entities
 
         public Status Status { get; set; }
 
-        public long CategoryId { get; set; }
-
-        public Category Category { get; set; }
-
-        public List<Tag> Tags { get; set; }
 
         public Book(string title, 
             string annotation, 
             long authorId, 
+            long languageId,
             string artworkUrl, 
-            int numberOfCopies, 
-            long statusId, 
-            long categoryId, 
-            List<Tag> tags)
+            int numberOfCopies)
         {
             Title = title;
             Annotation = annotation;
             AuthorId = authorId;
+            LanguageId = languageId;
             ArtworkUrl = artworkUrl;
             NumberOfCopies = numberOfCopies;
-            StatusId = statusId;
-            CategoryId = categoryId;
+            StatusId = 1L;
             CreatedAtUtc = DateTime.UtcNow;
-            Tags = tags;
         }
 
         public Book()

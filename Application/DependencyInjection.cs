@@ -18,15 +18,13 @@ public static class DependencyInjection
 
         services.AddDbContext<AppDbContext>(options =>
             {
-                options.UseNpgsql(connectionString,
-                    o => o.UseNodaTime()
-                );
+                options.UseNpgsql(connectionString);
             }
         );
         services.AddTransient<ToDoService>();
-        services.AddTransient<ICreateToDoCommand, CreateToDoCommand>();
-        services.AddTransient<IDeleteToDoCommand, DeleteToDoCommand>();
-        services.AddTransient<ISoftDeleteToDoCommand, SoftDeleteToDoCommand>();
+        services.AddTransient<ICreateToDoCommand, CreateBookCommand>();
+        services.AddTransient<IDeleteToDoCommand, DeleteBookCommand>();
+        services.AddTransient<ISoftDeleteToDoCommand, SoftDeleteBookCommand>();
         services.AddTransient<IGetToDoByIdQuery, GetToDoByIdQuery>();
         services.AddTransient<IGetAllToDosQuery, GetAllToDosQuery>();
     }
