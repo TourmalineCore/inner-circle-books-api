@@ -1,47 +1,39 @@
 # Books API
 
 ## Database scheme 
-![](https://www.plantuml.com/plantuml/png/dP2zJiD048JxUueh0SaDKXfN2LH820gK1rZR6-UK-q7hkI14ykvSuhEm8xkXykxCVkkvNNSWGNHMiOV1jtuAuV2Zj7xGfYbrPLhZaTgYk6emi5pg8qcz9xbxNAtkaqxU1n1CyBTMGcfX0ZSRR56NkaarZECB9VWASjYAdQ5yT1NB--uvV1hkojohyn3p0uJOBGSzaeqtGV_WJSG-o3AyYzQ-aLlaNyctaLh-p-_pYRi-Gtv1bPINqPeaqTKVYLDyYB2ymEQ9oOeBgq-deiW7x8Lp4YQfLF-TCSRpunXgg6RDDVicEliB)
-<!--
-```plantuml
-@startuml
-entity Book{
-  * id: bigint
-  --
-  * title: varchar(255)
-  annotation: varchar(255)
-  * createdAtUtc: datetime
-  artworkUrl: varchar(255)
-  * numberOfCopies: number
+```mermaid
+erDiagram
+Book{
+  long id
+  string title
+  string annotation
+  datetime createdAtUtc
+  string artworkUrl
+  int numberOfCopies
 }
-entity Status{
-  * id: bigint
-  --
-  * value: varchar(255)
+Status{
+  long id
+  string value
 }
-entity Author{
-  * id: bigint
-  --
-  * fullName: varchar(255)
+Author{
+  long id
+  string fullname
 }
-entity Language{
-  * id: bigint
-  --
-  * value: varchar(255)
+Language{
+  long id
+  string value
 }
-entity BooksAuthors{
-  * bookId: bigint
-  * authorId: bigint
+BooksAuthors{
+    long bookId
+    long authorId
 }
-entity BooksLanguages{
-  * bookId: bigint
-  * languageId: bigint
+BooksLanguages{
+    long bookId
+    long authorId
 }
-Book ||-- Status
-Book }|-- BooksAuthors
-Author }|-- BooksAuthors
-Book }|-- BooksLanguages
-Language }|-- BooksLanguages
-@enduml
+Book ||--|| Status: contains
+Book }|--|| BooksAuthors: bookId
+Author }|--|| BooksAuthors: authorId
+Book }|--|| BooksLanguages: bookId 
+Language }|--|| BooksLanguages: languageId
 ```
--->
