@@ -1,6 +1,5 @@
 {
     "recommendations": [
-        "myml.vscode-markdown-plantuml-preview",
-        "jebbs.plantuml"
+        "bierner.markdown-mermaid"
     ]
 }
