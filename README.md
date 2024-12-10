@@ -10,7 +10,6 @@ Book{
   enum language
   datetime createdAtUtc
   string artworkUrl
-  int numberOfCopies
 }
 Author{
   long id
