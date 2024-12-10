@@ -14,6 +14,7 @@ namespace Application.Queries
         public async Task<List<Book>> GetAllAsync()
         {
             var toDoList = await _context.Books
+                .Where(x => x.DeletedAtUtc == null)
                 .Include(x => x.Authors)
                 .ToListAsync();
             return toDoList;
