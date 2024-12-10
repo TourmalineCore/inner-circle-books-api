@@ -18,8 +18,6 @@ public class AppDbContext : DbContext
 
     public virtual DbSet<Book> Books { get; set; }
     public virtual DbSet<Author> Authors { get; set; }
-    public virtual DbSet<Status> Statuses { get; set; }
-    public virtual DbSet<Language> Languages { get; set; }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {

@@ -9,10 +9,6 @@ namespace Application.Mappings
         public void Configure(EntityTypeBuilder<Book> builder)
         {
             builder.HasMany<Author>();
-            builder.HasMany<Tag>();
-            builder.HasMany<Category>();
-            builder.HasOne<Language>();
-            builder.HasOne<Status>();
         }
     }
 }

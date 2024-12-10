@@ -1,16 +1,14 @@
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+
 namespace Core.Entities
 {
-    public class Language
+    public enum Language
     {
-        public long Id { get; set; }
-
-        public string Value { get; set; }
-
-        public Language() { }
-
-        public Language(string value)
-        {
-            Value = value;
-        }
+        Russian = 0,
+        English = 1
     }
 }

@@ -4,16 +4,16 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Application.Queries
 {
-    public class GetAllToDosQuery : IGetAllToDosQuery
+    public class GetAllBooksQuery : IGetAllBooksQuery
     {
         private readonly AppDbContext _context;
-        public GetAllToDosQuery(AppDbContext context)
+        public GetAllBooksQuery(AppDbContext context)
         {
             _context = context;
         }
         public async Task<List<Book>> GetAllAsync()
         {
-            var toDoList = await _context.ToDos.ToListAsync();
+            var toDoList = await _context.Books.ToListAsync();
             return toDoList;
         }
     }

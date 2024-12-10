@@ -7,30 +7,38 @@ using Microsoft.EntityFrameworkCore;
 public class GetToDoByIdQueryTests
 {
     private readonly AppDbContext _context;
-    private readonly GetToDoByIdQuery _query;
+    private readonly GetBookByIdQuery _query;
 
     public GetToDoByIdQueryTests()
     {
         var options = new DbContextOptionsBuilder<AppDbContext>()
-            .UseInMemoryDatabase(databaseName: "GetToDoByIdQueryToDoDatabase")
+            .UseInMemoryDatabase(databaseName: "GetBookByIdQueryBooksDatabase")
             .Options;
 
         _context = new AppDbContext(options);
-        _query = new GetToDoByIdQuery(_context);
+        _query = new GetBookByIdQuery(_context);
     }
 
     [Fact]
     public async Task GetByIdAsync_ShouldReturnToDo_WhenToDoExists()
     {
-        var toDo = new Book { Id = 1, Name = "Test ToDo" };
-        _context.ToDos.Add(toDo);
+        var book = new Book
+        {
+            Id = 1,
+            Title = "Test Book",
+            Annotation = "Test annotation",
+            ArtworkUrl = "http://test-images.com/img404.png",
+            AuthorId = 1L,
+            NumberOfCopies = 1
+        };
+        _context.Books.Add(book);
         await _context.SaveChangesAsync();
 
-        var result = await _query.GetByIdAsync(toDo.Id);
+        var result = await _query.GetByIdAsync(book.Id);
 
         Assert.NotNull(result);
-        Assert.Equal(toDo.Id, result.Id);
-        Assert.Equal(toDo.Name, result.Name);
+        Assert.Equal(book.Id, result.Id);
+        Assert.Equal(book.Title, result.Title);
     }
 
     [Fact]

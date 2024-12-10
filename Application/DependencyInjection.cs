@@ -21,11 +21,11 @@ public static class DependencyInjection
                 options.UseNpgsql(connectionString);
             }
         );
-        services.AddTransient<ToDoService>();
-        services.AddTransient<ICreateToDoCommand, CreateBookCommand>();
-        services.AddTransient<IDeleteToDoCommand, DeleteBookCommand>();
-        services.AddTransient<ISoftDeleteToDoCommand, SoftDeleteBookCommand>();
-        services.AddTransient<IGetToDoByIdQuery, GetToDoByIdQuery>();
-        services.AddTransient<IGetAllToDosQuery, GetAllToDosQuery>();
+        services.AddTransient<BooksService>();
+        services.AddTransient<ICreateBookCommand, CreateBookCommand>();
+        services.AddTransient<IDeleteBookCommand, DeleteBookCommand>();
+        services.AddTransient<ISoftDeleteBookCommand, SoftDeleteBookCommand>();
+        services.AddTransient<IGetBookByIdQuery, GetBookByIdQuery>();
+        services.AddTransient<IGetAllBooksQuery, GetAllBooksQuery>();
     }
 }

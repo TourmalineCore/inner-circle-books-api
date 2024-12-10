@@ -28,9 +28,9 @@ namespace Application.Commands.Tests
             {
                 Title = "Test Book",
                 Annotation = "Test annotation",
+                Language = "Russian",
                 ArtworkUrl = "http://test-images.com/img404.png",
                 AuthorId = 1L,
-                LanguageId = 1L,
                 NumberOfCopies = 1
             };
 
@@ -38,7 +38,7 @@ namespace Application.Commands.Tests
 
             var book = await _context.Books.FindAsync(bookId);
             Assert.NotNull(book);
-            Assert.Equal("Test book", book.Title);
+            Assert.Equal("Test Book", book.Title);
             Assert.Equal(bookId, book.Id);
         }
     }
