@@ -1,6 +1,6 @@
 namespace Application.Commands.Contracts;
 
-public interface IDeleteToDoCommand
+public interface IDeleteBookCommand
 {
     Task DeleteAsync(long id);
 }

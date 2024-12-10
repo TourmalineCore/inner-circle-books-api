@@ -16,7 +16,6 @@ builder.Services.AddCors();
 builder.Services.AddEndpointsApiExplorer();
 
 builder.Services.AddApplication(configuration);
-builder.Services.AddTransient<IClock, Clock>();
 
 
 builder.Services.AddSwaggerGen(c =>
@@ -25,8 +24,8 @@ builder.Services.AddSwaggerGen(c =>
             new OpenApiInfo
             {
                 Version = "v1",
-                Title = "ToDo API",
-                Description = "An ASP.NET Core Web API for managing ToDo items",
+                Title = "Books API",
+                Description = "An ASP.NET Core Web API for managing books in TourmalineCore office",
                 Contact = new OpenApiContact
                 {
                     Name = "Website",

@@ -4,7 +4,7 @@ using NodaTime;
 
 namespace Application.Commands
 {
-    public class SoftDeleteBookCommand : ISoftDeleteToDoCommand
+    public class SoftDeleteBookCommand : ISoftDeleteBookCommand
     {
         private readonly AppDbContext _context;
 

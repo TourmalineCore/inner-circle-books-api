@@ -3,7 +3,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Application.Commands
 {
-    public class DeleteBookCommand : IDeleteToDoCommand
+    public class DeleteBookCommand : IDeleteBookCommand
     {
         private readonly AppDbContext _context;
 

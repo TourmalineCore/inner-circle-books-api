@@ -5,16 +5,10 @@
       "launchBrowser": true,
       "launchUrl": "swagger",
       "environmentVariables": {
-        "ASPNETCORE_ENVIRONMENT": "IDE"
+        "ASPNETCORE_ENVIRONMENT": "MockForDevelopment"
       },
       "dotnetRunMessages": true,
-      "applicationUrl": "http://localhost:36000"
-    },
-    "Docker": {
-      "commandName": "Docker",
-      "launchBrowser": true,
-      "launchUrl": "{Scheme}://{ServiceHost}:{ServicePort}/swagger",
-      "publishAllPorts": true
+      "applicationUrl": "http://localhost:7000"
     }
   }
 }

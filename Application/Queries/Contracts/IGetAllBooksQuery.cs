@@ -2,7 +2,7 @@ using Core.Entities;
 
 namespace Application.Queries.Contracts;
 
-public interface IGetAllToDosQuery
+public interface IGetAllBooksQuery
 {
     Task<List<Book>> GetAllAsync();
 }

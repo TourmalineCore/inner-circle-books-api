@@ -1,6 +1,6 @@
 namespace Application.Commands.Contracts;
 
-public interface ISoftDeleteToDoCommand
+public interface ISoftDeleteBookCommand
 {
     Task SoftDeleteAsync(long id);
 }

@@ -2,7 +2,7 @@ using Core.Entities;
 
 namespace Application.Queries.Contracts;
 
-public interface IGetToDoByIdQuery
+public interface IGetBookByIdQuery
 {
     Task<Book> GetByIdAsync(long id);
 }

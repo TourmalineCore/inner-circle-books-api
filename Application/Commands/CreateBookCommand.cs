@@ -5,7 +5,7 @@ using NodaTime;
 
 namespace Application.Commands
 {
-    public class CreateBookCommand : ICreateToDoCommand
+    public class CreateBookCommand : ICreateBookCommand
     {
         private readonly AppDbContext _context;
 
@@ -18,9 +18,9 @@ namespace Application.Commands
         {
             var book = new Book(
                 addBookRequest.Title, 
-                addBookRequest.Annotation, 
-                addBookRequest.AuthorId, 
-                addBookRequest.LanguageId, 
+                addBookRequest.Annotation,
+                (Language)Enum.Parse(typeof(Language), addBookRequest.Language),
+                addBookRequest.AuthorId,
                 addBookRequest.ArtworkUrl, 
                 addBookRequest.NumberOfCopies);
             await _context.Books.AddAsync(book);
