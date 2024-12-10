@@ -7,5 +7,4 @@ public class AddBookRequest
     public List<string> Authors { get; set; }
     public string Language { get; set; }
     public string ArtworkUrl { get; set; }
-    public int NumberOfCopies { get; set; }
 }

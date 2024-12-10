@@ -16,6 +16,5 @@ namespace Application.Requests
 
         public string ArtworkUrl { get; set; }
 
-        public int NumberOfCopies { get; set; }
     }
 }

@@ -31,7 +31,6 @@ public class GetAllToDosQueryTests
             {
                 new Author("Test Author 1")
             },
-            NumberOfCopies = 1
         };
         var book2 = new Book
         {
@@ -43,7 +42,6 @@ public class GetAllToDosQueryTests
             {
                 new Author("Test Author 2")
             },
-            NumberOfCopies = 1
         };
         var book3 = new Book
         {
@@ -55,7 +53,6 @@ public class GetAllToDosQueryTests
             {
                 new Author("Test Author 3")
             },
-            NumberOfCopies = 2
         };
 
         _context.Books.AddRange(book1, book2, book3);

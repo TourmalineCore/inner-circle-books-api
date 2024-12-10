@@ -35,8 +35,7 @@ namespace Application.Commands
                 addBookRequest.Annotation,
                 (Language)Enum.Parse(typeof(Language), addBookRequest.Language),
                 authors,
-                addBookRequest.ArtworkUrl, 
-                addBookRequest.NumberOfCopies);
+                addBookRequest.ArtworkUrl);
             await _context.Books.AddAsync(book);
             await _context.SaveChangesAsync();
             return book.Id;

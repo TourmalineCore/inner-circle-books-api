@@ -21,7 +21,6 @@ public class Book
 
     public string ArtworkUrl { get; set; }
 
-    public int NumberOfCopies { get; set; }
 }
 
 public class Author

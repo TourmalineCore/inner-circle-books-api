@@ -23,7 +23,6 @@ namespace Application.Commands
             book.Title = updateBookRequest.Title;
             book.Annotation = updateBookRequest.Annotation;
             book.ArtworkUrl = updateBookRequest.ArtworkUrl;
-            book.NumberOfCopies = updateBookRequest.NumberOfCopies;
 
             _context.Books.Update(book);
             await _context.SaveChangesAsync();

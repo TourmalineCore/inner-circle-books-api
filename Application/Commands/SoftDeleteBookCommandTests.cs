@@ -32,7 +32,6 @@ public class SoftDeleteBookCommandTests
             Title = "Test Book",
             Annotation = "Test annotation",
             ArtworkUrl = "http://test-images.com/img404.png",
-            NumberOfCopies = 1
         };
         _context.Books.Add(book);
         await _context.SaveChangesAsync();

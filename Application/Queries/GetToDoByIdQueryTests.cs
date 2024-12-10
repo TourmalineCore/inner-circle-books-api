@@ -32,7 +32,6 @@ public class GetToDoByIdQueryTests
             {
                 new Author("Test Author")
             },
-            NumberOfCopies = 1
         };
         _context.Books.Add(book);
         await _context.SaveChangesAsync();

@@ -17,22 +17,18 @@ namespace Core.Entities
 
         public string ArtworkUrl { get; set; }
 
-        public int NumberOfCopies { get; set; }
-
 
         public Book(string title, 
             string annotation, 
             Language language,
             List<Author> authors, 
-            string artworkUrl, 
-            int numberOfCopies)
+            string artworkUrl)
         {
             Title = title;
             Annotation = annotation;
             Language = language;
             Authors = authors;
             ArtworkUrl = artworkUrl;
-            NumberOfCopies = numberOfCopies;
             CreatedAtUtc = DateTime.UtcNow;
         }
 

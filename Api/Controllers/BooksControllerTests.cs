@@ -50,7 +50,6 @@ namespace Api.Controllers
                     {
                         new Core.Entities.Author("Test Author 1")
                     },
-                    NumberOfCopies = 1
                 },
                 new()
                 {
@@ -62,7 +61,6 @@ namespace Api.Controllers
                     {
                         new Core.Entities.Author("Test Author 1")
                     },
-                    NumberOfCopies = 2
                 }
             };
             _getAllBooksQueryMock
