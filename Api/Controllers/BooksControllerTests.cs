@@ -46,8 +46,10 @@ namespace Api.Controllers
                     Title = "Test Book 1",
                     Annotation = "Test annotation 1",
                     ArtworkUrl = "http://test1-images.com/img404.png",
-                    AuthorId = 1L,
-                    Author = new Author() { Id = 1L, Name = "Test Author 1" },
+                    Authors = new List<Core.Entities.Author>()
+                    {
+                        new Core.Entities.Author("Test Author 1")
+                    },
                     NumberOfCopies = 1
                 },
                 new()
@@ -56,8 +58,10 @@ namespace Api.Controllers
                     Title = "Test Book 2",
                     Annotation = "Test annotation 2",
                     ArtworkUrl = "http://test2-images.com/img404.png",
-                    AuthorId = 2L,
-                    Author = new Author() { Id = 2L, Name = "Test Author 2" },
+                    Authors = new List<Core.Entities.Author>()
+                    {
+                        new Core.Entities.Author("Test Author 1")
+                    },
                     NumberOfCopies = 2
                 }
             };
@@ -81,7 +85,10 @@ namespace Api.Controllers
                 Title = "Test Book 1",
                 Annotation = "Test annotation 1",
                 ArtworkUrl = "http://test1-images.com/img404.png",
-                AuthorId = 1L,
+                Authors = new List<string>()
+                {
+                    "Test Author 1"
+                },
                 Language = "Russian",
                 NumberOfCopies = 1
             };

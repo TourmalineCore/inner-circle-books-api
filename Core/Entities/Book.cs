@@ -10,9 +10,7 @@ namespace Core.Entities
 
         public Language Language { get; set; }
 
-        public long AuthorId { get; set; }
-
-        public Author Author { get; set; }
+        public List<Author> Authors { get; set; } 
 
         public DateTime CreatedAtUtc { get; set; }
         public DateTime? DeletedAtUtc { get; set; } = null;
@@ -25,13 +23,14 @@ namespace Core.Entities
         public Book(string title, 
             string annotation, 
             Language language,
-            long authorId, 
+            List<Author> authors, 
             string artworkUrl, 
             int numberOfCopies)
         {
             Title = title;
             Annotation = annotation;
-            AuthorId = authorId;
+            Language = language;
+            Authors = authors;
             ArtworkUrl = artworkUrl;
             NumberOfCopies = numberOfCopies;
             CreatedAtUtc = DateTime.UtcNow;

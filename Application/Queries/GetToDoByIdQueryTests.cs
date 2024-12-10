@@ -28,7 +28,10 @@ public class GetToDoByIdQueryTests
             Title = "Test Book",
             Annotation = "Test annotation",
             ArtworkUrl = "http://test-images.com/img404.png",
-            AuthorId = 1L,
+            Authors = new List<Author>()
+            {
+                new Author("Test Author")
+            },
             NumberOfCopies = 1
         };
         _context.Books.Add(book);

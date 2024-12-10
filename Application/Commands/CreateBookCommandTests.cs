@@ -30,7 +30,10 @@ namespace Application.Commands.Tests
                 Annotation = "Test annotation",
                 Language = "Russian",
                 ArtworkUrl = "http://test-images.com/img404.png",
-                AuthorId = 1L,
+                Authors = new List<string>()
+                {
+                    "Test Author"
+                },
                 NumberOfCopies = 1
             };
 

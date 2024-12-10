@@ -13,7 +13,9 @@ namespace Application.Queries
         }
         public async Task<List<Book>> GetAllAsync()
         {
-            var toDoList = await _context.Books.ToListAsync();
+            var toDoList = await _context.Books
+                .Include(x => x.Authors)
+                .ToListAsync();
             return toDoList;
         }
     }

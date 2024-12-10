@@ -27,7 +27,10 @@ public class GetAllToDosQueryTests
             Title = "Test Book 1",
             Annotation = "Test annotation 1",
             ArtworkUrl = "http://test1-images.com/img404.png",
-            AuthorId = 1L,
+            Authors = new List<Author>()
+            {
+                new Author("Test Author 1")
+            },
             NumberOfCopies = 1
         };
         var book2 = new Book
@@ -36,7 +39,10 @@ public class GetAllToDosQueryTests
             Title = "Test Book 2",
             Annotation = "Test annotation 2",
             ArtworkUrl = "http://test2-images.com/img404.png",
-            AuthorId = 2L,
+            Authors = new List<Author>()
+            {
+                new Author("Test Author 2")
+            },
             NumberOfCopies = 1
         };
         var book3 = new Book
@@ -45,7 +51,10 @@ public class GetAllToDosQueryTests
             Title = "Test Book 3",
             Annotation = "Test annotation 3",
             ArtworkUrl = "http://test3-images.com/img404.png",
-            AuthorId = 3L,
+            Authors = new List<Author>()
+            {
+                new Author("Test Author 3")
+            },
             NumberOfCopies = 2
         };
 

@@ -17,9 +17,14 @@ public class Book
 
     public string Language { get; set; }
 
-    public string AuthorFullName { get; set; }
+    public List<Author> Authors { get; set; }
 
     public string ArtworkUrl { get; set; }
 
     public int NumberOfCopies { get; set; }
+}
+
+public class Author
+{
+    public string FullName { get; set; }
 }

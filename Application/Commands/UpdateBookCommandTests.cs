@@ -31,7 +31,6 @@ public class UpdateBookCommandTests
             Title = "Test Book",
             Annotation = "Test annotation",
             ArtworkUrl = "http://test-images.com/img404.png",
-            AuthorId = 1L,
             NumberOfCopies = 1
         };
         var updateBookRequest = new UpdateBookRequest()

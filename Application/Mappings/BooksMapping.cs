@@ -8,7 +8,9 @@ namespace Application.Mappings
     {
         public void Configure(EntityTypeBuilder<Book> builder)
         {
-            builder.HasMany<Author>();
+            builder
+                .HasMany(e => e.Authors)
+                .WithMany(e => e.Books);
         }
     }
 }
