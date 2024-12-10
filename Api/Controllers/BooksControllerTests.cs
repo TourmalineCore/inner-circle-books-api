@@ -67,7 +67,7 @@ namespace Api.Controllers
                 .Setup(query => query.GetAllAsync())
                 .ReturnsAsync(books);
 
-            var result = await _controller.GetAllToDosAsync();
+            var result = await _controller.GetAllBooksAsync();
 
             Assert.IsType<BooksResponse>(result);
             Assert.Equal(2, result.Books.Count);
@@ -93,7 +93,7 @@ namespace Api.Controllers
                 .Setup(command => command.CreateAsync(request))
                 .ReturnsAsync(1);
 
-            var result = await _controller.AddToDoAsync(request);
+            var result = await _controller.AddBookAsync(request);
 
             Assert.Equal(1, result);
             _createBookCommandMock.Verify(command => command.CreateAsync(request), Times.Once);
@@ -102,11 +102,11 @@ namespace Api.Controllers
         [Fact]
         public async Task DeleteBook_ShouldCallDeleteAsync()
         {
-            var toDoId = 1L;
+            var bookId = 1L;
 
-            await _controller.DeleteToDo(toDoId);
+            await _controller.HardDeleteBook(bookId);
 
-            _deleteBookCommandMock.Verify(command => command.DeleteAsync(toDoId), Times.Once);
+            _deleteBookCommandMock.Verify(command => command.DeleteAsync(bookId), Times.Once);
         }
 
         [Fact]

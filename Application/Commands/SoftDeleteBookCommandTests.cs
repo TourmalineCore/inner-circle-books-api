@@ -2,7 +2,6 @@ using Application;
 using Application.Commands;
 using Core.Entities;
 using Microsoft.EntityFrameworkCore;
-using NodaTime;
 using Xunit;
 
 public class SoftDeleteBookCommandTests
@@ -23,8 +22,6 @@ public class SoftDeleteBookCommandTests
     [Fact]
     public async Task SoftDeleteAsync_ShouldSetDeletedAtUtc()
     {
-        var currentInstant = Instant.FromUtc(2024, 8, 28, 12, 0, 0);
-
         var book = new Book
         {
             Id = 1,

@@ -1,6 +1,5 @@
 using Application.Requests;
 using Microsoft.EntityFrameworkCore;
-using NodaTime;
 using Xunit;
 
 namespace Application.Commands.Tests
