@@ -29,9 +29,9 @@ namespace Application.Commands
                 authors.Add(existAuthor);
                 await _context.SaveChangesAsync();
             }
-            
+
             var book = new Book(
-                addBookRequest.Title, 
+                addBookRequest.Title,
                 addBookRequest.Annotation,
                 (Language)Enum.Parse(typeof(Language), addBookRequest.Language),
                 authors,

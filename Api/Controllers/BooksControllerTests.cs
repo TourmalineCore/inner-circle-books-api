@@ -88,7 +88,6 @@ namespace Api.Controllers
                     "Test Author 1"
                 },
                 Language = "Russian",
-                NumberOfCopies = 1
             };
             _createBookCommandMock
                 .Setup(command => command.CreateAsync(request))

@@ -1,8 +1,8 @@
-using Xunit;
 using Application;
 using Application.Queries;
 using Core.Entities;
 using Microsoft.EntityFrameworkCore;
+using Xunit;
 public class GetAllToDosQueryTests
 {
     private readonly AppDbContext _context;

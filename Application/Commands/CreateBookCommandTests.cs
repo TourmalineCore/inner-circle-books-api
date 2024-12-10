@@ -1,8 +1,7 @@
-using Xunit;
-using Moq;
 using Application.Requests;
 using Microsoft.EntityFrameworkCore;
 using NodaTime;
+using Xunit;
 
 namespace Application.Commands.Tests
 {
@@ -34,7 +33,6 @@ namespace Application.Commands.Tests
                 {
                     "Test Author"
                 },
-                NumberOfCopies = 1
             };
 
             var bookId = await _command.CreateAsync(addBookRequest);

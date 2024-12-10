@@ -41,7 +41,7 @@ public class BooksController : Controller
     ///     Get all books
     /// </summary>
     [HttpGet("all")]
-    public async Task<BooksResponse> GetAllToDosAsync()
+    public async Task<BooksResponse> GetAllBooksAsync()
     {
         var books = await _getAllBooksQuery.GetAllAsync();
         return new BooksResponse
@@ -52,7 +52,7 @@ public class BooksController : Controller
                 Title = x.Title,
                 Annotation = x.Annotation,
                 ArtworkUrl = x.ArtworkUrl,
-                Authors = x.Authors.Select(a => new Author(){ FullName = a.Name }).ToList(),
+                Authors = x.Authors.Select(a => new Author() { FullName = a.Name }).ToList(),
                 Language = x.Language.ToString(),
             }).ToList()
         };
@@ -63,7 +63,7 @@ public class BooksController : Controller
     /// </summary>
     /// <param name="addBookRequest"></param>
     [HttpPost("create")]
-    public Task<long> AddToDoAsync([FromBody] AddBookRequest addBookRequest)
+    public Task<long> AddBookAsync([FromBody] AddBookRequest addBookRequest)
     {
         return _createBookCommand.CreateAsync(addBookRequest);
     }
@@ -83,7 +83,7 @@ public class BooksController : Controller
     /// </summary>
     /// <param name="id"></param>
     [HttpPost("hard-delete/{id}")]
-    public Task DeleteToDo([Required][FromRoute] long id)
+    public Task HardDeleteBook([Required][FromRoute] long id)
     {
         return _deleteBookCommand.DeleteAsync(id);
     }
@@ -93,7 +93,7 @@ public class BooksController : Controller
     /// </summary>
     /// <param name="id"></param>
     [HttpPost("soft-delete/{id}")]
-    public Task SoftDeleteToDo([FromRoute] long id)
+    public Task SoftDeleteBook([FromRoute] long id)
     {
         return _softDeleteBookCommand.SoftDeleteAsync(id);
     }
