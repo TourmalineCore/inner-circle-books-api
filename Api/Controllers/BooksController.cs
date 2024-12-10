@@ -43,7 +43,7 @@ public class BooksController : Controller
     [HttpGet("all")]
     public async Task<BooksResponse> GetAllBooksAsync()
     {
-        var books = await _getAllBooksQuery.GetAllAsync();
+        var books = await _getAllBooksQuery.GetAllAsync(User.GetTenantId());
         return new BooksResponse
         {
             Books = books.Select(x => new Book
@@ -65,7 +65,7 @@ public class BooksController : Controller
     [HttpPost("create")]
     public Task<long> AddBookAsync([FromBody] AddBookRequest addBookRequest)
     {
-        return _createBookCommand.CreateAsync(addBookRequest);
+        return _createBookCommand.CreateAsync(addBookRequest, User.GetTenantId());
     }
 
     /// <summary>
@@ -75,7 +75,7 @@ public class BooksController : Controller
     [HttpPost("edit")]
     public Task UpdateBook([FromBody] UpdateBookRequest updateBookRequest)
     {
-        return _updateBookCommand.UpdateAsync(updateBookRequest);
+        return _updateBookCommand.UpdateAsync(updateBookRequest, User.GetTenantId());
     }
 
     /// <summary>
@@ -85,7 +85,7 @@ public class BooksController : Controller
     [HttpPost("hard-delete/{id}")]
     public Task HardDeleteBook([Required][FromRoute] long id)
     {
-        return _deleteBookCommand.DeleteAsync(id);
+        return _deleteBookCommand.DeleteAsync(id,User.GetTenantId());
     }
 
     /// <summary>
@@ -95,6 +95,6 @@ public class BooksController : Controller
     [HttpPost("soft-delete/{id}")]
     public Task SoftDeleteBook([FromRoute] long id)
     {
-        return _softDeleteBookCommand.SoftDeleteAsync(id);
+        return _softDeleteBookCommand.SoftDeleteAsync(id, User.GetTenantId());
     }
 }

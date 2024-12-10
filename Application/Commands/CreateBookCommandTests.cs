@@ -9,6 +9,8 @@ namespace Application.Commands.Tests
         private readonly AppDbContext _context;
         private readonly CreateBookCommand _command;
 
+        private const long TENANT_ID = 1L;
+
         public CreateBookCommandTests()
         {
             var options = new DbContextOptionsBuilder<AppDbContext>()
@@ -34,7 +36,7 @@ namespace Application.Commands.Tests
                 },
             };
 
-            var bookId = await _command.CreateAsync(addBookRequest);
+            var bookId = await _command.CreateAsync(addBookRequest, TENANT_ID);
 
             var book = await _context.Books.FindAsync(bookId);
             Assert.NotNull(book);

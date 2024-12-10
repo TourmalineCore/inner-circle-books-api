@@ -9,6 +9,8 @@ public class DeleteBookCommandTests
     private readonly AppDbContext _context;
     private readonly DeleteBookCommand _command;
 
+    private const long TENANT_ID = 1L;
+
     public DeleteBookCommandTests()
     {
         var options = new DbContextOptionsBuilder<AppDbContext>()
@@ -25,6 +27,7 @@ public class DeleteBookCommandTests
         var book = new Book
         {
             Id = 1,
+            TenantId = TENANT_ID,
             Title = "Test Book",
             Annotation = "Test annotation",
             ArtworkUrl = "http://test-images.com/img404.png",
@@ -32,7 +35,7 @@ public class DeleteBookCommandTests
         _context.Books.Add(book);
         await _context.SaveChangesAsync();
 
-        await _command.DeleteAsync(book.Id);
+        await _command.DeleteAsync(book.Id, book.TenantId);
 
         var deletedToDo = await _context.Books.FindAsync(book.Id);
         Assert.Null(deletedToDo);

@@ -13,23 +13,24 @@ namespace Application.Commands
             _context = context;
         }
 
-        public async Task<long> CreateAsync(AddBookRequest addBookRequest)
+        public async Task<long> CreateAsync(AddBookRequest addBookRequest, long tenantId)
         {
             var authors = new List<Author>();
             foreach (var authorFullName in addBookRequest.Authors)
             {
-                if (!_context.Authors.Any(x => x.Name == authorFullName))
+                if (!_context.Authors.Any(x => x.Name == authorFullName && x.TenantId == tenantId))
                 {
-                    _context.Authors.Add(new Author(authorFullName));
+                    _context.Authors.Add(new Author(tenantId, authorFullName));
                     await _context.SaveChangesAsync();
                 }
 
-                var existAuthor = _context.Authors.Single(x => x.Name == authorFullName);
+                var existAuthor = _context.Authors.Single(x => x.Name == authorFullName && x.TenantId == tenantId);
                 authors.Add(existAuthor);
                 await _context.SaveChangesAsync();
             }
 
             var book = new Book(
+                tenantId,
                 addBookRequest.Title,
                 addBookRequest.Annotation,
                 (Language)Enum.Parse(typeof(Language), addBookRequest.Language),

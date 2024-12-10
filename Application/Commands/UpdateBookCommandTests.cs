@@ -10,6 +10,8 @@ public class UpdateBookCommandTests
     private readonly AppDbContext _context;
     private readonly UpdateBookCommand _command;
 
+    private const long TENANT_ID = 1L;
+
     public UpdateBookCommandTests()
     {
         var options = new DbContextOptionsBuilder<AppDbContext>()
@@ -26,6 +28,7 @@ public class UpdateBookCommandTests
         var book = new Book
         {
             Id = 1L,
+            TenantId = TENANT_ID,
             Title = "Test Book",
             Annotation = "Test annotation",
             ArtworkUrl = "http://test-images.com/img404.png",
@@ -39,7 +42,7 @@ public class UpdateBookCommandTests
         _context.Books.Add(book);
         await _context.SaveChangesAsync();
 
-        await _command.UpdateAsync(updateBookRequest);
+        await _command.UpdateAsync(updateBookRequest, TENANT_ID);
 
         var updatedBook = await _context.Books.FindAsync(book.Id);
         Assert.Equal(updatedBook.Title, updatedBook.Title);

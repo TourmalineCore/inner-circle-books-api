@@ -11,10 +11,10 @@ namespace Application.Queries
         {
             _context = context;
         }
-        public async Task<List<Book>> GetAllAsync()
+        public async Task<List<Book>> GetAllAsync(long tenantId)
         {
             var toDoList = await _context.Books
-                .Where(x => x.DeletedAtUtc == null)
+                .Where(x => x.DeletedAtUtc == null && x.TenantId == tenantId)
                 .Include(x => x.Authors)
                 .ToListAsync();
             return toDoList;

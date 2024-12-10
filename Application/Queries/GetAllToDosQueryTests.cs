@@ -8,6 +8,8 @@ public class GetAllToDosQueryTests
     private readonly AppDbContext _context;
     private readonly GetAllBooksQuery _query;
 
+    private const long TENANT_ID = 1L;
+
     public GetAllToDosQueryTests()
     {
         var options = new DbContextOptionsBuilder<AppDbContext>()
@@ -24,41 +26,44 @@ public class GetAllToDosQueryTests
         var book1 = new Book
         {
             Id = 1L,
+            TenantId = TENANT_ID,
             Title = "Test Book 1",
             Annotation = "Test annotation 1",
             ArtworkUrl = "http://test1-images.com/img404.png",
             Authors = new List<Author>()
             {
-                new Author("Test Author 1")
+                new Author(TENANT_ID, "Test Author 1")
             },
         };
         var book2 = new Book
         {
             Id = 2L,
+            TenantId = TENANT_ID,
             Title = "Test Book 2",
             Annotation = "Test annotation 2",
             ArtworkUrl = "http://test2-images.com/img404.png",
             Authors = new List<Author>()
             {
-                new Author("Test Author 2")
+                new Author(TENANT_ID, "Test Author 2")
             },
         };
         var book3 = new Book
         {
             Id = 3L,
+            TenantId = TENANT_ID,
             Title = "Test Book 3",
             Annotation = "Test annotation 3",
             ArtworkUrl = "http://test3-images.com/img404.png",
             Authors = new List<Author>()
             {
-                new Author("Test Author 3")
+                new Author(TENANT_ID, "Test Author 3")
             },
         };
 
         _context.Books.AddRange(book1, book2, book3);
         await _context.SaveChangesAsync();
 
-        var result = await _query.GetAllAsync();
+        var result = await _query.GetAllAsync(TENANT_ID);
 
         Assert.NotNull(result);
         Assert.Equal(3, result.Count);

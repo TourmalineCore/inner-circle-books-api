@@ -9,6 +9,8 @@ public class SoftDeleteBookCommandTests
     private readonly AppDbContext _context;
     private readonly SoftDeleteBookCommand _command;
 
+    private const long TENANT_ID = 1L;
+
     public SoftDeleteBookCommandTests()
     {
         var options = new DbContextOptionsBuilder<AppDbContext>()
@@ -25,6 +27,7 @@ public class SoftDeleteBookCommandTests
         var book = new Book
         {
             Id = 1,
+            TenantId = TENANT_ID,
             Title = "Test Book",
             Annotation = "Test annotation",
             ArtworkUrl = "http://test-images.com/img404.png",
@@ -32,7 +35,7 @@ public class SoftDeleteBookCommandTests
         _context.Books.Add(book);
         await _context.SaveChangesAsync();
 
-        await _command.SoftDeleteAsync(book.Id);
+        await _command.SoftDeleteAsync(book.Id, book.TenantId);
 
         var updatedBook = await _context.Books.FindAsync(book.Id);
         Assert.NotNull(updatedBook.DeletedAtUtc);

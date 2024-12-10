@@ -12,10 +12,10 @@ namespace Application.Commands
             _context = context;
         }
 
-        public async Task SoftDeleteAsync(long id)
+        public async Task SoftDeleteAsync(long id, long tenantId)
         {
             var book = await _context.Books
-                .Where(x => x.Id == id)
+                .Where(x => x.Id == id && x.TenantId == tenantId)
                 .SingleAsync();
             book.DeletedAtUtc = DateTime.UtcNow;
             _context.Books.Update(book);

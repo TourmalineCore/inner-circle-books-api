@@ -4,5 +4,5 @@ namespace Application.Commands.Contracts;
 
 public interface ICreateBookCommand
 {
-    Task<long> CreateAsync(AddBookRequest addBookRequest);
+    Task<long> CreateAsync(AddBookRequest addBookRequest, long tenantId);
 }

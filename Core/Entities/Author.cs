@@ -4,13 +4,19 @@ namespace Core.Entities
     {
         public long Id { get; set; }
 
+        public long TenantId { get; set; }
+        
         public string Name { get; set; }
+        
         public List<Book> Books { get; set; }
 
         public Author() { }
 
-        public Author(string name)
+        public Author(
+            long tenantId,
+            string name)
         {
+            TenantId = tenantId;
             Name = name;
         }
     }

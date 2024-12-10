@@ -1,4 +1,5 @@
 using Application.Commands.Contracts;
+using Application.Requests;
 using Microsoft.EntityFrameworkCore;
 
 namespace Application.Commands
@@ -12,10 +13,10 @@ namespace Application.Commands
             _context = context;
         }
 
-        public async Task DeleteAsync(long id)
+        public async Task DeleteAsync(long id, long tenantId)
         {
             var book = await _context.Books
-                .Where(x => x.Id == id)
+                .Where(x => x.Id == id && x.TenantId == tenantId)
                 .SingleAsync();
             _context.Books.Remove(book);
             await _context.SaveChangesAsync();

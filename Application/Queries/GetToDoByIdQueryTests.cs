@@ -9,6 +9,8 @@ public class GetToDoByIdQueryTests
     private readonly AppDbContext _context;
     private readonly GetBookByIdQuery _query;
 
+    private const long TENANT_ID = 1L;
+
     public GetToDoByIdQueryTests()
     {
         var options = new DbContextOptionsBuilder<AppDbContext>()
@@ -25,18 +27,19 @@ public class GetToDoByIdQueryTests
         var book = new Book
         {
             Id = 1,
+            TenantId = TENANT_ID,
             Title = "Test Book",
             Annotation = "Test annotation",
             ArtworkUrl = "http://test-images.com/img404.png",
             Authors = new List<Author>()
             {
-                new Author("Test Author")
+                new Author(TENANT_ID, "Test Author")
             },
         };
         _context.Books.Add(book);
         await _context.SaveChangesAsync();
 
-        var result = await _query.GetByIdAsync(book.Id);
+        var result = await _query.GetByIdAsync(book.Id, TENANT_ID);
 
         Assert.NotNull(result);
         Assert.Equal(book.Id, result.Id);
@@ -48,7 +51,7 @@ public class GetToDoByIdQueryTests
     {
         var nonExistentId = 999;
 
-        var result = await _query.GetByIdAsync(nonExistentId);
+        var result = await _query.GetByIdAsync(nonExistentId, TENANT_ID);
 
         Assert.Null(result);
     }
