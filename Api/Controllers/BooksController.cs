@@ -15,6 +15,7 @@ public class BooksController : Controller
 {
     private readonly IGetAllBooksQuery _getAllBooksQuery;
     private readonly ICreateBookCommand _createBookCommand;
+    private readonly IUpdateBookCommand _updateBookCommand;
     private readonly IDeleteBookCommand _deleteBookCommand;
     private readonly ISoftDeleteBookCommand _softDeleteBookCommand;
 
@@ -24,12 +25,14 @@ public class BooksController : Controller
     public BooksController(
         IGetAllBooksQuery getAllBooksQuery,
         ICreateBookCommand createBookCommand,
+        IUpdateBookCommand updateBookCommand,
         IDeleteBookCommand deleteBookCommand,
         ISoftDeleteBookCommand softDeleteBookCommand
         )
     {
         _getAllBooksQuery = getAllBooksQuery;
         _createBookCommand = createBookCommand;
+        _updateBookCommand = updateBookCommand;
         _deleteBookCommand = deleteBookCommand;
         _softDeleteBookCommand = softDeleteBookCommand;
     }
@@ -64,6 +67,16 @@ public class BooksController : Controller
     public Task<long> AddToDoAsync([FromBody] AddBookRequest addBookRequest)
     {
         return _createBookCommand.CreateAsync(addBookRequest);
+    }
+
+    /// <summary>
+    ///     Update book
+    /// </summary>
+    /// <param name="addBookRequest"></param>
+    [HttpPost("edit")]
+    public Task UpdateBook([FromBody] UpdateBookRequest updateBookRequest)
+    {
+        return _updateBookCommand.UpdateAsync(updateBookRequest);
     }
 
     /// <summary>

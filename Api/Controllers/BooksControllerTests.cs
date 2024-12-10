@@ -13,6 +13,7 @@ namespace Api.Controllers
     {
         private readonly Mock<IGetAllBooksQuery> _getAllBooksQueryMock;
         private readonly Mock<ICreateBookCommand> _createBookCommandMock;
+        private readonly Mock<IUpdateBookCommand> _updateBookCommandMock;
         private readonly Mock<IDeleteBookCommand> _deleteBookCommandMock;
         private readonly Mock<ISoftDeleteBookCommand> _softDeleteBookCommandMock;
         private readonly BooksController _controller;
@@ -21,12 +22,14 @@ namespace Api.Controllers
         {
             _getAllBooksQueryMock = new Mock<IGetAllBooksQuery>();
             _createBookCommandMock = new Mock<ICreateBookCommand>();
+            _updateBookCommandMock = new Mock<IUpdateBookCommand>();
             _deleteBookCommandMock = new Mock<IDeleteBookCommand>();
             _softDeleteBookCommandMock = new Mock<ISoftDeleteBookCommand>();
 
             _controller = new BooksController(
                 _getAllBooksQueryMock.Object,
                 _createBookCommandMock.Object,
+                _updateBookCommandMock.Object,
                 _deleteBookCommandMock.Object,
                 _softDeleteBookCommandMock.Object
             );
@@ -71,7 +74,7 @@ namespace Api.Controllers
         }
 
         [Fact]
-        public async Task AddToDoAsync_ShouldReturnCreatedToDoId()
+        public async Task AddBookAsync_ShouldReturnCreatedBookId()
         {
             var request = new AddBookRequest
             {
@@ -93,13 +96,28 @@ namespace Api.Controllers
         }
 
         [Fact]
-        public async Task DeleteToDo_ShouldCallDeleteAsync()
+        public async Task DeleteBook_ShouldCallDeleteAsync()
         {
             var toDoId = 1L;
 
             await _controller.DeleteToDo(toDoId);
 
             _deleteBookCommandMock.Verify(command => command.DeleteAsync(toDoId), Times.Once);
+        }
+
+        [Fact]
+        public async Task UpdateBook_ShouldCallUpdateAsync()
+        {
+            var updateBookRequest = new UpdateBookRequest()
+            {
+                Id = 1L,
+                Annotation = "Another annotation",
+                Title = "Another title",
+            };
+
+            await _controller.UpdateBook(updateBookRequest);
+
+            _updateBookCommandMock.Verify(command => command.UpdateAsync(updateBookRequest), Times.Once);
         }
 
     }
