@@ -1,8 +1,10 @@
+using Application.Commands.Contracts;
 using Application.Requests;
 using Microsoft.EntityFrameworkCore;
+using Moq;
 using Xunit;
 
-namespace Application.Commands.Tests
+namespace Application.Commands
 {
     public class CreateBookCommandTests
     {
@@ -18,7 +20,8 @@ namespace Application.Commands.Tests
                 .Options;
 
             _context = new AppDbContext(options);
-            _command = new CreateBookCommand(_context);
+            var createAuthorCommand = new CreateAuthorCommand(_context);
+            _command = new CreateBookCommand(_context, createAuthorCommand);
         }
 
         [Fact]

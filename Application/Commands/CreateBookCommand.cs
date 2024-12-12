@@ -7,10 +7,14 @@ namespace Application.Commands
     public class CreateBookCommand : ICreateBookCommand
     {
         private readonly AppDbContext _context;
+        private readonly ICreateAuthorCommand _command;
 
-        public CreateBookCommand(AppDbContext context)
+        public CreateBookCommand(
+            AppDbContext context, 
+            ICreateAuthorCommand command)
         {
             _context = context;
+            _command = command;
         }
 
         public async Task<long> CreateAsync(AddBookRequest addBookRequest, long tenantId)
@@ -20,8 +24,11 @@ namespace Application.Commands
             {
                 if (!_context.Authors.Any(x => x.FullName == authorFullName && x.TenantId == tenantId))
                 {
-                    _context.Authors.Add(new Author(tenantId, authorFullName));
-                    await _context.SaveChangesAsync();
+                    var createAuthorRequest = new CreateAuthorRequest()
+                    {
+                        FullName = authorFullName
+                    };
+                    await _command.CreateAsync(createAuthorRequest, tenantId);
                 }
 
                 var existAuthor = _context.Authors.Single(x => x.FullName == authorFullName && x.TenantId == tenantId);
