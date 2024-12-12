@@ -31,13 +31,23 @@ public class UpdateBookCommandTests
             TenantId = TENANT_ID,
             Title = "Test Book",
             Annotation = "Test annotation",
+            Language = Language.English,
+            Authors = new List<Author>()
+            {
+                new Author(TENANT_ID, "Test Author")
+            },
             ArtworkUrl = "http://test-images.com/img404.png",
         };
         var updateBookRequest = new UpdateBookRequest()
         {
             Id = 1L,
-            Annotation = "Another annotation",
             Title = "Another title",
+            Annotation = "Another annotation",
+            Language = "Russian",
+            Authors = new List<string>()
+            {
+                "Test Author", "Test Author 2"
+            }
         };
         _context.Books.Add(book);
         await _context.SaveChangesAsync();
@@ -47,5 +57,6 @@ public class UpdateBookCommandTests
         var updatedBook = await _context.Books.FindAsync(book.Id);
         Assert.Equal(updatedBook.Title, updatedBook.Title);
         Assert.Equal(updatedBook.Annotation, updatedBook.Annotation);
+        Assert.Contains(updatedBook.Authors, x => x.FullName == "Test Author 2");
     }
 }

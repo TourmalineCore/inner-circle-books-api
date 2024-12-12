@@ -1,37 +1,33 @@
 using Application;
 using Application.Commands;
+using Application.Requests;
 using Core.Entities;
 using Microsoft.EntityFrameworkCore;
 using Xunit;
 
-public class DeleteBookCommandTests
+public class UpdateAuthorCommandTests
 {
     private readonly AppDbContext _context;
-    private readonly DeleteBookCommand _command;
+    private readonly UpdateAuthorCommand _command;
 
     private const long TENANT_ID = 1L;
 
-    public DeleteBookCommandTests()
+    public UpdateAuthorCommandTests()
     {
         var options = new DbContextOptionsBuilder<AppDbContext>()
-            .UseInMemoryDatabase(databaseName: "DeleteBookCommandBooksDatabase")
+            .UseInMemoryDatabase(databaseName: "UpdateAuthorCommandBooksDatabase")
             .Options;
 
         _context = new AppDbContext(options);
-        _command = new DeleteBookCommand(_context);
+        _command = new UpdateAuthorCommand(_context);
     }
 
     [Fact]
-    public async Task DeleteAsync_ShouldDeleteBookFromDbSet()
+    public async Task UpdateAsync_ShouldSetDifferentValues()
     {
-        var author = new Author(TENANT_ID, "Test author")
+        var author = new Author(TENANT_ID, "Test Author")
         {
             Id = 1L,
-            Books = new List<Book>()
-        };
-        var author2 = new Author(TENANT_ID, "Test author 2")
-        {
-            Id = 2L,
             Books = new List<Book>()
         };
         var book = new Book
@@ -40,21 +36,25 @@ public class DeleteBookCommandTests
             TenantId = TENANT_ID,
             Title = "Test Book",
             Annotation = "Test annotation",
+            Language = Language.English,
             Authors = new List<Author>(),
             ArtworkUrl = "http://test-images.com/img404.png",
         };
-
-        book.Authors.Add(author);
-        book.Authors.Add(author2);
         author.Books.Add(book);
-        author2.Books.Add(book);
+        book.Authors.Add(author);
 
+        var updateAuthorRequest = new UpdateAuthorRequest()
+        {
+            Id = 1L,
+            FullName = "New Test Author FullName"
+        };
         _context.Books.Add(book);
         _context.Authors.Add(author);
         await _context.SaveChangesAsync();
 
-        await _command.DeleteAsync(book.Id, book.TenantId);
+        await _command.UpdateAsync(updateAuthorRequest, TENANT_ID);
 
-        Assert.DoesNotContain(book, author.Books);
+        var updatedAuthor = await _context.Authors.FindAsync(author.Id);
+        Assert.Equal(updateAuthorRequest.FullName, updatedAuthor.FullName);
     }
 }

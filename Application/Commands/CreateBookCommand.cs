@@ -18,13 +18,13 @@ namespace Application.Commands
             var authors = new List<Author>();
             foreach (var authorFullName in addBookRequest.Authors)
             {
-                if (!_context.Authors.Any(x => x.Name == authorFullName && x.TenantId == tenantId))
+                if (!_context.Authors.Any(x => x.FullName == authorFullName && x.TenantId == tenantId))
                 {
                     _context.Authors.Add(new Author(tenantId, authorFullName));
                     await _context.SaveChangesAsync();
                 }
 
-                var existAuthor = _context.Authors.Single(x => x.Name == authorFullName && x.TenantId == tenantId);
+                var existAuthor = _context.Authors.Single(x => x.FullName == authorFullName && x.TenantId == tenantId);
                 authors.Add(existAuthor);
                 await _context.SaveChangesAsync();
             }

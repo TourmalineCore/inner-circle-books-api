@@ -41,5 +41,11 @@ namespace Core.Entities
         public Book()
         {
         }
+
+        public async Task<bool> DeleteAuthor(Author author)
+        {
+            return Authors.Remove(author);
+        }
+
     }
 }

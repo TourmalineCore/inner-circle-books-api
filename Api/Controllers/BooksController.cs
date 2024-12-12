@@ -52,7 +52,7 @@ public class BooksController : Controller
                 Title = x.Title,
                 Annotation = x.Annotation,
                 ArtworkUrl = x.ArtworkUrl,
-                Authors = x.Authors.Select(a => new Author() { FullName = a.Name }).ToList(),
+                Authors = x.Authors.Select(a => new Author() { FullName = a.FullName }).ToList(),
                 Language = x.Language.ToString(),
             }).ToList()
         };

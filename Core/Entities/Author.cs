@@ -6,7 +6,7 @@ namespace Core.Entities
 
         public long TenantId { get; set; }
         
-        public string Name { get; set; }
+        public string FullName { get; set; }
         
         public List<Book> Books { get; set; }
 
@@ -14,10 +14,14 @@ namespace Core.Entities
 
         public Author(
             long tenantId,
-            string name)
+            string fullName)
         {
             TenantId = tenantId;
-            Name = name;
+            FullName = fullName;
+        }
+        public async Task<bool> DeleteBook(Book book)
+        {
+            return Books.Remove(book);
         }
     }
 }

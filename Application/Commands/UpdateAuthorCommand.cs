@@ -1,0 +1,29 @@
+using Application.Commands.Contracts;
+using Application.Requests;
+using Core.Entities;
+using Microsoft.EntityFrameworkCore;
+
+namespace Application.Commands
+{
+    public class UpdateAuthorCommand : IUpdateAuthorCommand
+    {
+        private readonly AppDbContext _context;
+
+        public UpdateAuthorCommand(AppDbContext context)
+        {
+            _context = context;
+        }
+
+        public async Task UpdateAsync(UpdateAuthorRequest updateAuthorRequest, long tenantId)
+        {
+            var author = await _context.Authors
+                .Where(x => x.Id == updateAuthorRequest.Id && x.TenantId == tenantId)
+                .SingleAsync();
+
+            author.FullName = updateAuthorRequest.FullName;
+
+            _context.Authors.Update(author);
+            await _context.SaveChangesAsync();
+        }
+    }
+}

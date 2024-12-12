@@ -4,25 +4,25 @@ using Core.Entities;
 using Microsoft.EntityFrameworkCore;
 using Xunit;
 
-public class DeleteBookCommandTests
+public class DeleteAuthorCommandTests
 {
     private readonly AppDbContext _context;
-    private readonly DeleteBookCommand _command;
+    private readonly DeleteAuthorCommand _command;
 
     private const long TENANT_ID = 1L;
 
-    public DeleteBookCommandTests()
+    public DeleteAuthorCommandTests()
     {
         var options = new DbContextOptionsBuilder<AppDbContext>()
-            .UseInMemoryDatabase(databaseName: "DeleteBookCommandBooksDatabase")
+            .UseInMemoryDatabase(databaseName: "DeleteAuthorCommandBooksDatabase")
             .Options;
 
         _context = new AppDbContext(options);
-        _command = new DeleteBookCommand(_context);
+        _command = new DeleteAuthorCommand(_context);
     }
 
     [Fact]
-    public async Task DeleteAsync_ShouldDeleteBookFromDbSet()
+    public async Task DeleteAsync_ShouldDeleteAuthorFromBookAndFromDbSet()
     {
         var author = new Author(TENANT_ID, "Test author")
         {
@@ -48,13 +48,13 @@ public class DeleteBookCommandTests
         book.Authors.Add(author2);
         author.Books.Add(book);
         author2.Books.Add(book);
-
+        
         _context.Books.Add(book);
         _context.Authors.Add(author);
         await _context.SaveChangesAsync();
 
-        await _command.DeleteAsync(book.Id, book.TenantId);
-
-        Assert.DoesNotContain(book, author.Books);
+        await _command.DeleteAsync(author.Id, author.TenantId);
+        
+        Assert.DoesNotContain(author, book.Authors);
     }
 }

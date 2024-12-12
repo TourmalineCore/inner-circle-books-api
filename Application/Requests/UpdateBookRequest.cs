@@ -1,8 +1,4 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using Core.Entities;
 
 namespace Application.Requests
 {
@@ -13,6 +9,10 @@ namespace Application.Requests
         public string Title { get; set; }
 
         public string Annotation { get; set; }
+
+        public string Language { get; set; }
+
+        public List<string> Authors { get; set; }
 
         public string ArtworkUrl { get; set; }
 
