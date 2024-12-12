@@ -135,14 +135,13 @@ namespace Api.Controllers
         {
             var updateBookRequest = new UpdateBookRequest()
             {
-                Id = 1L,
                 Annotation = "Another annotation",
                 Title = "Another title",
             };
 
-            await _controller.UpdateBook(updateBookRequest);
+            await _controller.UpdateBook(1L, updateBookRequest);
 
-            _updateBookCommandMock.Verify(command => command.UpdateAsync(updateBookRequest, TENANT_ID), Times.Once);
+            _updateBookCommandMock.Verify(command => command.UpdateAsync(1L, updateBookRequest, TENANT_ID), Times.Once);
         }
 
     }

@@ -14,10 +14,10 @@ namespace Application.Commands
             _context = context;
         }
 
-        public async Task UpdateAsync(UpdateBookRequest updateBookRequest, long tenantId)
+        public async Task UpdateAsync(long id, UpdateBookRequest updateBookRequest, long tenantId)
         {
             var book = await _context.Books
-                .Where(x => x.Id == updateBookRequest.Id && x.TenantId == tenantId)
+                .Where(x => x.Id == id && x.TenantId == tenantId)
                 .SingleAsync();
 
             book.Title = updateBookRequest.Title;

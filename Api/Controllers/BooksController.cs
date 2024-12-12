@@ -72,17 +72,17 @@ public class BooksController : Controller
     ///     Update book
     /// </summary>
     /// <param name="addBookRequest"></param>
-    [HttpPost("edit")]
-    public Task UpdateBook([FromBody] UpdateBookRequest updateBookRequest)
+    [HttpPost("{id}/edit")]
+    public Task UpdateBook([FromRoute] long id, [FromBody] UpdateBookRequest updateBookRequest)
     {
-        return _updateBookCommand.UpdateAsync(updateBookRequest, User.GetTenantId());
+        return _updateBookCommand.UpdateAsync(id, updateBookRequest, User.GetTenantId());
     }
 
     /// <summary>
     ///     Deletes specific book
     /// </summary>
     /// <param name="id"></param>
-    [HttpDelete("hard-delete/{id}")]
+    [HttpDelete("{id}/hard-delete")]
     public Task HardDeleteBook([Required][FromRoute] long id)
     {
         return _deleteBookCommand.DeleteAsync(id,User.GetTenantId());
@@ -92,7 +92,7 @@ public class BooksController : Controller
     ///     Soft deletes specific book (mark as deleted, but not deleting from database)
     /// </summary>
     /// <param name="id"></param>
-    [HttpDelete("soft-delete/{id}")]
+    [HttpDelete("{id}/soft-delete")]
     public Task SoftDeleteBook([FromRoute] long id)
     {
         return _softDeleteBookCommand.SoftDeleteAsync(id, User.GetTenantId());

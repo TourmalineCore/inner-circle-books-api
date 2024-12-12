@@ -4,8 +4,6 @@ namespace Application.Requests
 {
     public class UpdateBookRequest
     {
-        public long Id { get; set; }
-
         public string Title { get; set; }
 
         public string Annotation { get; set; }
