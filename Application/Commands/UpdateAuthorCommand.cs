@@ -14,10 +14,10 @@ namespace Application.Commands
             _context = context;
         }
 
-        public async Task UpdateAsync(UpdateAuthorRequest updateAuthorRequest, long tenantId)
+        public async Task UpdateAsync(long id, UpdateAuthorRequest updateAuthorRequest, long tenantId)
         {
             var author = await _context.Authors
-                .Where(x => x.Id == updateAuthorRequest.Id && x.TenantId == tenantId)
+                .Where(x => x.Id == id && x.TenantId == tenantId)
                 .SingleAsync();
 
             author.FullName = updateAuthorRequest.FullName;

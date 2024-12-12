@@ -4,5 +4,5 @@ namespace Application.Commands.Contracts;
 
 public interface IUpdateAuthorCommand
 {
-    Task UpdateAsync(UpdateAuthorRequest updateBookRequest, long tenantId);
+    Task UpdateAsync(long id, UpdateAuthorRequest updateBookRequest, long tenantId);
 }

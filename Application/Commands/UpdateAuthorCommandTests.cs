@@ -45,14 +45,13 @@ public class UpdateAuthorCommandTests
 
         var updateAuthorRequest = new UpdateAuthorRequest()
         {
-            Id = 1L,
             FullName = "New Test Author FullName"
         };
         _context.Books.Add(book);
         _context.Authors.Add(author);
         await _context.SaveChangesAsync();
 
-        await _command.UpdateAsync(updateAuthorRequest, TENANT_ID);
+        await _command.UpdateAsync(1L, updateAuthorRequest, TENANT_ID);
 
         var updatedAuthor = await _context.Authors.FindAsync(author.Id);
         Assert.Equal(updateAuthorRequest.FullName, updatedAuthor.FullName);
