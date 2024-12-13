@@ -1,25 +1,24 @@
 using Application.Commands.Contracts;
 using Microsoft.EntityFrameworkCore;
 
-namespace Application.Commands
+namespace Application.Commands;
+
+public class SoftDeleteBookCommand : ISoftDeleteBookCommand
 {
-    public class SoftDeleteBookCommand : ISoftDeleteBookCommand
+    private readonly AppDbContext _context;
+
+    public SoftDeleteBookCommand(AppDbContext context)
     {
-        private readonly AppDbContext _context;
+        _context = context;
+    }
 
-        public SoftDeleteBookCommand(AppDbContext context)
-        {
-            _context = context;
-        }
-
-        public async Task SoftDeleteAsync(long id, long tenantId)
-        {
-            var book = await _context.Books
-                .Where(x => x.Id == id && x.TenantId == tenantId)
-                .SingleAsync();
-            book.DeletedAtUtc = DateTime.UtcNow;
-            _context.Books.Update(book);
-            await _context.SaveChangesAsync();
-        }
+    public async Task SoftDeleteAsync(long id, long tenantId)
+    {
+        var book = await _context.Books
+            .Where(x => x.Id == id && x.TenantId == tenantId)
+            .SingleAsync();
+        book.DeletedAtUtc = DateTime.UtcNow;
+        _context.Books.Update(book);
+        await _context.SaveChangesAsync();
     }
 }

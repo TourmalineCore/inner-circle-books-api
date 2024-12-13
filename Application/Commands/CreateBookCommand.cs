@@ -2,50 +2,49 @@ using Application.Commands.Contracts;
 using Application.Requests;
 using Core.Entities;
 
-namespace Application.Commands
+namespace Application.Commands;
+
+public class CreateBookCommand : ICreateBookCommand
 {
-    public class CreateBookCommand : ICreateBookCommand
+    private readonly ICreateAuthorCommand _command;
+    private readonly AppDbContext _context;
+
+    public CreateBookCommand(
+        AppDbContext context,
+        ICreateAuthorCommand command)
     {
-        private readonly AppDbContext _context;
-        private readonly ICreateAuthorCommand _command;
+        _context = context;
+        _command = command;
+    }
 
-        public CreateBookCommand(
-            AppDbContext context, 
-            ICreateAuthorCommand command)
+    public async Task<long> CreateAsync(AddBookRequest addBookRequest, long tenantId)
+    {
+        var authors = new List<Author>();
+        foreach (var authorFullName in addBookRequest.Authors)
         {
-            _context = context;
-            _command = command;
-        }
-
-        public async Task<long> CreateAsync(AddBookRequest addBookRequest, long tenantId)
-        {
-            var authors = new List<Author>();
-            foreach (var authorFullName in addBookRequest.Authors)
+            if (!_context.Authors.Any(x => x.FullName == authorFullName && x.TenantId == tenantId))
             {
-                if (!_context.Authors.Any(x => x.FullName == authorFullName && x.TenantId == tenantId))
+                var createAuthorRequest = new CreateAuthorRequest
                 {
-                    var createAuthorRequest = new CreateAuthorRequest()
-                    {
-                        FullName = authorFullName
-                    };
-                    await _command.CreateAsync(createAuthorRequest, tenantId);
-                }
-
-                var existAuthor = _context.Authors.Single(x => x.FullName == authorFullName && x.TenantId == tenantId);
-                authors.Add(existAuthor);
-                await _context.SaveChangesAsync();
+                    FullName = authorFullName
+                };
+                await _command.CreateAsync(createAuthorRequest, tenantId);
             }
 
-            var book = new Book(
-                tenantId,
-                addBookRequest.Title,
-                addBookRequest.Annotation,
-                (Language)Enum.Parse(typeof(Language), addBookRequest.Language),
-                authors,
-                addBookRequest.ArtworkUrl);
-            await _context.Books.AddAsync(book);
+            var existAuthor = _context.Authors.Single(x => x.FullName == authorFullName && x.TenantId == tenantId);
+            authors.Add(existAuthor);
             await _context.SaveChangesAsync();
-            return book.Id;
         }
+
+        var book = new Book(
+            tenantId,
+            addBookRequest.Title,
+            addBookRequest.Annotation,
+            (Language)Enum.Parse(typeof(Language), addBookRequest.Language),
+            authors,
+            addBookRequest.ArtworkUrl);
+        await _context.Books.AddAsync(book);
+        await _context.SaveChangesAsync();
+        return book.Id;
     }
 }
