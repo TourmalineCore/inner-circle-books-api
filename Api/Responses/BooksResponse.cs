@@ -22,5 +22,6 @@ public class Book
 
 public class Author
 {
+    public long Id { get; set; }
     public string FullName { get; set; }
 }

@@ -16,6 +16,7 @@ public class BooksController : Controller
     private readonly ICreateBookCommand _createBookCommand;
     private readonly IDeleteBookCommand _deleteBookCommand;
     private readonly IGetAllBooksQuery _getAllBooksQuery;
+    private readonly IGetBookByIdQuery _getBookByIdQuery;
     private readonly ISoftDeleteBookCommand _softDeleteBookCommand;
     private readonly IUpdateBookCommand _updateBookCommand;
 
@@ -24,6 +25,7 @@ public class BooksController : Controller
     /// </summary>
     public BooksController(
         IGetAllBooksQuery getAllBooksQuery,
+        IGetBookByIdQuery getBookByIdQuery,
         ICreateBookCommand createBookCommand,
         IUpdateBookCommand updateBookCommand,
         IDeleteBookCommand deleteBookCommand,
@@ -31,6 +33,7 @@ public class BooksController : Controller
     )
     {
         _getAllBooksQuery = getAllBooksQuery;
+        _getBookByIdQuery = getBookByIdQuery;
         _createBookCommand = createBookCommand;
         _updateBookCommand = updateBookCommand;
         _deleteBookCommand = deleteBookCommand;
@@ -52,9 +55,35 @@ public class BooksController : Controller
                 Title = x.Title,
                 Annotation = x.Annotation,
                 ArtworkUrl = x.ArtworkUrl,
-                Authors = x.Authors.Select(a => new Author { FullName = a.FullName }).ToList(),
+                Authors = x.Authors.Select(a => new Author
+                {
+                    Id = a.Id, 
+                    FullName = a.FullName
+                }).ToList(),
                 Language = x.Language.ToString()
             }).ToList()
+        };
+    }
+
+    /// <summary>
+    ///     Get book by id
+    /// </summary>
+    [HttpGet("{id}")]
+    public async Task<Book> GetBookByIdAsync([FromRoute] long id)
+    {
+        var book = await _getBookByIdQuery.GetByIdAsync(id, User.GetTenantId());
+        return new Book()
+        {
+            Id = book.Id,
+            Title = book.Title,
+            Annotation = book.Annotation,
+            ArtworkUrl = book.ArtworkUrl,
+            Authors = book.Authors.Select(a => new Author
+            {
+                Id = a.Id, 
+                FullName = a.FullName
+            }).ToList(),
+            Language = book.Language.ToString()
         };
     }
 
