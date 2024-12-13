@@ -4,13 +4,13 @@ using Core.Entities;
 using Microsoft.EntityFrameworkCore;
 using Xunit;
 
-public class GetAllToDosQueryTests
+public class GetAllBooksQueryTests
 {
     private const long TENANT_ID = 1L;
     private readonly AppDbContext _context;
     private readonly GetAllBooksQuery _query;
 
-    public GetAllToDosQueryTests()
+    public GetAllBooksQueryTests()
     {
         var options = new DbContextOptionsBuilder<AppDbContext>()
             .UseInMemoryDatabase("GetAllBooksQueryBooksDatabase")

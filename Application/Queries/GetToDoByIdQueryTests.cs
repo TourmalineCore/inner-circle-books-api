@@ -4,13 +4,13 @@ using Core.Entities;
 using Microsoft.EntityFrameworkCore;
 using Xunit;
 
-public class GetToDoByIdQueryTests
+public class GetBookByIdQueryTests
 {
     private const long TENANT_ID = 1L;
     private readonly AppDbContext _context;
     private readonly GetBookByIdQuery _query;
 
-    public GetToDoByIdQueryTests()
+    public GetBookByIdQueryTests()
     {
         var options = new DbContextOptionsBuilder<AppDbContext>()
             .UseInMemoryDatabase("GetBookByIdQueryBooksDatabase")
@@ -21,7 +21,7 @@ public class GetToDoByIdQueryTests
     }
 
     [Fact]
-    public async Task GetByIdAsync_ShouldReturnToDo_WhenToDoExists()
+    public async Task GetByIdAsync_ShouldReturnBook_WhenBookExists()
     {
         var book = new Book
         {
@@ -46,7 +46,7 @@ public class GetToDoByIdQueryTests
     }
 
     [Fact]
-    public async Task GetByIdAsync_ShouldReturnNull_WhenToDoDoesNotExist()
+    public async Task GetByIdAsync_ShouldReturnNull_WhenBookDoesNotExist()
     {
         var nonExistentId = 999;
 
