@@ -17,13 +17,15 @@ public class DeleteBookCommand : IDeleteBookCommand
         var book = await _context.Books
             .Where(x => x.Id == id && x.TenantId == tenantId)
             .SingleAsync();
-
-        foreach (var author in book.Authors)
+        if (book != null)
         {
-            await author.DeleteBook(book);
-        }
+            foreach(var author in book.Authors)
+            {
+                await author.DeleteBook(book);
+            }
 
-        _context.Books.Remove(book);
-        await _context.SaveChangesAsync();
+            _context.Books.Remove(book);
+            await _context.SaveChangesAsync();
+        }
     }
 }

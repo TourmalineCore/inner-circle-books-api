@@ -18,14 +18,16 @@ public class DeleteAuthorCommand : IDeleteAuthorCommand
             .Where(x => x.Id == id && x.TenantId == tenantId)
             .Include(x => x.Books)
             .SingleAsync();
-
-        foreach (var book in author.Books)
+        if (author != null)
         {
-            await book.DeleteAuthor(author);
+            foreach(var book in author.Books)
+            {
+                await book.DeleteAuthor(author);
+            }
+
+            _context.Authors.Remove(author);
+
+            await _context.SaveChangesAsync();
         }
-
-        _context.Authors.Remove(author);
-
-        await _context.SaveChangesAsync();
     }
 }
