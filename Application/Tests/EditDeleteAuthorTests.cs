@@ -99,11 +99,18 @@ public class EditDeleteAuthorTests
         await _deleteAuthorCommand.DeleteAsync(TestDataAuthors[2].Id, TENANT_ID);
 
         var updatedBooks = await _context.Books.Include(b => b.Authors).ToListAsync();
+        var firstAuthor = await _context.Authors.FirstAsync(a => a.Id == TestDataAuthors[0].Id);
 
-        Assert.Empty(TestDataAuthors[1].Books);
-        Assert.Empty(TestDataAuthors[2].Books);
-        Assert.Contains(TestDataAuthors[0], updatedBooks[0].Authors);
-        Assert.Contains(TestDataAuthors[0], updatedBooks[1].Authors);
-        Assert.Contains(TestDataAuthors[3], updatedBooks[0].Authors);
+        Assert.Equal("First First", firstAuthor.FullName);
+
+        Assert.Equal(2, updatedBooks[0].Authors.Count);
+
+        Assert.Single(updatedBooks[1].Authors);
+
+        Assert.All(updatedBooks, book =>
+        {
+            Assert.DoesNotContain(book.Authors, a => a.Id == TestDataAuthors[1].Id);
+            Assert.DoesNotContain(book.Authors, a => a.Id == TestDataAuthors[2].Id);
+        });
     }
 }
