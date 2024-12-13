@@ -17,10 +17,15 @@ public class CreateBookCommand : ICreateBookCommand
         _command = command;
     }
 
-    public async Task<long> CreateAsync(AddBookRequest addBookRequest, long tenantId)
+    public async Task<long> CreateAsync(CreateBookRequest createBookRequest, long tenantId)
     {
+        if (createBookRequest.Authors == null || createBookRequest.Authors.Count == 0)
+        {
+            throw new ArgumentException("List of authors cannot be empty or null.");
+        }
+
         var authors = new List<Author>();
-        foreach (var authorFullName in addBookRequest.Authors)
+        foreach (var authorFullName in createBookRequest.Authors)
         {
             if (!_context.Authors.Any(x => x.FullName == authorFullName && x.TenantId == tenantId))
             {
@@ -38,11 +43,11 @@ public class CreateBookCommand : ICreateBookCommand
 
         var book = new Book(
             tenantId,
-            addBookRequest.Title,
-            addBookRequest.Annotation,
-            (Language)Enum.Parse(typeof(Language), addBookRequest.Language),
+            createBookRequest.Title,
+            createBookRequest.Annotation,
+            (Language)Enum.Parse(typeof(Language), createBookRequest.Language),
             authors,
-            addBookRequest.ArtworkUrl);
+            createBookRequest.ArtworkUrl);
         await _context.Books.AddAsync(book);
         await _context.SaveChangesAsync();
         return book.Id;

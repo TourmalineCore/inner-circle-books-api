@@ -139,9 +139,9 @@ public class BooksControllerTests
     }
 
     [Fact]
-    public async Task AddBookAsync_ShouldReturnCreatedBookId()
+    public async Task CreateBookAsync_ShouldReturnCreatedBookId()
     {
-        var request = new AddBookRequest
+        var request = new CreateBookRequest
         {
             Title = "Test Book 1",
             Annotation = "Test annotation 1",
@@ -156,7 +156,7 @@ public class BooksControllerTests
             .Setup(command => command.CreateAsync(request, TENANT_ID))
             .ReturnsAsync(1);
 
-        var result = await _controller.AddBookAsync(request);
+        var result = await _controller.CreateBookAsync(request);
 
         Assert.Equal(1, result.NewBookId);
         _createBookCommandMock.Verify(command => command.CreateAsync(request, TENANT_ID), Times.Once);

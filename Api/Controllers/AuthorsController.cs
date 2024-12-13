@@ -29,7 +29,7 @@ public class AuthorsController : Controller
     /// <summary>
     ///     Update author
     /// </summary>
-    /// <param name="addAuthorRequest"></param>
+    /// <param name="updateAuthorRequest"></param>
     [HttpPost("{id}/edit")]
     public Task UpdateAuthor([Required] [FromRoute] long id, [FromBody] UpdateAuthorRequest updateAuthorRequest)
     {

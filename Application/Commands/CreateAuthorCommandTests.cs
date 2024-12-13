@@ -23,12 +23,12 @@ public class CreateAuthorCommandTests
     [Fact]
     public async Task CreateAsync_ShouldAddNewAuthorToDbSet()
     {
-        var addAuthorRequest = new CreateAuthorRequest
+        var createAuthorRequest = new CreateAuthorRequest
         {
             FullName = "Test Author"
         };
 
-        var authorId = await _command.CreateAsync(addAuthorRequest, TENANT_ID);
+        var authorId = await _command.CreateAsync(createAuthorRequest, TENANT_ID);
 
         var author = await _context.Authors.FindAsync(authorId);
         Assert.NotNull(author);

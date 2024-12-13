@@ -24,7 +24,7 @@ public class CreateBookCommandTests
     [Fact]
     public async Task CreateAsync_ShouldAddNewBookToDbSet()
     {
-        var addBookRequest = new AddBookRequest
+        var createBookRequest = new CreateBookRequest
         {
             Title = "Test Book",
             Annotation = "Test annotation",
@@ -36,7 +36,7 @@ public class CreateBookCommandTests
             }
         };
 
-        var bookId = await _command.CreateAsync(addBookRequest, TENANT_ID);
+        var bookId = await _command.CreateAsync(createBookRequest, TENANT_ID);
 
         var book = await _context.Books.FindAsync(bookId);
         Assert.NotNull(book);

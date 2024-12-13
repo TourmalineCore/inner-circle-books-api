@@ -90,11 +90,11 @@ public class BooksController : Controller
     /// <summary>
     ///     Adds book
     /// </summary>
-    /// <param name="addBookRequest"></param>
+    /// <param name="createBookRequest"></param>
     [HttpPost("create")]
-    public async Task<CreateBookResponse> AddBookAsync([FromBody] AddBookRequest addBookRequest)
+    public async Task<CreateBookResponse> CreateBookAsync([FromBody] CreateBookRequest createBookRequest)
     {
-        var newBookId = await _createBookCommand.CreateAsync(addBookRequest, User.GetTenantId());
+        var newBookId = await _createBookCommand.CreateAsync(createBookRequest, User.GetTenantId());
         return new CreateBookResponse()
         {
             NewBookId = newBookId
@@ -104,7 +104,8 @@ public class BooksController : Controller
     /// <summary>
     ///     Update book
     /// </summary>
-    /// <param name="addBookRequest"></param>
+    /// <param name="id"></param>
+    /// <param name="updateBookRequest"></param>
     [HttpPost("{id}/edit")]
     public Task UpdateBook([FromRoute] long id, [FromBody] UpdateBookRequest updateBookRequest)
     {
