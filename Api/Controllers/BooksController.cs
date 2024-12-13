@@ -92,9 +92,13 @@ public class BooksController : Controller
     /// </summary>
     /// <param name="addBookRequest"></param>
     [HttpPost("create")]
-    public Task<long> AddBookAsync([FromBody] AddBookRequest addBookRequest)
+    public async Task<CreateBookResponse> AddBookAsync([FromBody] AddBookRequest addBookRequest)
     {
-        return _createBookCommand.CreateAsync(addBookRequest, User.GetTenantId());
+        var newBookId = await _createBookCommand.CreateAsync(addBookRequest, User.GetTenantId());
+        return new CreateBookResponse()
+        {
+            NewBookId = newBookId
+        };
     }
 
     /// <summary>
