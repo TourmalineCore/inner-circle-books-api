@@ -1,6 +1,5 @@
-namespace Application.Services
+namespace Application.Services;
+
+public class BooksService
 {
-    public class BooksService
-    {
-    }
 }

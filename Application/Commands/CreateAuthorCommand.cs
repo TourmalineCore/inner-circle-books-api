@@ -2,25 +2,24 @@ using Application.Commands.Contracts;
 using Application.Requests;
 using Core.Entities;
 
-namespace Application.Commands
+namespace Application.Commands;
+
+public class CreateAuthorCommand : ICreateAuthorCommand
 {
-    public class CreateAuthorCommand : ICreateAuthorCommand
+    private readonly AppDbContext _context;
+
+    public CreateAuthorCommand(AppDbContext context)
     {
-        private readonly AppDbContext _context;
+        _context = context;
+    }
 
-        public CreateAuthorCommand(AppDbContext context)
-        {
-            _context = context;
-        }
-
-        public async Task<long> CreateAsync(CreateAuthorRequest createAuthorRequest, long tenantId)
-        {
-            var author = new Author(
-                tenantId, 
-                createAuthorRequest.FullName);
-            await _context.Authors.AddAsync(author);
-            await _context.SaveChangesAsync();
-            return author.Id;
-        }
+    public async Task<long> CreateAsync(CreateAuthorRequest createAuthorRequest, long tenantId)
+    {
+        var author = new Author(
+            tenantId,
+            createAuthorRequest.FullName);
+        await _context.Authors.AddAsync(author);
+        await _context.SaveChangesAsync();
+        return author.Id;
     }
 }

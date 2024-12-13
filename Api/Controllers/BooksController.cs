@@ -13,11 +13,11 @@ namespace Api.Controllers;
 [Route("api/books")]
 public class BooksController : Controller
 {
-    private readonly IGetAllBooksQuery _getAllBooksQuery;
     private readonly ICreateBookCommand _createBookCommand;
-    private readonly IUpdateBookCommand _updateBookCommand;
     private readonly IDeleteBookCommand _deleteBookCommand;
+    private readonly IGetAllBooksQuery _getAllBooksQuery;
     private readonly ISoftDeleteBookCommand _softDeleteBookCommand;
+    private readonly IUpdateBookCommand _updateBookCommand;
 
     /// <summary>
     ///     Controller with actions to books
@@ -28,7 +28,7 @@ public class BooksController : Controller
         IUpdateBookCommand updateBookCommand,
         IDeleteBookCommand deleteBookCommand,
         ISoftDeleteBookCommand softDeleteBookCommand
-        )
+    )
     {
         _getAllBooksQuery = getAllBooksQuery;
         _createBookCommand = createBookCommand;
@@ -52,8 +52,8 @@ public class BooksController : Controller
                 Title = x.Title,
                 Annotation = x.Annotation,
                 ArtworkUrl = x.ArtworkUrl,
-                Authors = x.Authors.Select(a => new Author() { FullName = a.FullName }).ToList(),
-                Language = x.Language.ToString(),
+                Authors = x.Authors.Select(a => new Author { FullName = a.FullName }).ToList(),
+                Language = x.Language.ToString()
             }).ToList()
         };
     }
@@ -83,9 +83,9 @@ public class BooksController : Controller
     /// </summary>
     /// <param name="id"></param>
     [HttpDelete("{id}/hard-delete")]
-    public Task HardDeleteBook([Required][FromRoute] long id)
+    public Task HardDeleteBook([Required] [FromRoute] long id)
     {
-        return _deleteBookCommand.DeleteAsync(id,User.GetTenantId());
+        return _deleteBookCommand.DeleteAsync(id, User.GetTenantId());
     }
 
     /// <summary>

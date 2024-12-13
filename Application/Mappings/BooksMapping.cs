@@ -2,15 +2,14 @@ using Core.Entities;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
-namespace Application.Mappings
+namespace Application.Mappings;
+
+public class BooksMapping : IEntityTypeConfiguration<Book>
 {
-    public class BooksMapping : IEntityTypeConfiguration<Book>
+    public void Configure(EntityTypeBuilder<Book> builder)
     {
-        public void Configure(EntityTypeBuilder<Book> builder)
-        {
-            builder
-                .HasMany(e => e.Authors)
-                .WithMany(e => e.Books);
-        }
+        builder
+            .HasMany(e => e.Authors)
+            .WithMany(e => e.Books);
     }
 }

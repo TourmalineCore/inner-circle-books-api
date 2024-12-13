@@ -3,51 +3,50 @@ using Application.Requests;
 using Core.Entities;
 using Microsoft.EntityFrameworkCore;
 
-namespace Application.Commands
+namespace Application.Commands;
+
+public class UpdateBookCommand : IUpdateBookCommand
 {
-    public class UpdateBookCommand : IUpdateBookCommand
+    private readonly AppDbContext _context;
+
+    public UpdateBookCommand(AppDbContext context)
     {
-        private readonly AppDbContext _context;
+        _context = context;
+    }
 
-        public UpdateBookCommand(AppDbContext context)
+    public async Task UpdateAsync(long id, UpdateBookRequest updateBookRequest, long tenantId)
+    {
+        var book = await _context.Books
+            .Where(x => x.Id == id && x.TenantId == tenantId)
+            .SingleAsync();
+
+        book.Title = updateBookRequest.Title;
+        book.Annotation = updateBookRequest.Annotation;
+        book.Language = (Language)Enum.Parse(typeof(Language), updateBookRequest.Language);
+        var authorsList = await AddAuthorIfItNotExist(updateBookRequest, tenantId);
+        book.Authors = authorsList;
+        book.ArtworkUrl = updateBookRequest.ArtworkUrl;
+
+        _context.Books.Update(book);
+        await _context.SaveChangesAsync();
+    }
+
+    private async Task<List<Author>> AddAuthorIfItNotExist(UpdateBookRequest updateBookRequest, long tenantId)
+    {
+        var authors = new List<Author>();
+        foreach (var authorFullName in updateBookRequest.Authors)
         {
-            _context = context;
-        }
-
-        public async Task UpdateAsync(long id, UpdateBookRequest updateBookRequest, long tenantId)
-        {
-            var book = await _context.Books
-                .Where(x => x.Id == id && x.TenantId == tenantId)
-                .SingleAsync();
-
-            book.Title = updateBookRequest.Title;
-            book.Annotation = updateBookRequest.Annotation;
-            book.Language = (Language)Enum.Parse(typeof(Language), updateBookRequest.Language);
-            var authorsList = await AddAuthorIfItNotExist(updateBookRequest, tenantId);
-            book.Authors = authorsList;
-            book.ArtworkUrl = updateBookRequest.ArtworkUrl;
-
-            _context.Books.Update(book);
-            await _context.SaveChangesAsync();
-        }
-
-        private async Task<List<Author>> AddAuthorIfItNotExist(UpdateBookRequest updateBookRequest, long tenantId)
-        {
-            var authors = new List<Author>();
-            foreach(var authorFullName in updateBookRequest.Authors)
+            if (!_context.Authors.Any(x => x.FullName == authorFullName && x.TenantId == tenantId))
             {
-                if(!_context.Authors.Any(x => x.FullName == authorFullName && x.TenantId == tenantId))
-                {
-                    _context.Authors.Add(new Author(tenantId, authorFullName));
-                    await _context.SaveChangesAsync();
-                }
-
-                var existAuthor = _context.Authors.Single(x => x.FullName == authorFullName && x.TenantId == tenantId);
-                authors.Add(existAuthor);
+                _context.Authors.Add(new Author(tenantId, authorFullName));
                 await _context.SaveChangesAsync();
             }
 
-            return authors;
+            var existAuthor = _context.Authors.Single(x => x.FullName == authorFullName && x.TenantId == tenantId);
+            authors.Add(existAuthor);
+            await _context.SaveChangesAsync();
         }
+
+        return authors;
     }
 }

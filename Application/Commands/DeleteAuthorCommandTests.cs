@@ -6,15 +6,14 @@ using Xunit;
 
 public class DeleteAuthorCommandTests
 {
-    private readonly AppDbContext _context;
-    private readonly DeleteAuthorCommand _command;
-
     private const long TENANT_ID = 1L;
+    private readonly DeleteAuthorCommand _command;
+    private readonly AppDbContext _context;
 
     public DeleteAuthorCommandTests()
     {
         var options = new DbContextOptionsBuilder<AppDbContext>()
-            .UseInMemoryDatabase(databaseName: "DeleteAuthorCommandBooksDatabase")
+            .UseInMemoryDatabase("DeleteAuthorCommandBooksDatabase")
             .Options;
 
         _context = new AppDbContext(options);
@@ -41,20 +40,20 @@ public class DeleteAuthorCommandTests
             Title = "Test Book",
             Annotation = "Test annotation",
             Authors = new List<Author>(),
-            ArtworkUrl = "http://test-images.com/img404.png",
+            ArtworkUrl = "http://test-images.com/img404.png"
         };
 
         book.Authors.Add(author);
         book.Authors.Add(author2);
         author.Books.Add(book);
         author2.Books.Add(book);
-        
+
         _context.Books.Add(book);
         _context.Authors.Add(author);
         await _context.SaveChangesAsync();
 
         await _command.DeleteAsync(author.Id, author.TenantId);
-        
+
         Assert.DoesNotContain(author, book.Authors);
     }
 }

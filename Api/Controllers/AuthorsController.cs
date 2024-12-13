@@ -11,8 +11,8 @@ namespace Api.Controllers;
 [Route("api/authors")]
 public class AuthorsController : Controller
 {
-    private readonly IUpdateAuthorCommand _updateAuthorCommand;
     private readonly IDeleteAuthorCommand _deleteAuthorCommand;
+    private readonly IUpdateAuthorCommand _updateAuthorCommand;
 
     /// <summary>
     ///     Controller with actions to authors
@@ -20,7 +20,7 @@ public class AuthorsController : Controller
     public AuthorsController(
         IUpdateAuthorCommand updateAuthorCommand,
         IDeleteAuthorCommand deleteAuthorCommand
-        )
+    )
     {
         _updateAuthorCommand = updateAuthorCommand;
         _deleteAuthorCommand = deleteAuthorCommand;
@@ -31,7 +31,7 @@ public class AuthorsController : Controller
     /// </summary>
     /// <param name="addAuthorRequest"></param>
     [HttpPost("{id}/edit")]
-    public Task UpdateAuthor([Required][FromRoute] long id, [FromBody] UpdateAuthorRequest updateAuthorRequest)
+    public Task UpdateAuthor([Required] [FromRoute] long id, [FromBody] UpdateAuthorRequest updateAuthorRequest)
     {
         return _updateAuthorCommand.UpdateAsync(id, updateAuthorRequest, User.GetTenantId());
     }
@@ -41,7 +41,7 @@ public class AuthorsController : Controller
     /// </summary>
     /// <param name="id"></param>
     [HttpDelete("{id}/hard-delete")]
-    public Task HardDeleteAuthor([Required][FromRoute] long id)
+    public Task HardDeleteAuthor([Required] [FromRoute] long id)
     {
         return _deleteAuthorCommand.DeleteAsync(id, User.GetTenantId());
     }

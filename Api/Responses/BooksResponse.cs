@@ -1,5 +1,3 @@
-using Core.Entities;
-
 namespace Api.Responses;
 
 public class BooksResponse
@@ -20,7 +18,6 @@ public class Book
     public List<Author> Authors { get; set; }
 
     public string ArtworkUrl { get; set; }
-
 }
 
 public class Author

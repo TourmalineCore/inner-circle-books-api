@@ -6,15 +6,14 @@ using Xunit;
 
 public class GetToDoByIdQueryTests
 {
+    private const long TENANT_ID = 1L;
     private readonly AppDbContext _context;
     private readonly GetBookByIdQuery _query;
-
-    private const long TENANT_ID = 1L;
 
     public GetToDoByIdQueryTests()
     {
         var options = new DbContextOptionsBuilder<AppDbContext>()
-            .UseInMemoryDatabase(databaseName: "GetBookByIdQueryBooksDatabase")
+            .UseInMemoryDatabase("GetBookByIdQueryBooksDatabase")
             .Options;
 
         _context = new AppDbContext(options);
@@ -31,10 +30,10 @@ public class GetToDoByIdQueryTests
             Title = "Test Book",
             Annotation = "Test annotation",
             ArtworkUrl = "http://test-images.com/img404.png",
-            Authors = new List<Author>()
+            Authors = new List<Author>
             {
-                new Author(TENANT_ID, "Test Author")
-            },
+                new(TENANT_ID, "Test Author")
+            }
         };
         _context.Books.Add(book);
         await _context.SaveChangesAsync();

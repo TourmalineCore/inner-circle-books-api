@@ -7,15 +7,14 @@ using Xunit;
 
 public class UpdateAuthorCommandTests
 {
-    private readonly AppDbContext _context;
-    private readonly UpdateAuthorCommand _command;
-
     private const long TENANT_ID = 1L;
+    private readonly UpdateAuthorCommand _command;
+    private readonly AppDbContext _context;
 
     public UpdateAuthorCommandTests()
     {
         var options = new DbContextOptionsBuilder<AppDbContext>()
-            .UseInMemoryDatabase(databaseName: "UpdateAuthorCommandBooksDatabase")
+            .UseInMemoryDatabase("UpdateAuthorCommandBooksDatabase")
             .Options;
 
         _context = new AppDbContext(options);
@@ -38,12 +37,12 @@ public class UpdateAuthorCommandTests
             Annotation = "Test annotation",
             Language = Language.English,
             Authors = new List<Author>(),
-            ArtworkUrl = "http://test-images.com/img404.png",
+            ArtworkUrl = "http://test-images.com/img404.png"
         };
         author.Books.Add(book);
         book.Authors.Add(author);
 
-        var updateAuthorRequest = new UpdateAuthorRequest()
+        var updateAuthorRequest = new UpdateAuthorRequest
         {
             FullName = "New Test Author FullName"
         };

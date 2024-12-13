@@ -3,17 +3,17 @@ using Application.Queries;
 using Core.Entities;
 using Microsoft.EntityFrameworkCore;
 using Xunit;
+
 public class GetAllToDosQueryTests
 {
+    private const long TENANT_ID = 1L;
     private readonly AppDbContext _context;
     private readonly GetAllBooksQuery _query;
-
-    private const long TENANT_ID = 1L;
 
     public GetAllToDosQueryTests()
     {
         var options = new DbContextOptionsBuilder<AppDbContext>()
-            .UseInMemoryDatabase(databaseName: "GetAllBooksQueryBooksDatabase")
+            .UseInMemoryDatabase("GetAllBooksQueryBooksDatabase")
             .Options;
 
         _context = new AppDbContext(options);
@@ -30,10 +30,10 @@ public class GetAllToDosQueryTests
             Title = "Test Book 1",
             Annotation = "Test annotation 1",
             ArtworkUrl = "http://test1-images.com/img404.png",
-            Authors = new List<Author>()
+            Authors = new List<Author>
             {
-                new Author(TENANT_ID, "Test Author 1")
-            },
+                new(TENANT_ID, "Test Author 1")
+            }
         };
         var book2 = new Book
         {
@@ -42,10 +42,10 @@ public class GetAllToDosQueryTests
             Title = "Test Book 2",
             Annotation = "Test annotation 2",
             ArtworkUrl = "http://test2-images.com/img404.png",
-            Authors = new List<Author>()
+            Authors = new List<Author>
             {
-                new Author(TENANT_ID, "Test Author 2")
-            },
+                new(TENANT_ID, "Test Author 2")
+            }
         };
         var book3 = new Book
         {
@@ -54,10 +54,10 @@ public class GetAllToDosQueryTests
             Title = "Test Book 3",
             Annotation = "Test annotation 3",
             ArtworkUrl = "http://test3-images.com/img404.png",
-            Authors = new List<Author>()
+            Authors = new List<Author>
             {
-                new Author(TENANT_ID, "Test Author 3")
-            },
+                new(TENANT_ID, "Test Author 3")
+            }
         };
 
         _context.Books.AddRange(book1, book2, book3);

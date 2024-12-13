@@ -1,7 +1,6 @@
 using System.Reflection;
 using Api.Exceptions;
 using Application;
-using Core;
 using Microsoft.AspNetCore.Mvc.Formatters;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.OpenApi.Models;

@@ -1,32 +1,29 @@
 using Application.Commands.Contracts;
-using Application.Requests;
-using Core.Entities;
 using Microsoft.EntityFrameworkCore;
 
-namespace Application.Commands
+namespace Application.Commands;
+
+public class DeleteBookCommand : IDeleteBookCommand
 {
-    public class DeleteBookCommand : IDeleteBookCommand
+    private readonly AppDbContext _context;
+
+    public DeleteBookCommand(AppDbContext context)
     {
-        private readonly AppDbContext _context;
+        _context = context;
+    }
 
-        public DeleteBookCommand(AppDbContext context)
-        {
-            _context = context;
-        }
-
-        public async Task DeleteAsync(long id, long tenantId)
-        {
-            var book = await _context.Books
-                .Where(x => x.Id == id && x.TenantId == tenantId)
+    public async Task DeleteAsync(long id, long tenantId)
+    {
+        var book = await _context.Books
+            .Where(x => x.Id == id && x.TenantId == tenantId)
             .SingleAsync();
 
-            foreach(var author in book.Authors)
-            {
-                await author.DeleteBook(book);
-            }
-
-            _context.Books.Remove(book);
-            await _context.SaveChangesAsync();
+        foreach (var author in book.Authors)
+        {
+            await author.DeleteBook(book);
         }
+
+        _context.Books.Remove(book);
+        await _context.SaveChangesAsync();
     }
 }

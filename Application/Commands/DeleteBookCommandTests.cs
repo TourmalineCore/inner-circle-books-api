@@ -6,15 +6,14 @@ using Xunit;
 
 public class DeleteBookCommandTests
 {
-    private readonly AppDbContext _context;
-    private readonly DeleteBookCommand _command;
-
     private const long TENANT_ID = 1L;
+    private readonly DeleteBookCommand _command;
+    private readonly AppDbContext _context;
 
     public DeleteBookCommandTests()
     {
         var options = new DbContextOptionsBuilder<AppDbContext>()
-            .UseInMemoryDatabase(databaseName: "DeleteBookCommandBooksDatabase")
+            .UseInMemoryDatabase("DeleteBookCommandBooksDatabase")
             .Options;
 
         _context = new AppDbContext(options);
@@ -41,7 +40,7 @@ public class DeleteBookCommandTests
             Title = "Test Book",
             Annotation = "Test annotation",
             Authors = new List<Author>(),
-            ArtworkUrl = "http://test-images.com/img404.png",
+            ArtworkUrl = "http://test-images.com/img404.png"
         };
 
         book.Authors.Add(author);

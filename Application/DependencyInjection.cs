@@ -12,14 +12,12 @@ namespace Application;
 public static class DependencyInjection
 {
     private const string DefaultConnection = "DefaultConnection";
+
     public static void AddApplication(this IServiceCollection services, IConfiguration configuration)
     {
         var connectionString = configuration.GetConnectionString(DefaultConnection);
 
-        services.AddDbContext<AppDbContext>(options =>
-            {
-                options.UseNpgsql(connectionString);
-            }
+        services.AddDbContext<AppDbContext>(options => { options.UseNpgsql(connectionString); }
         );
         services.AddTransient<BooksService>();
         services.AddTransient<ICreateBookCommand, CreateBookCommand>();
