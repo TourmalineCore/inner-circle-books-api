@@ -41,8 +41,9 @@ public class AuthorsController : Controller
     /// </summary>
     /// <param name="id"></param>
     [HttpDelete("{id}/hard-delete")]
-    public Task HardDeleteAuthor([Required] [FromRoute] long id)
+    public async Task<object> HardDeleteAuthor([Required][FromRoute] long id)
     {
-        return _deleteAuthorCommand.DeleteAsync(id, User.GetTenantId());
+        await _deleteAuthorCommand.DeleteAsync(id, User.GetTenantId());
+        return new { isDeleted = true };
     }
 }

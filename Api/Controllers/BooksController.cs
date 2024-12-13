@@ -112,9 +112,10 @@ public class BooksController : Controller
     /// </summary>
     /// <param name="id"></param>
     [HttpDelete("{id}/hard-delete")]
-    public Task HardDeleteBook([Required] [FromRoute] long id)
+    public async Task<object> HardDeleteBook([Required] [FromRoute] long id)
     {
-        return _deleteBookCommand.DeleteAsync(id, User.GetTenantId());
+        await _deleteBookCommand.DeleteAsync(id, User.GetTenantId());
+        return new { isDeleted = true };
     }
 
     /// <summary>
