@@ -18,12 +18,14 @@ public class BooksControllerTests
     private readonly Mock<ICreateBookCommand> _createBookCommandMock;
     private readonly Mock<IDeleteBookCommand> _deleteBookCommandMock;
     private readonly Mock<IGetAllBooksQuery> _getAllBooksQueryMock;
+    private readonly Mock<IGetBookByIdQuery> _getBookByIdQueryMock;
     private readonly Mock<ISoftDeleteBookCommand> _softDeleteBookCommandMock;
     private readonly Mock<IUpdateBookCommand> _updateBookCommandMock;
 
     public BooksControllerTests()
     {
         _getAllBooksQueryMock = new Mock<IGetAllBooksQuery>();
+        _getBookByIdQueryMock = new Mock<IGetBookByIdQuery>();
         _createBookCommandMock = new Mock<ICreateBookCommand>();
         _updateBookCommandMock = new Mock<IUpdateBookCommand>();
         _deleteBookCommandMock = new Mock<IDeleteBookCommand>();
@@ -41,6 +43,7 @@ public class BooksControllerTests
 
         _controller = new BooksController(
             _getAllBooksQueryMock.Object,
+            _getBookByIdQueryMock.Object,
             _createBookCommandMock.Object,
             _updateBookCommandMock.Object,
             _deleteBookCommandMock.Object,
@@ -97,6 +100,45 @@ public class BooksControllerTests
     }
 
     [Fact]
+    public async Task GetBookByIdAsync_ShouldReturnCorrectBook()
+    {
+        var books = new List<Book>
+        {
+            new()
+            {
+                Id = 1L,
+                TenantId = TENANT_ID,
+                Title = "Test Book 1",
+                Annotation = "Test annotation 1",
+                ArtworkUrl = "http://test1-images.com/img404.png",
+                Authors = new List<Author>
+                {
+                    new(TENANT_ID, "Test Author 1")
+                }
+            },
+            new()
+            {
+                Id = 2L,
+                TenantId = TENANT_ID,
+                Title = "Test Book 2",
+                Annotation = "Test annotation 2",
+                ArtworkUrl = "http://test2-images.com/img404.png",
+                Authors = new List<Author>
+                {
+                    new(TENANT_ID, "Test Author 1")
+                }
+            }
+        };
+        _getBookByIdQueryMock
+            .Setup(query => query.GetByIdAsync(1L,TENANT_ID))
+            .ReturnsAsync(books.Where(x => x.Id == 1L).Single);
+
+        var result = await _controller.GetBookByIdAsync(1L);
+
+        Assert.Equal("Test Book 1", result.Title);
+    }
+
+    [Fact]
     public async Task AddBookAsync_ShouldReturnCreatedBookId()
     {
         var request = new AddBookRequest
@@ -116,7 +158,7 @@ public class BooksControllerTests
 
         var result = await _controller.AddBookAsync(request);
 
-        Assert.Equal(1, result);
+        Assert.Equal(1, result.NewBookId);
         _createBookCommandMock.Verify(command => command.CreateAsync(request, TENANT_ID), Times.Once);
     }
 
