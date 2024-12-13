@@ -1,6 +1,7 @@
 using System.ComponentModel.DataAnnotations;
 using Application.Commands.Contracts;
 using Application.Requests;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Api.Controllers;
@@ -8,6 +9,7 @@ namespace Api.Controllers;
 /// <summary>
 ///     Controller with actions to authors
 /// </summary>
+[Authorize]
 [Route("api/authors")]
 public class AuthorsController : Controller
 {

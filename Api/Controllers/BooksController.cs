@@ -3,6 +3,7 @@ using Api.Responses;
 using Application.Commands.Contracts;
 using Application.Queries.Contracts;
 using Application.Requests;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Api.Controllers;
@@ -10,6 +11,7 @@ namespace Api.Controllers;
 /// <summary>
 ///     Controller with actions to books
 /// </summary>
+[Authorize]
 [Route("api/books")]
 public class BooksController : Controller
 {
