@@ -9,6 +9,12 @@ public class BooksMapping : IEntityTypeConfiguration<Book>
     public void Configure(EntityTypeBuilder<Book> builder)
     {
         builder
+            .Property(e => e.Language)
+            .HasConversion(
+                v => v.ToString(),
+                v => (Language)Enum.Parse(typeof(Language), v));
+
+        builder
             .HasMany(e => e.Authors)
             .WithMany(e => e.Books);
     }
