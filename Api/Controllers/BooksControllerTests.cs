@@ -93,7 +93,7 @@ public class BooksControllerTests
 
         var result = await _controller.GetAllBooksAsync();
 
-        Assert.IsType<BooksResponse>(result);
+        Assert.IsType<BooksListResponse>(result);
         Assert.Equal(2, result.Books.Count);
         Assert.Equal("Test Book 1", result.Books[0].Title);
         _getAllBooksQueryMock.Verify(query => query.GetAllAsync(TENANT_ID), Times.Once);

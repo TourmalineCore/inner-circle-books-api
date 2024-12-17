@@ -135,8 +135,9 @@ public class BooksController : Controller
     /// <param name="id"></param>
     [RequiresPermission(UserClaimsProvider.CanManageBooks)]
     [HttpDelete("{id}/soft-delete")]
-    public Task SoftDeleteBook([FromRoute] long id)
+    public async Task<object> SoftDeleteBook([FromRoute] long id)
     {
-        return _softDeleteBookCommand.SoftDeleteAsync(id, User.GetTenantId());
+        await _softDeleteBookCommand.SoftDeleteAsync(id, User.GetTenantId());
+        return new { isDeleted = true };
     }
 }
