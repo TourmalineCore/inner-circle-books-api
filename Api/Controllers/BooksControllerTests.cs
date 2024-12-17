@@ -130,7 +130,7 @@ public class BooksControllerTests
             }
         };
         _getBookByIdQueryMock
-            .Setup(query => query.GetByIdAsync(1L,TENANT_ID))
+            .Setup(query => query.GetByIdAsync(1L, TENANT_ID))
             .ReturnsAsync(books.Where(x => x.Id == 1L).Single);
 
         var result = await _controller.GetBookByIdAsync(1L);

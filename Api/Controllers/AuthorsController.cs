@@ -35,7 +35,7 @@ public class AuthorsController : Controller
     /// <param name="updateAuthorRequest"></param>
     [RequiresPermission(UserClaimsProvider.CanManageBooks)]
     [HttpPost("{id}/edit")]
-    public Task UpdateAuthor([Required] [FromRoute] long id, [FromBody] UpdateAuthorRequest updateAuthorRequest)
+    public Task UpdateAuthor([Required][FromRoute] long id, [FromBody] UpdateAuthorRequest updateAuthorRequest)
     {
         return _updateAuthorCommand.UpdateAsync(id, updateAuthorRequest, User.GetTenantId());
     }
@@ -46,7 +46,7 @@ public class AuthorsController : Controller
     /// <param name="id"></param>
     [RequiresPermission(UserClaimsProvider.CanManageBooks)]
     [HttpDelete("{id}/hard-delete")]
-    public async Task<object> HardDeleteAuthor([Required] [FromRoute] long id)
+    public async Task<object> HardDeleteAuthor([Required][FromRoute] long id)
     {
         await _deleteAuthorCommand.DeleteAsync(id, User.GetTenantId());
         return new { isDeleted = true };
