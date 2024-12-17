@@ -5,6 +5,7 @@ using Application.Queries.Contracts;
 using Application.Requests;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using TourmalineCore.AspNetCore.JwtAuthentication.Core.Filters;
 
 namespace Api.Controllers;
 
@@ -93,6 +94,7 @@ public class BooksController : Controller
     ///     Adds book
     /// </summary>
     /// <param name="createBookRequest"></param>
+    [RequiresPermission(UserClaimsProvider.CanManageBooks)]
     [HttpPost("create")]
     public async Task<CreateBookResponse> CreateBookAsync([FromBody] CreateBookRequest createBookRequest)
     {
@@ -108,6 +110,7 @@ public class BooksController : Controller
     /// </summary>
     /// <param name="id"></param>
     /// <param name="updateBookRequest"></param>
+    [RequiresPermission(UserClaimsProvider.CanManageBooks)]
     [HttpPost("{id}/edit")]
     public Task UpdateBook([FromRoute] long id, [FromBody] UpdateBookRequest updateBookRequest)
     {
@@ -118,6 +121,7 @@ public class BooksController : Controller
     ///     Deletes specific book
     /// </summary>
     /// <param name="id"></param>
+    [RequiresPermission(UserClaimsProvider.IsBooksHardDeleteAllowed, UserClaimsProvider.CanManageBooks)]
     [HttpDelete("{id}/hard-delete")]
     public async Task<object> HardDeleteBook([Required] [FromRoute] long id)
     {
@@ -129,6 +133,7 @@ public class BooksController : Controller
     ///     Soft deletes specific book (mark as deleted, but not deleting from database)
     /// </summary>
     /// <param name="id"></param>
+    [RequiresPermission(UserClaimsProvider.CanManageBooks)]
     [HttpDelete("{id}/soft-delete")]
     public Task SoftDeleteBook([FromRoute] long id)
     {

@@ -3,7 +3,7 @@ services:
   books-db:
     image: postgres:14
     container_name: books-db
-    profiles: ['MockForDevelopment', 'db-only']
+    profiles: ['MockForDevelopment', 'MockForPullRequest', 'db-only']
     restart: unless-stopped
     environment:
       POSTGRES_DB: books-db
@@ -16,7 +16,7 @@ services:
 
   books-api:
     container_name: books-api
-    profiles: ['MockForDevelopment']
+    profiles: ['default']
     depends_on:
       - books-db
     build:
@@ -24,9 +24,41 @@ services:
       context: .
     ports:
       - 10012:80
-    environment:
-      - ASPNETCORE_ENVIRONMENT=MockForDevelopment
+    environment: 
       - ConnectionStrings__DefaultConnection=User ID=postgres;Password=postgres;Host=books-db;port=5432;Database=books-db
+    networks:
+      - books-network
+
+  books-api-for-e2e:
+    container_name: 'books-api-for-e2e'
+    depends_on:
+      - books-db
+    profiles: ['MockForPullRequest']
+    extends:
+      service: books-api
+    environment:
+      - ASPNETCORE_ENVIRONMENT=MockForPullRequest
+      - ASPNETCORE_HTTP_PORTS=80
+  
+  books-api-for-develop:
+    container_name: 'compensations-api-for-e2e'
+    profiles: ['MockForDevelopment']
+    extends:
+      service: books-api
+    environment:
+      - ASPNETCORE_ENVIRONMENT=MockForPullRequest
+
+  mockServer:
+    container_name: 'mockServer'
+    profiles: ['MockForPullRequest']
+    image: mockserver/mockserver:5.15.0
+    command: -logLevel INFO
+    ports:
+      - 1080:1080
+    volumes:
+      - ./initializer.json:/config/initializer.json
+    environment:
+      MOCKSERVER_INITIALIZATION_JSON_PATH: /config/initializer.json
     networks:
       - books-network
 
