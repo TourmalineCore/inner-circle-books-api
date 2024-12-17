@@ -46,7 +46,7 @@ public class AuthorsController : Controller
     /// <param name="id"></param>
     [RequiresPermission(UserClaimsProvider.CanManageBooks)]
     [HttpDelete("{id}/hard-delete")]
-    public async Task<object> HardDeleteAuthor([Required][FromRoute] long id)
+    public async Task<object> HardDeleteAuthor([Required] [FromRoute] long id)
     {
         await _deleteAuthorCommand.DeleteAsync(id, User.GetTenantId());
         return new { isDeleted = true };

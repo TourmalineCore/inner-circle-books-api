@@ -72,7 +72,7 @@ public class BooksController : Controller
     ///     Get book by id
     /// </summary>
     [HttpGet("{id}")]
-    public async Task<SingleBookResponse> GetBookByIdAsync([FromRoute] long id)
+    public async Task<SingleBookResponse> GetBookByIdAsync([Required] [FromRoute] long id)
     {
         var book = await _getBookByIdQuery.GetByIdAsync(id, User.GetTenantId());
         return new SingleBookResponse()
@@ -96,7 +96,7 @@ public class BooksController : Controller
     /// <param name="createBookRequest"></param>
     [RequiresPermission(UserClaimsProvider.CanManageBooks)]
     [HttpPost("create")]
-    public async Task<CreateBookResponse> CreateBookAsync([FromBody] CreateBookRequest createBookRequest)
+    public async Task<CreateBookResponse> CreateBookAsync([Required] [FromBody] CreateBookRequest createBookRequest)
     {
         var newBookId = await _createBookCommand.CreateAsync(createBookRequest, User.GetTenantId());
         return new CreateBookResponse()
@@ -112,7 +112,7 @@ public class BooksController : Controller
     /// <param name="updateBookRequest"></param>
     [RequiresPermission(UserClaimsProvider.CanManageBooks)]
     [HttpPost("{id}/edit")]
-    public Task UpdateBook([FromRoute] long id, [FromBody] UpdateBookRequest updateBookRequest)
+    public Task UpdateBook([Required] [FromRoute] long id, [Required] [FromBody] UpdateBookRequest updateBookRequest)
     {
         return _updateBookCommand.UpdateAsync(id, updateBookRequest, User.GetTenantId());
     }
@@ -121,7 +121,7 @@ public class BooksController : Controller
     ///     Deletes specific book
     /// </summary>
     /// <param name="id"></param>
-    [RequiresPermission(UserClaimsProvider.IsBooksHardDeleteAllowed, UserClaimsProvider.CanManageBooks)]
+    [RequiresPermission(UserClaimsProvider.IsBooksHardDeleteAllowed)]
     [HttpDelete("{id}/hard-delete")]
     public async Task<object> HardDeleteBook([Required] [FromRoute] long id)
     {
@@ -135,7 +135,7 @@ public class BooksController : Controller
     /// <param name="id"></param>
     [RequiresPermission(UserClaimsProvider.CanManageBooks)]
     [HttpDelete("{id}/soft-delete")]
-    public async Task<object> SoftDeleteBook([FromRoute] long id)
+    public async Task<object> SoftDeleteBook([Required] [FromRoute] long id)
     {
         await _softDeleteBookCommand.SoftDeleteAsync(id, User.GetTenantId());
         return new { isDeleted = true };
