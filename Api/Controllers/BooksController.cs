@@ -47,20 +47,20 @@ public class BooksController : Controller
     ///     Get all books
     /// </summary>
     [HttpGet("all")]
-    public async Task<BooksResponse> GetAllBooksAsync()
+    public async Task<BooksListResponse> GetAllBooksAsync()
     {
         var books = await _getAllBooksQuery.GetAllAsync(User.GetTenantId());
-        return new BooksResponse
+        return new BooksListResponse
         {
-            Books = books.Select(x => new Book
+            Books = books.Select(x => new BookListItem()
             {
                 Id = x.Id,
                 Title = x.Title,
                 Annotation = x.Annotation,
                 ArtworkUrl = x.ArtworkUrl,
-                Authors = x.Authors.Select(a => new Author
+                Authors = x.Authors.Select(a => new AuthorListItem
                 {
-                    Id = a.Id, 
+                    Id = a.Id,
                     FullName = a.FullName
                 }).ToList(),
                 Language = x.Language.ToString()
@@ -72,18 +72,18 @@ public class BooksController : Controller
     ///     Get book by id
     /// </summary>
     [HttpGet("{id}")]
-    public async Task<Book> GetBookByIdAsync([FromRoute] long id)
+    public async Task<SingleBookResponse> GetBookByIdAsync([Required][FromRoute] long id)
     {
         var book = await _getBookByIdQuery.GetByIdAsync(id, User.GetTenantId());
-        return new Book()
+        return new SingleBookResponse()
         {
             Id = book.Id,
             Title = book.Title,
             Annotation = book.Annotation,
             ArtworkUrl = book.ArtworkUrl,
-            Authors = book.Authors.Select(a => new Author
+            Authors = book.Authors.Select(a => new AuthorBookResponse()
             {
-                Id = a.Id, 
+                Id = a.Id,
                 FullName = a.FullName
             }).ToList(),
             Language = book.Language.ToString()
@@ -96,7 +96,7 @@ public class BooksController : Controller
     /// <param name="createBookRequest"></param>
     [RequiresPermission(UserClaimsProvider.CanManageBooks)]
     [HttpPost("create")]
-    public async Task<CreateBookResponse> CreateBookAsync([FromBody] CreateBookRequest createBookRequest)
+    public async Task<CreateBookResponse> CreateBookAsync([Required][FromBody] CreateBookRequest createBookRequest)
     {
         var newBookId = await _createBookCommand.CreateAsync(createBookRequest, User.GetTenantId());
         return new CreateBookResponse()
@@ -112,7 +112,7 @@ public class BooksController : Controller
     /// <param name="updateBookRequest"></param>
     [RequiresPermission(UserClaimsProvider.CanManageBooks)]
     [HttpPost("{id}/edit")]
-    public Task UpdateBook([FromRoute] long id, [FromBody] UpdateBookRequest updateBookRequest)
+    public Task UpdateBook([Required][FromRoute] long id, [Required][FromBody] UpdateBookRequest updateBookRequest)
     {
         return _updateBookCommand.UpdateAsync(id, updateBookRequest, User.GetTenantId());
     }
@@ -122,8 +122,9 @@ public class BooksController : Controller
     /// </summary>
     /// <param name="id"></param>
     [RequiresPermission(UserClaimsProvider.IsBooksHardDeleteAllowed, UserClaimsProvider.CanManageBooks)]
+    [RequiresPermission(UserClaimsProvider.IsBooksHardDeleteAllowed)]
     [HttpDelete("{id}/hard-delete")]
-    public async Task<object> HardDeleteBook([Required] [FromRoute] long id)
+    public async Task<object> HardDeleteBook([Required][FromRoute] long id)
     {
         await _deleteBookCommand.DeleteAsync(id, User.GetTenantId());
         return new { isDeleted = true };
@@ -135,8 +136,9 @@ public class BooksController : Controller
     /// <param name="id"></param>
     [RequiresPermission(UserClaimsProvider.CanManageBooks)]
     [HttpDelete("{id}/soft-delete")]
-    public Task SoftDeleteBook([FromRoute] long id)
+    public async Task<object> SoftDeleteBook([Required][FromRoute] long id)
     {
-        return _softDeleteBookCommand.SoftDeleteAsync(id, User.GetTenantId());
+        await _softDeleteBookCommand.SoftDeleteAsync(id, User.GetTenantId());
+        return new { isDeleted = true };
     }
 }

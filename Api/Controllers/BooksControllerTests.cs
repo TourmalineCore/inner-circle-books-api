@@ -93,7 +93,7 @@ public class BooksControllerTests
 
         var result = await _controller.GetAllBooksAsync();
 
-        Assert.IsType<BooksResponse>(result);
+        Assert.IsType<BooksListResponse>(result);
         Assert.Equal(2, result.Books.Count);
         Assert.Equal("Test Book 1", result.Books[0].Title);
         _getAllBooksQueryMock.Verify(query => query.GetAllAsync(TENANT_ID), Times.Once);
@@ -130,7 +130,7 @@ public class BooksControllerTests
             }
         };
         _getBookByIdQueryMock
-            .Setup(query => query.GetByIdAsync(1L,TENANT_ID))
+            .Setup(query => query.GetByIdAsync(1L, TENANT_ID))
             .ReturnsAsync(books.Where(x => x.Id == 1L).Single);
 
         var result = await _controller.GetBookByIdAsync(1L);

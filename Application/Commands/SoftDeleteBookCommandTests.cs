@@ -21,7 +21,7 @@ public class SoftDeleteBookCommandTests
     }
 
     [Fact]
-    public async Task SoftDeleteAsync_ShouldSetDeletedAtUtc()
+    public async Task SoftDeleteAsync_ShouldSetDeletedAtUtcValue()
     {
         var book = new Book
         {

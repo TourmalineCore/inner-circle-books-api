@@ -35,7 +35,7 @@ public class AuthorsController : Controller
     /// <param name="updateAuthorRequest"></param>
     [RequiresPermission(UserClaimsProvider.CanManageBooks)]
     [HttpPost("{id}/edit")]
-    public Task UpdateAuthor([Required] [FromRoute] long id, [FromBody] UpdateAuthorRequest updateAuthorRequest)
+    public Task UpdateAuthor([Required][FromRoute] long id, [FromBody] UpdateAuthorRequest updateAuthorRequest)
     {
         return _updateAuthorCommand.UpdateAsync(id, updateAuthorRequest, User.GetTenantId());
     }

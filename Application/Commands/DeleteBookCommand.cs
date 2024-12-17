@@ -20,9 +20,9 @@ public class DeleteBookCommand : IDeleteBookCommand
             .SingleAsync();
         if (book != null)
         {
-            foreach(var author in book.Authors)
+            foreach (var author in book.Authors)
             {
-                await author.DeleteBook(book);
+                author.DeleteBook(book);
             }
 
             _context.Books.Remove(book);

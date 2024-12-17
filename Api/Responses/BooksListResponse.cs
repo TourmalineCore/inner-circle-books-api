@@ -1,11 +1,11 @@
 namespace Api.Responses;
 
-public class BooksResponse
+public class BooksListResponse
 {
-    public List<Book> Books { get; set; }
+    public List<BookListItem> Books { get; set; }
 }
 
-public class Book
+public class BookListItem
 {
     public long Id { get; set; }
 
@@ -15,12 +15,12 @@ public class Book
 
     public string Language { get; set; }
 
-    public List<Author> Authors { get; set; }
+    public List<AuthorListItem> Authors { get; set; }
 
     public string ArtworkUrl { get; set; }
 }
 
-public class Author
+public class AuthorListItem
 {
     public long Id { get; set; }
     public string FullName { get; set; }

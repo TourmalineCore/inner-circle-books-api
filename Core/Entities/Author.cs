@@ -22,7 +22,7 @@ public class Author
 
     public List<Book> Books { get; set; }
 
-    public async Task<bool> DeleteBook(Book book)
+    public bool DeleteBook(Book book)
     {
         return Books.Remove(book);
     }
