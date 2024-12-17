@@ -27,6 +27,7 @@ Scenario: CRUD operations test flow
 
     # Step 1: Create a new book
     * def randomName = 'Book-' + Math.random()
+    Given url apiRootUrl
     Given path 'api/books/create'
     And request { title: '#(randomName)', annotation: 'Test annotation', language: 'English', authors: ['Author Name'], artworkUrl: 'http://example.com/artwork.jpg' }
     When method POST
