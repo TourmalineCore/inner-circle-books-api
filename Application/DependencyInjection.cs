@@ -2,7 +2,6 @@ using Application.Commands;
 using Application.Commands.Contracts;
 using Application.Queries;
 using Application.Queries.Contracts;
-using Application.Services;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -19,7 +18,6 @@ public static class DependencyInjection
 
         services.AddDbContext<AppDbContext>(options => { options.UseNpgsql(connectionString); }
         );
-        services.AddTransient<BooksService>();
         services.AddTransient<ICreateBookCommand, CreateBookCommand>();
         services.AddTransient<IUpdateBookCommand, UpdateBookCommand>();
         services.AddTransient<IDeleteBookCommand, DeleteBookCommand>();
