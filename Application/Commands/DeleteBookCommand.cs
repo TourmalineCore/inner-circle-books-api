@@ -22,7 +22,7 @@ public class DeleteBookCommand : IDeleteBookCommand
         {
             foreach(var author in book.Authors)
             {
-                await author.DeleteBook(book);
+                author.DeleteBook(book);
             }
 
             _context.Books.Remove(book);

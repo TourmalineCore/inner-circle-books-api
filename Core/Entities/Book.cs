@@ -41,7 +41,7 @@ public class Book
 
     public string ArtworkUrl { get; set; }
 
-    public async Task<bool> DeleteAuthor(Author author)
+    public bool DeleteAuthor(Author author)
     {
         return Authors.Remove(author);
     }
