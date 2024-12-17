@@ -121,7 +121,6 @@ public class BooksController : Controller
     ///     Deletes specific book
     /// </summary>
     /// <param name="id"></param>
-    [RequiresPermission(UserClaimsProvider.IsBooksHardDeleteAllowed, UserClaimsProvider.CanManageBooks)]
     [RequiresPermission(UserClaimsProvider.IsBooksHardDeleteAllowed)]
     [HttpDelete("{id}/hard-delete")]
     public async Task<object> HardDeleteBook([Required][FromRoute] long id)
