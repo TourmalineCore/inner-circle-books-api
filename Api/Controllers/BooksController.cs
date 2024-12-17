@@ -47,18 +47,18 @@ public class BooksController : Controller
     ///     Get all books
     /// </summary>
     [HttpGet("all")]
-    public async Task<BooksResponse> GetAllBooksAsync()
+    public async Task<BooksListResponse> GetAllBooksAsync()
     {
         var books = await _getAllBooksQuery.GetAllAsync(User.GetTenantId());
-        return new BooksResponse
+        return new BooksListResponse
         {
-            Books = books.Select(x => new Book
+            Books = books.Select(x => new BookListItem()
             {
                 Id = x.Id,
                 Title = x.Title,
                 Annotation = x.Annotation,
                 ArtworkUrl = x.ArtworkUrl,
-                Authors = x.Authors.Select(a => new Author
+                Authors = x.Authors.Select(a => new AuthorListItem
                 {
                     Id = a.Id, 
                     FullName = a.FullName
@@ -72,16 +72,16 @@ public class BooksController : Controller
     ///     Get book by id
     /// </summary>
     [HttpGet("{id}")]
-    public async Task<Book> GetBookByIdAsync([FromRoute] long id)
+    public async Task<SingleBookResponse> GetBookByIdAsync([FromRoute] long id)
     {
         var book = await _getBookByIdQuery.GetByIdAsync(id, User.GetTenantId());
-        return new Book()
+        return new SingleBookResponse()
         {
             Id = book.Id,
             Title = book.Title,
             Annotation = book.Annotation,
             ArtworkUrl = book.ArtworkUrl,
-            Authors = book.Authors.Select(a => new Author
+            Authors = book.Authors.Select(a => new AuthorBookResponse()
             {
                 Id = a.Id, 
                 FullName = a.FullName
