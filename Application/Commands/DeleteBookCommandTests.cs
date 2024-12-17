@@ -21,7 +21,7 @@ public class DeleteBookCommandTests
     }
 
     [Fact]
-    public async Task DeleteAsync_ShouldDeleteBookFromDbSet()
+    public async Task DeleteAsync_ShouldDeleteBookFromAuthorAndFromDbSet()
     {
         var author = new Author(TENANT_ID, "Test author")
         {
