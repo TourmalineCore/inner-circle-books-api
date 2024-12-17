@@ -3,6 +3,7 @@ using Application.Commands.Contracts;
 using Application.Requests;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using TourmalineCore.AspNetCore.JwtAuthentication.Core.Filters;
 
 namespace Api.Controllers;
 
@@ -32,6 +33,7 @@ public class AuthorsController : Controller
     ///     Update author
     /// </summary>
     /// <param name="updateAuthorRequest"></param>
+    [RequiresPermission(UserClaimsProvider.CanManageBooks)]
     [HttpPost("{id}/edit")]
     public Task UpdateAuthor([Required] [FromRoute] long id, [FromBody] UpdateAuthorRequest updateAuthorRequest)
     {
@@ -42,6 +44,7 @@ public class AuthorsController : Controller
     ///     Deletes specific author
     /// </summary>
     /// <param name="id"></param>
+    [RequiresPermission(UserClaimsProvider.CanManageBooks)]
     [HttpDelete("{id}/hard-delete")]
     public async Task<object> HardDeleteAuthor([Required][FromRoute] long id)
     {

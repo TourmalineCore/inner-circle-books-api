@@ -15,6 +15,7 @@ public class DeleteBookCommand : IDeleteBookCommand
     public async Task DeleteAsync(long id, long tenantId)
     {
         var book = await _context.Books
+            .Include(x => x.Authors)
             .Where(x => x.Id == id && x.TenantId == tenantId)
             .SingleAsync();
         if (book != null)

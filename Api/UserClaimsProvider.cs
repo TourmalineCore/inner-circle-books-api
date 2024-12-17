@@ -7,6 +7,9 @@ namespace Api
     {
         public const string PermissionClaimType = "permissions";
 
+        public const string CanManageBooks = "CanManageBooks";
+        public const string IsBooksHardDeleteAllowed = "IsBooksHardDeleteAllowed";
+
         public Task<List<Claim>> GetUserClaimsAsync(string login)
         {
             throw new NotImplementedException();
