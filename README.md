@@ -21,7 +21,7 @@ Go to http://localhost:7000/swagger/index.html to see the list of endpoints and 
 To run tests, you need to open the project in VS Code and Visual Studio.
 Enter this command in Visual Studio
 ```
-docker-compose --profile MockForPullRequest up -d
+docker compose --profile MockForPullRequest up -d
 ```
 
 Go to VS Code
