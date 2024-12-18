@@ -82,7 +82,7 @@ services:
       API_ROOT_URL: "http://books-api-for-e2e"
       SHOULD_USE_FAKE_EXTERNAL_DEPENDENCIES: "true"
     networks:
-      - compensations-network
+      - books-network
 
 networks:
   books-network:
