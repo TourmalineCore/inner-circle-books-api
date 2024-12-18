@@ -10,7 +10,7 @@ env:
   GITHUB_REGISTRY: ghcr.io
 
 jobs:
-  test:
+  run-app-and-karate-tests:
     # Image to run project and tests
     runs-on: ubuntu-latest
     steps:
