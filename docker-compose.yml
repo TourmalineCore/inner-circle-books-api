@@ -65,5 +65,24 @@ services:
     networks:
       - books-network
 
+  pull_request_karate-tests:
+  container_name: 'pull_request_karate-tests'
+  profiles: ['MockForPullRequest']
+  build:
+    dockerfile: KarateDockerfile
+    context: .
+  depends_on:
+    - books-api-for-e2e
+    - mockServer
+  command: ["karate", "/karate"]
+  volumes:
+    - .:/karate
+  environment:
+    AUTH_API_ROOT_URL: "http://mockServer:1080"
+    API_ROOT_URL: "http://books-api-for-e2e"
+    SHOULD_USE_FAKE_EXTERNAL_DEPENDENCIES: "true"
+  networks:
+    - compensations-network
+
 networks:
   books-network:
