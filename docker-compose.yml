@@ -4,13 +4,17 @@ services:
     image: postgres:14
     container_name: books-db
     profiles: ['MockForDevelopment', 'MockForPullRequest', 'db-only']
-    restart: unless-stopped
     environment:
       POSTGRES_DB: books-db
       POSTGRES_USER: postgres
       POSTGRES_PASSWORD: postgres
     ports:
       - 10011:5432
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
     networks:
       - books-network
 
@@ -18,7 +22,8 @@ services:
     container_name: books-api
     profiles: ['default']
     depends_on:
-      - books-db
+      books-db:
+        condition: service_healthy
     build:
       dockerfile: Dockerfile
       context: .
@@ -31,8 +36,6 @@ services:
 
   books-api-for-e2e:
     container_name: 'books-api-for-e2e'
-    depends_on:
-      - books-db
     profiles: ['MockForPullRequest']
     extends:
       service: books-api
@@ -41,12 +44,12 @@ services:
       - ASPNETCORE_HTTP_PORTS=80
   
   books-api-for-develop:
-    container_name: 'compensations-api-for-e2e'
+    container_name: 'books-api-for-develop'
     profiles: ['MockForDevelopment']
     extends:
       service: books-api
     environment:
-      - ASPNETCORE_ENVIRONMENT=MockForPullRequest
+      - ASPNETCORE_ENVIRONMENT=MockForDevelopment
 
   mockServer:
     container_name: 'mockServer'
