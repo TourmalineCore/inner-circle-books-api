@@ -51,8 +51,8 @@ services:
     environment:
       - ASPNETCORE_ENVIRONMENT=MockForDevelopment
 
-  books-mockServer:
-    container_name: 'books-mockServer'
+  booksMockServer:
+    container_name: 'booksMockServer'
     profiles: ['MockForPullRequest']
     image: mockserver/mockserver:5.15.0
     command: -logLevel INFO
@@ -73,7 +73,7 @@ services:
       context: .
     depends_on:
       - books-api-for-e2e
-      - books-mockServer
+      - booksMockServer
     command: ["karate", "/karate"]
     volumes:
       - .:/karate
