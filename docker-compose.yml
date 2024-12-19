@@ -51,8 +51,8 @@ services:
     environment:
       - ASPNETCORE_ENVIRONMENT=MockForDevelopment
 
-  mockServer:
-    container_name: 'mockServer'
+  books-mockServer:
+    container_name: 'books-mockServer'
     profiles: ['MockForPullRequest']
     image: mockserver/mockserver:5.15.0
     command: -logLevel INFO
@@ -73,12 +73,12 @@ services:
       context: .
     depends_on:
       - books-api-for-e2e
-      - mockServer
+      - books-mockServer
     command: ["karate", "/karate"]
     volumes:
       - .:/karate
     environment:
-      AUTH_API_ROOT_URL: "http://mockServer:1080"
+      AUTH_API_ROOT_URL: "http://book-smockServer:1080"
       API_ROOT_URL: "http://books-api-for-e2e"
       SHOULD_USE_FAKE_EXTERNAL_DEPENDENCIES: "true"
     networks:
