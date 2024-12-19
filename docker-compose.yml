@@ -78,7 +78,7 @@ services:
     volumes:
       - .:/karate
     environment:
-      AUTH_API_ROOT_URL: "http://book-smockServer:1080"
+      AUTH_API_ROOT_URL: "http://booksMockServer:1080"
       API_ROOT_URL: "http://books-api-for-e2e"
       SHOULD_USE_FAKE_EXTERNAL_DEPENDENCIES: "true"
     networks:
