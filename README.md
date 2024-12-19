@@ -16,16 +16,15 @@ After this command, start the application from IDE.
 
 Go to http://localhost:7000/swagger/index.html to see the list of endpoints and try it using Swagger UI.
 
-## Karate tests
-
-To run tests, you need to open the project in VS Code.
-Enter this command in the terminal, opened in project's folder
+## How to run Karate tests locally?
+**Firstly, raise all the necessary services in Docker, following this instruction (not in dev container):**
+1. Open the project in VS Code.
+2. Enter this command in the terminal, opened in project's folder
 ```
 docker compose --profile MockForPullRequest up -d
 ```
-
-Go to VS Code
-1. Install the extension "Dev Containers" (extension id: ms-vscode-remote.remote-containers)
+**Then, open dev container and run the tests following these steps:**
+1. In **Visual Studio Code** install the extension "Dev Containers" (extension id: ms-vscode-remote.remote-containers)
 2. Click on the blue button in the lower left corner of your screen
 3. Click "Rebuild Container" or something like this - the project will start in dev container
 4. Enter this command to run the tests
