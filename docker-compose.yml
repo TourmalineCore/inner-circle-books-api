@@ -41,8 +41,8 @@ services:
       - ASPNETCORE_ENVIRONMENT=MockForPullRequest
       - ASPNETCORE_HTTP_PORTS=80
   
-  compensations-api-for-docker-run:
-    container_name: 'compensations-api-for-docker-run'
+  books-api-for-docker-run:
+    container_name: 'books-api-for-docker-run'
     profiles: ['MockForDevelopment']
     extends:
       service: books-api
