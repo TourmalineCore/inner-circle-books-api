@@ -29,8 +29,6 @@ services:
       context: .
     ports:
       - 10012:80
-    environment: 
-      - ConnectionStrings__DefaultConnection=User ID=postgres;Password=postgres;Host=books-db;port=5432;Database=books-db
     networks:
       - books-network
 
@@ -43,13 +41,14 @@ services:
       - ASPNETCORE_ENVIRONMENT=MockForPullRequest
       - ASPNETCORE_HTTP_PORTS=80
   
-  books-api-for-develop:
-    container_name: 'books-api-for-develop'
+  compensations-api-for-docker-run:
+    container_name: 'compensations-api-for-docker-run'
     profiles: ['MockForDevelopment']
     extends:
       service: books-api
     environment:
       - ASPNETCORE_ENVIRONMENT=MockForDevelopment
+      - ConnectionStrings__DefaultConnection=User ID=postgres;Password=postgres;Host=books-db;port=5432;Database=books-db
 
   booksMockServer:
     container_name: 'booksMockServer'
