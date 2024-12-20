@@ -64,8 +64,8 @@ services:
     networks:
       - books-network
 
-  pull_request_karate-tests:
-    container_name: 'pull_request_karate-tests'
+  books-karate-tests:
+    container_name: 'books-karate-tests'
     profiles: ['MockForPullRequest']
     build:
       dockerfile: KarateDockerfile
