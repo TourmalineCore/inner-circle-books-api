@@ -37,7 +37,7 @@ public class UpdateBookCommandTests
                     FullName = "Test Author"
                 }
             },
-            Language = Language.English,
+            Language = Language.en,
             ArtworkUrl = "http://test-images.com/img404.png"
         };
 
@@ -52,7 +52,7 @@ public class UpdateBookCommandTests
                     FullName = "Updated Test Author"
                 }
             },
-            Language = "Russian"
+            Language = "ru"
         };
         _context.Books.Add(book);
         await _context.SaveChangesAsync();

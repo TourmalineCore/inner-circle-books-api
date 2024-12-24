@@ -74,6 +74,7 @@ public class BooksControllerTests
                         FullName = "Test Author"
                     }
                 },
+                Language = Language.en,
                 ArtworkUrl = "http://test1-images.com/img404.png"
             },
             new()
@@ -89,6 +90,7 @@ public class BooksControllerTests
                         FullName = "Test Author 2"
                     }
                 },
+                Language = Language.en,
                 ArtworkUrl = "http://test2-images.com/img404.png"
             }
         };
@@ -122,6 +124,7 @@ public class BooksControllerTests
                         FullName = "Test Author"
                     }
                 },
+                Language = Language.en,
                 ArtworkUrl = "http://test1-images.com/img404.png"
             },
             new()
@@ -137,6 +140,7 @@ public class BooksControllerTests
                         FullName = "Test Author 2"
                     }
                 },
+                Language = Language.en,
                 ArtworkUrl = "http://test2-images.com/img404.png"
             }
         };
@@ -164,7 +168,7 @@ public class BooksControllerTests
                 }
             },
             ArtworkUrl = "http://test1-images.com/img404.png",
-            Language = "Russian"
+            Language = "ru"
         };
         _createBookCommandMock
             .Setup(command => command.CreateAsync(request, TENANT_ID))
@@ -192,7 +196,15 @@ public class BooksControllerTests
         var updateBookRequest = new UpdateBookRequest
         {
             Annotation = "Another annotation",
-            Title = "Another title"
+            Title = "Another title",
+            Authors = new List<AuthorModel>()
+            {
+                new AuthorModel()
+                {
+                    FullName = "Updated Author"
+                }
+            }, 
+            Language = "en"
         };
 
         await _controller.UpdateBook(1L, updateBookRequest);

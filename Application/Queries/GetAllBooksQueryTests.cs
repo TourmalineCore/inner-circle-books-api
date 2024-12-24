@@ -36,6 +36,7 @@ public class GetAllBooksQueryTests
                     FullName = "Test Author"
                 }
             },
+            Language = Language.en,
             ArtworkUrl = "http://test1-images.com/img404.png"
         };
         var book2 = new Book
@@ -51,6 +52,7 @@ public class GetAllBooksQueryTests
                     FullName = "Test Author 2"
                 }
             },
+            Language = Language.en,
             ArtworkUrl = "http://test2-images.com/img405.png"
         };
         var book3 = new Book
@@ -66,6 +68,7 @@ public class GetAllBooksQueryTests
                     FullName = "Test Author 3"
                 }
             },
+            Language = Language.en,
             ArtworkUrl = "http://test3-images.com/img406.png"
         };
 

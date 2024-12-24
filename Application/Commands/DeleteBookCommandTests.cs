@@ -36,6 +36,7 @@ public class DeleteBookCommandTests
                     FullName = "Test Author"
                 }
             },
+            Language = Language.en,
             ArtworkUrl = "http://test-images.com/img404.png"
         };
 
