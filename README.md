@@ -5,20 +5,13 @@
 erDiagram
 Book{
   long id PK "Example: 1"
+  long tenantId "Example: 1"
   text title "Example: Example title" 
   text annotation "Example: Example annotation"
-  enum language "Example: Russian"
+  text authors "Example: [{"fullName: 'Author'"}]"
+  enum language "Example: ru"
   datetime createdAtUtc "Example: 2024-12-12 08:30:30"
+  datetime deletedAtUtc "Example: 2024-12-13 08:30:30"
   text artworkUrl "Example: http://images-example.com/image.png"
 }
-Author{
-  long id PK "Example: 1"
-  text fullname "Example: J. Doe"
-}
-BooksAuthors{
-    long bookId FK "Example: 1"
-    long authorId FK "Example: 1"
-}
-Book }|--|| BooksAuthors: bookId
-Author }|--|| BooksAuthors: authorId
 ```
