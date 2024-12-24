@@ -203,7 +203,7 @@ public class BooksControllerTests
                 {
                     FullName = "Updated Author"
                 }
-            }, 
+            },
             Language = "en"
         };
 

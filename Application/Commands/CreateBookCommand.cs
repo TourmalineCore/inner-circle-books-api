@@ -30,7 +30,7 @@ public class CreateBookCommand : ICreateBookCommand
 
         await _context.Books.AddAsync(book);
         await _context.SaveChangesAsync();
-        
+
         return book.Id;
     }
 }

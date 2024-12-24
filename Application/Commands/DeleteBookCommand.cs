@@ -17,7 +17,7 @@ public class DeleteBookCommand : IDeleteBookCommand
         var book = await _context.Books
             .Where(x => x.Id == id && x.TenantId == tenantId)
             .SingleOrDefaultAsync();
-        
+
         if (book != null)
         {
             _context.Books.Remove(book);

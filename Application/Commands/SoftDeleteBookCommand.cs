@@ -17,7 +17,7 @@ public class SoftDeleteBookCommand : ISoftDeleteBookCommand
         var book = await _context.Books
             .Where(x => x.Id == id && x.TenantId == tenantId)
             .SingleOrDefaultAsync();
-        
+
         if (book != null)
         {
             book.DeletedAtUtc = DateTime.UtcNow;
