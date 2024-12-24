@@ -28,8 +28,8 @@ Scenario: CRUD operations test flow
     # Step 1: Create a new book
     * def randomName = 'Book-' + Math.random()
     Given url apiRootUrl
-    Given path 'api/books/create'
-    And request { title: '#(randomName)', annotation: 'Test annotation', language: 'English', authors: ['Author Name'], artworkUrl: 'http://example.com/artwork.jpg' }
+    Given path 'api/books'
+    And request { title: '#(randomName)', annotation: 'Test annotation', language: 'en', authors: [{fullName: 'Author Name'}], artworkUrl: 'http://example.com/artwork.jpg' }
     When method POST
     Then status 200
     And match response.newBookId == '#number'
@@ -44,7 +44,7 @@ Scenario: CRUD operations test flow
     # Step 3: Update the book's details
     * def updatedName = 'Updated-' + Math.random()
     Given path 'api/books', newBookId, 'edit'
-    And request { title: '#(updatedName)', annotation: 'Updated annotation', language: 'Russian', authors: ['Updated Author'], artworkUrl: 'http://example.com/updated-artwork.jpg' }
+    And request { title: '#(updatedName)', annotation: 'Updated annotation', language: 'ru', authors: [{fullName:'Updated Author'}], artworkUrl: 'http://example.com/updated-artwork.jpg' }
     When method POST
     Then status 200
 
@@ -54,8 +54,8 @@ Scenario: CRUD operations test flow
     Then status 200
     And match response.title == updatedName
     And match response.annotation == 'Updated annotation'
-    And match response.language == 'Russian'
-    And match response.authors == [{"id":1,"fullName":"Author Name"},{"id":2,"fullName":"Updated Author"}]
+    And match response.language == 'ru'
+    And match response.authors == [{"fullName":"Updated Author"}]
     And match response.artworkUrl == 'http://example.com/updated-artwork.jpg'
 
     # Step 5: Delete the book (hard delete)
@@ -66,7 +66,7 @@ Scenario: CRUD operations test flow
 
     # Step 6: Verify the book is no longer in the list
     Given url apiRootUrl
-    Given path 'api/books/all'
+    Given path 'api/books'
     When method GET
     Then status 200
     And match response.books !contains { id: '#(newBookId)' }
