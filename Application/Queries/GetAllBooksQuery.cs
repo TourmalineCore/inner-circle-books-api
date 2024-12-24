@@ -17,7 +17,6 @@ public class GetAllBooksQuery : IGetAllBooksQuery
     {
         var booksList = await _context.Books
             .Where(x => x.DeletedAtUtc == null && x.TenantId == tenantId)
-            .Include(x => x.Authors)
             .ToListAsync();
         return booksList;
     }

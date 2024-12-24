@@ -16,7 +16,6 @@ public class GetBookByIdQuery : IGetBookByIdQuery
     public async Task<Book> GetByIdAsync(long id, long tenantId)
     {
         var book = await _context.Books
-            .Include(x => x.Authors)
             .Where(x => x.Id == id && x.TenantId == tenantId)
             .SingleOrDefaultAsync();
         return book;

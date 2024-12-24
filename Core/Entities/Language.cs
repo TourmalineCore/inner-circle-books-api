@@ -2,6 +2,6 @@ namespace Core.Entities;
 
 public enum Language
 {
-    Russian = 0,
-    English = 1
+    ru = 0,
+    en = 1
 }

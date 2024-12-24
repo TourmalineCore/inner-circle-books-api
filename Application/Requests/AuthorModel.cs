@@ -4,9 +4,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Core.Entities
+namespace Application.Requests
 {
-    public class Author
+    public class AuthorModel
     {
         public string FullName { get; set; }
     }

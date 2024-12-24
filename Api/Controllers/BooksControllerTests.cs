@@ -3,11 +3,10 @@ using Api.Responses;
 using Application.Commands.Contracts;
 using Application.Queries.Contracts;
 using Application.Requests;
+using Core.Entities;
 using Microsoft.AspNetCore.Mvc;
 using Moq;
 using Xunit;
-using Author = Core.Entities.Author;
-using Book = Core.Entities.Book;
 
 namespace Api.Controllers;
 
@@ -68,11 +67,14 @@ public class BooksControllerTests
                 TenantId = TENANT_ID,
                 Title = "Test Book 1",
                 Annotation = "Test annotation 1",
-                ArtworkUrl = "http://test1-images.com/img404.png",
-                Authors = new List<Author>
+                Authors = new List<Author>()
                 {
-                    new(TENANT_ID, "Test Author 1")
-                }
+                    new Author
+                    {
+                        FullName = "Test Author"
+                    }
+                },
+                ArtworkUrl = "http://test1-images.com/img404.png"
             },
             new()
             {
@@ -80,11 +82,14 @@ public class BooksControllerTests
                 TenantId = TENANT_ID,
                 Title = "Test Book 2",
                 Annotation = "Test annotation 2",
-                ArtworkUrl = "http://test2-images.com/img404.png",
-                Authors = new List<Author>
+                Authors = new List<Author>()
                 {
-                    new(TENANT_ID, "Test Author 1")
-                }
+                    new Author()
+                    {
+                        FullName = "Test Author 2"
+                    }
+                },
+                ArtworkUrl = "http://test2-images.com/img404.png"
             }
         };
         _getAllBooksQueryMock
@@ -110,11 +115,14 @@ public class BooksControllerTests
                 TenantId = TENANT_ID,
                 Title = "Test Book 1",
                 Annotation = "Test annotation 1",
-                ArtworkUrl = "http://test1-images.com/img404.png",
-                Authors = new List<Author>
+                Authors = new List<Author>()
                 {
-                    new(TENANT_ID, "Test Author 1")
-                }
+                    new Author()
+                    {
+                        FullName = "Test Author"
+                    }
+                },
+                ArtworkUrl = "http://test1-images.com/img404.png"
             },
             new()
             {
@@ -122,11 +130,14 @@ public class BooksControllerTests
                 TenantId = TENANT_ID,
                 Title = "Test Book 2",
                 Annotation = "Test annotation 2",
-                ArtworkUrl = "http://test2-images.com/img404.png",
-                Authors = new List<Author>
+                Authors = new List<Author>()
                 {
-                    new(TENANT_ID, "Test Author 1")
-                }
+                    new Author()
+                    {
+                        FullName = "Test Author 2"
+                    }
+                },
+                ArtworkUrl = "http://test2-images.com/img404.png"
             }
         };
         _getBookByIdQueryMock
@@ -145,11 +156,14 @@ public class BooksControllerTests
         {
             Title = "Test Book 1",
             Annotation = "Test annotation 1",
-            ArtworkUrl = "http://test1-images.com/img404.png",
-            Authors = new List<string>
+            Authors = new List<AuthorModel>()
             {
-                "Test Author 1"
+                new AuthorModel()
+                {
+                    FullName = "Test Author"
+                }
             },
+            ArtworkUrl = "http://test1-images.com/img404.png",
             Language = "Russian"
         };
         _createBookCommandMock

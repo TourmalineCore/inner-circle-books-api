@@ -10,14 +10,8 @@ namespace Api.Responses
 
         public string Language { get; set; }
 
-        public List<AuthorBookResponse> Authors { get; set; }
+        public List<AuthorResponse> Authors { get; set; }
 
         public string ArtworkUrl { get; set; }
-    }
-    public class AuthorBookResponse
-    {
-        public long Id { get; set; }
-
-        public string FullName { get; set; }
     }
 }

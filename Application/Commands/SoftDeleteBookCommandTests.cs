@@ -29,14 +29,23 @@ public class SoftDeleteBookCommandTests
             TenantId = TENANT_ID,
             Title = "Test Book",
             Annotation = "Test annotation",
+            Authors = new List<Author>()
+            {
+                new Author()
+                {
+                    FullName = "Test Author"
+                }
+            },
             ArtworkUrl = "http://test-images.com/img404.png"
         };
+
         _context.Books.Add(book);
         await _context.SaveChangesAsync();
 
         await _command.SoftDeleteAsync(book.Id, book.TenantId);
 
-        var updatedBook = await _context.Books.FindAsync(book.Id);
+        var updatedBook = await _context.Books.SingleAsync(x => x.Id == book.Id);
+
         Assert.NotNull(updatedBook.DeletedAtUtc);
     }
 }

@@ -16,9 +16,14 @@ public class SoftDeleteBookCommand : ISoftDeleteBookCommand
     {
         var book = await _context.Books
             .Where(x => x.Id == id && x.TenantId == tenantId)
-            .SingleAsync();
-        book.DeletedAtUtc = DateTime.UtcNow;
-        _context.Books.Update(book);
-        await _context.SaveChangesAsync();
+            .SingleOrDefaultAsync();
+        
+        if (book != null)
+        {
+            book.DeletedAtUtc = DateTime.UtcNow;
+
+            _context.Books.Update(book);
+            await _context.SaveChangesAsync();
+        }
     }
 }

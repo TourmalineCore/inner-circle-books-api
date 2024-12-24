@@ -15,16 +15,11 @@ public class DeleteBookCommand : IDeleteBookCommand
     public async Task DeleteAsync(long id, long tenantId)
     {
         var book = await _context.Books
-            .Include(x => x.Authors)
             .Where(x => x.Id == id && x.TenantId == tenantId)
-            .SingleAsync();
+            .SingleOrDefaultAsync();
+        
         if (book != null)
         {
-            foreach (var author in book.Authors)
-            {
-                author.DeleteBook(book);
-            }
-
             _context.Books.Remove(book);
             await _context.SaveChangesAsync();
         }

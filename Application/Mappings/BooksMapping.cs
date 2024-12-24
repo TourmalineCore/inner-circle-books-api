@@ -1,6 +1,7 @@
 using Core.Entities;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
+using Newtonsoft.Json;
 
 namespace Application.Mappings;
 
@@ -15,7 +16,9 @@ public class BooksMapping : IEntityTypeConfiguration<Book>
                 v => (Language)Enum.Parse(typeof(Language), v));
 
         builder
-            .HasMany(e => e.Authors)
-            .WithMany(e => e.Books);
+            .Property(e => e.Authors)
+            .HasConversion(
+                v => JsonConvert.SerializeObject(v),
+                v => JsonConvert.DeserializeObject<List<Author>>(v));
     }
 }

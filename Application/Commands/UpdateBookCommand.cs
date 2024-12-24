@@ -23,33 +23,10 @@ public class UpdateBookCommand : IUpdateBookCommand
         book.Title = updateBookRequest.Title;
         book.Annotation = updateBookRequest.Annotation;
         book.Language = (Language)Enum.Parse(typeof(Language), updateBookRequest.Language);
-        var authorsList = await AddAuthorIfItNotExist(book, updateBookRequest.Authors, tenantId);
-        book.Authors = authorsList;
+        book.Authors = updateBookRequest.Authors.Select(x => new Author() { FullName = x.FullName }).ToList();
         book.ArtworkUrl = updateBookRequest.ArtworkUrl;
 
         _context.Books.Update(book);
         await _context.SaveChangesAsync();
-    }
-
-    private async Task<List<Author>> AddAuthorIfItNotExist(Book book, List<string> newAuthors, long tenantId)
-    {
-        var authors = new List<Author>();
-        foreach (var authorFullName in newAuthors)
-        {
-            if (!_context.Authors.Any(x => x.FullName == authorFullName && x.TenantId == tenantId))
-            {
-                _context.Authors.Add(new Author(tenantId, authorFullName)
-                {
-                    Books = new List<Book>() { book }
-                });
-                await _context.SaveChangesAsync();
-            }
-
-            var existAuthor = _context.Authors.Single(x => x.FullName == authorFullName && x.TenantId == tenantId);
-            authors.Add(existAuthor);
-            await _context.SaveChangesAsync();
-        }
-
-        return authors;
     }
 }

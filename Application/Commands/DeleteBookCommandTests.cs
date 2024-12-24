@@ -21,39 +21,30 @@ public class DeleteBookCommandTests
     }
 
     [Fact]
-    public async Task DeleteAsync_ShouldDeleteBookFromAuthorAndFromDbSet()
+    public async Task DeleteAsync_ShouldDeleteBookFromDbSet()
     {
-        var author = new Author(TENANT_ID, "Test author")
-        {
-            Id = 1L,
-            Books = new List<Book>()
-        };
-        var author2 = new Author(TENANT_ID, "Test author 2")
-        {
-            Id = 2L,
-            Books = new List<Book>()
-        };
         var book = new Book
         {
             Id = 1L,
             TenantId = TENANT_ID,
             Title = "Test Book",
             Annotation = "Test annotation",
-            Authors = new List<Author>(),
+            Authors = new List<Author>()
+            {
+                new Author()
+                {
+                    FullName = "Test Author"
+                }
+            },
             ArtworkUrl = "http://test-images.com/img404.png"
         };
 
-        book.Authors.Add(author);
-        book.Authors.Add(author2);
-        author.Books.Add(book);
-        author2.Books.Add(book);
-
         _context.Books.Add(book);
-        _context.Authors.Add(author);
         await _context.SaveChangesAsync();
 
         await _command.DeleteAsync(book.Id, book.TenantId);
 
-        Assert.DoesNotContain(book, author.Books);
+        var isBookExistInDbSet = await _context.Books.AnyAsync(x => x.Id == book.Id);
+        Assert.False(isBookExistInDbSet);
     }
 }

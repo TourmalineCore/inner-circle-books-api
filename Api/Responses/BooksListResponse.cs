@@ -15,13 +15,7 @@ public class BookListItem
 
     public string Language { get; set; }
 
-    public List<AuthorListItem> Authors { get; set; }
+    public List<AuthorResponse> Authors { get; set; }
 
     public string ArtworkUrl { get; set; }
-}
-
-public class AuthorListItem
-{
-    public long Id { get; set; }
-    public string FullName { get; set; }
 }

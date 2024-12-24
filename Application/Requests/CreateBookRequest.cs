@@ -1,4 +1,5 @@
 using System.ComponentModel.DataAnnotations;
+using Core.Entities;
 
 namespace Application.Requests;
 
@@ -12,7 +13,7 @@ public class CreateBookRequest
     public string Annotation { get; set; }
 
     [Required]
-    public List<string> Authors { get; set; }
+    public List<AuthorModel> Authors { get; set; }
 
     [Required]
     public string Language { get; set; }

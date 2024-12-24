@@ -30,22 +30,29 @@ public class UpdateBookCommandTests
             TenantId = TENANT_ID,
             Title = "Test Book",
             Annotation = "Test annotation",
-            Language = Language.English,
-            Authors = new List<Author>
+            Authors = new List<Author>()
             {
-                new(TENANT_ID, "Test Author")
+                new Author()
+                {
+                    FullName = "Test Author"
+                }
             },
+            Language = Language.English,
             ArtworkUrl = "http://test-images.com/img404.png"
         };
+
         var updateBookRequest = new UpdateBookRequest
         {
             Title = "Another title",
             Annotation = "Another annotation",
-            Language = "Russian",
-            Authors = new List<string>
+            Authors = new List<AuthorModel>()
             {
-                "Test Author", "Test Author 2"
-            }
+                new AuthorModel()
+                {
+                    FullName = "Updated Test Author"
+                }
+            },
+            Language = "Russian"
         };
         _context.Books.Add(book);
         await _context.SaveChangesAsync();
@@ -55,6 +62,6 @@ public class UpdateBookCommandTests
         var updatedBook = await _context.Books.FindAsync(book.Id);
         Assert.Equal(updatedBook.Title, updatedBook.Title);
         Assert.Equal(updatedBook.Annotation, updatedBook.Annotation);
-        Assert.Contains(updatedBook.Authors, x => x.FullName == "Test Author 2");
+        Assert.Contains(updatedBook.Authors, x => x.FullName == "Updated Test Author");
     }
 }

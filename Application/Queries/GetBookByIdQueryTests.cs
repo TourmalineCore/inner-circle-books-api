@@ -29,11 +29,14 @@ public class GetBookByIdQueryTests
             TenantId = TENANT_ID,
             Title = "Test Book",
             Annotation = "Test annotation",
-            ArtworkUrl = "http://test-images.com/img404.png",
-            Authors = new List<Author>
+            Authors = new List<Author>()
             {
-                new(TENANT_ID, "Test Author")
-            }
+                new Author()
+                {
+                    FullName = "Test Author"
+                }
+            },
+            ArtworkUrl = "http://test-images.com/img404.png"
         };
         _context.Books.Add(book);
         await _context.SaveChangesAsync();

@@ -46,7 +46,7 @@ public class BooksController : Controller
     /// <summary>
     ///     Get all books
     /// </summary>
-    [HttpGet("all")]
+    [HttpGet]
     public async Task<BooksListResponse> GetAllBooksAsync()
     {
         var books = await _getAllBooksQuery.GetAllAsync(User.GetTenantId());
@@ -58,9 +58,8 @@ public class BooksController : Controller
                 Title = x.Title,
                 Annotation = x.Annotation,
                 ArtworkUrl = x.ArtworkUrl,
-                Authors = x.Authors.Select(a => new AuthorListItem
+                Authors = x.Authors.Select(a => new AuthorResponse()
                 {
-                    Id = a.Id,
                     FullName = a.FullName
                 }).ToList(),
                 Language = x.Language.ToString()
@@ -81,9 +80,8 @@ public class BooksController : Controller
             Title = book.Title,
             Annotation = book.Annotation,
             ArtworkUrl = book.ArtworkUrl,
-            Authors = book.Authors.Select(a => new AuthorBookResponse()
+            Authors = book.Authors.Select(a => new AuthorResponse()
             {
-                Id = a.Id,
                 FullName = a.FullName
             }).ToList(),
             Language = book.Language.ToString()
@@ -95,7 +93,7 @@ public class BooksController : Controller
     /// </summary>
     /// <param name="createBookRequest"></param>
     [RequiresPermission(UserClaimsProvider.CanManageBooks)]
-    [HttpPost("create")]
+    [HttpPost]
     public async Task<CreateBookResponse> CreateBookAsync([Required][FromBody] CreateBookRequest createBookRequest)
     {
         var newBookId = await _createBookCommand.CreateAsync(createBookRequest, User.GetTenantId());

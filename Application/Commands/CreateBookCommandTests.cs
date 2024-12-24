@@ -1,4 +1,5 @@
 using Application.Requests;
+using Core.Entities;
 using Microsoft.EntityFrameworkCore;
 using Xunit;
 
@@ -17,8 +18,7 @@ public class CreateBookCommandTests
             .Options;
 
         _context = new AppDbContext(options);
-        var createAuthorCommand = new CreateAuthorCommand(_context);
-        _command = new CreateBookCommand(_context, createAuthorCommand);
+        _command = new CreateBookCommand(_context);
     }
 
     [Fact]
@@ -30,9 +30,12 @@ public class CreateBookCommandTests
             Annotation = "Test annotation",
             Language = "Russian",
             ArtworkUrl = "http://test-images.com/img404.png",
-            Authors = new List<string>
+            Authors = new List<AuthorModel>
             {
-                "Test Author"
+                new AuthorModel()
+                {
+                    FullName = "Test Author"
+                }
             }
         };
 

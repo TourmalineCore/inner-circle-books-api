@@ -6,15 +6,15 @@ public class Book
         long tenantId,
         string title,
         string annotation,
-        Language language,
         List<Author> authors,
+        Language language,
         string artworkUrl)
     {
         TenantId = tenantId;
         Title = title;
         Annotation = annotation;
-        Language = language;
         Authors = authors;
+        Language = language;
         ArtworkUrl = artworkUrl;
         CreatedAtUtc = DateTime.UtcNow;
     }
@@ -31,18 +31,13 @@ public class Book
 
     public string Annotation { get; set; }
 
-    public Language Language { get; set; }
-
     public List<Author> Authors { get; set; }
+
+    public Language Language { get; set; }
 
     public DateTime CreatedAtUtc { get; set; }
 
     public DateTime? DeletedAtUtc { get; set; } = null;
 
     public string ArtworkUrl { get; set; }
-
-    public bool DeleteAuthor(Author author)
-    {
-        return Authors.Remove(author);
-    }
 }
