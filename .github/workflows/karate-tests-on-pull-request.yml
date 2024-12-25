@@ -1,0 +1,42 @@
+name: Run karate tests in sandbox on pull request
+
+on:
+  pull_request:
+    branches:
+      - master
+      - feature/*
+
+env:
+  GITHUB_REGISTRY: ghcr.io
+
+jobs:
+  run-app-and-karate-tests:
+    # Image to run project and tests
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v4
+    - name: Run service via docker-compose and run Karate-tests
+    # Hide credentials and token from logs, get the number of failed and passed tests
+    # Find text with 'failed' and 'passed' in logs from karate-testing container
+      run: |
+        LOGS=$(docker compose --profile MockForPullRequest up --abort-on-container-exit)
+        FILTERED_LOGS=$(echo "$LOGS" | sed -E 's/"login":"[^"]*"/"login":"****"/g' \
+                                 | sed -E 's/"password":"[^"]*"/"password":"****"/g' \
+                                 | sed -E 's/"accessToken":[^,}]*"[^"]*"/"accessToken":"****"/g' \
+                                 | sed -E 's/"Authorization":"[^"]*"/"Authorization":"****"/g' \
+                                 | sed -E 's/"X-DEBUG-TOKEN":[^,}]*"[^"]*"/"X-DEBUG-TOKEN":"****"/g' \
+                                 | sed -E 's/accessToken":\{[^}]*\}/accessToken":{"value":"****"}/g' \
+                                 | sed -E 's/X-DEBUG-TOKEN: [^ ]*/X-DEBUG-TOKEN: ****/g') 
+        echo "$FILTERED_LOGS"
+        FAILED=$(echo "$FILTERED_LOGS" | grep -oP 'failed: *\K\d+')
+        PASSED=$(echo "$FILTERED_LOGS" | grep -oP 'passed: *\K\d+')
+        echo "Failed tests: $FAILED"
+        echo "Passed tests: $PASSED"
+        if [ "$FAILED" -gt 0 ]; then
+          echo "Failed tests found! Failing the pipeline..."
+          exit 1
+        fi
+        if [ "$PASSED" -eq 0 ]; then
+          echo "No tests passed! Failing the pipeline..."
+          exit 1
+        fi

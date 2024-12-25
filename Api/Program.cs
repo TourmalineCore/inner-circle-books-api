@@ -1,11 +1,12 @@
 using System.Reflection;
+using Api;
 using Api.Exceptions;
 using Application;
-using Core;
 using Microsoft.AspNetCore.Mvc.Formatters;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.OpenApi.Models;
-using NodaTime;
+using TourmalineCore.AspNetCore.JwtAuthentication.Core;
+using TourmalineCore.AspNetCore.JwtAuthentication.Core.Options;
 
 var builder = WebApplication.CreateBuilder(args);
 var configuration = builder.Configuration;
@@ -16,7 +17,6 @@ builder.Services.AddCors();
 builder.Services.AddEndpointsApiExplorer();
 
 builder.Services.AddApplication(configuration);
-builder.Services.AddTransient<IClock, Clock>();
 
 
 builder.Services.AddSwaggerGen(c =>
@@ -25,8 +25,8 @@ builder.Services.AddSwaggerGen(c =>
             new OpenApiInfo
             {
                 Version = "v1",
-                Title = "ToDo API",
-                Description = "An ASP.NET Core Web API for managing ToDo items",
+                Title = "Books API",
+                Description = "An ASP.NET Core Web API for managing books in TourmalineCore office",
                 Contact = new OpenApiContact
                 {
                     Name = "Website",
@@ -39,10 +39,32 @@ builder.Services.AddSwaggerGen(c =>
                 }
             }
         );
+        c.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
+        {
+            In = ParameterLocation.Header,
+            Description = "Please insert JWT with Bearer into field",
+            Name = "Authorization",
+            Type = SecuritySchemeType.ApiKey
+        });
+        c.AddSecurityRequirement(new OpenApiSecurityRequirement {
+            {
+                new OpenApiSecurityScheme
+                {
+                    Reference = new OpenApiReference
+                    {
+                        Type = ReferenceType.SecurityScheme,
+                        Id = "Bearer"
+                    }
+                },
+                new string[] { }
+            }
+        });
         var xmlFilename = $"{Assembly.GetExecutingAssembly().GetName().Name}.xml";
         c.IncludeXmlComments(Path.Combine(AppContext.BaseDirectory, xmlFilename));
     }
 );
+var authenticationOptions = configuration.GetSection(nameof(AuthenticationOptions)).Get<AuthenticationOptions>();
+builder.Services.AddJwtAuthentication(authenticationOptions).WithUserClaimsProvider<UserClaimsProvider>(UserClaimsProvider.PermissionClaimType);
 
 var app = builder.Build();
 
@@ -76,6 +98,8 @@ using (var serviceScope = app.Services.CreateScope())
 
 app.UseHttpsRedirection();
 app.UseRouting();
+
+app.UseJwtAuthentication();
 
 app.MapControllers();
 
