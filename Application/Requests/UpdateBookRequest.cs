@@ -4,11 +4,12 @@ namespace Application.Requests;
 
 public class EditBookRequest
 {
-    [Required]
     [MaxLength(255)]
+    [Required]
     public string Title { get; set; }
 
     [MaxLength(2000)]
+    [Required]
     public string Annotation { get; set; }
     [Required]
     public string Language { get; set; }

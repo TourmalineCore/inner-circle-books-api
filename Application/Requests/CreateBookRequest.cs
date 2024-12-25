@@ -10,6 +10,7 @@ public class CreateBookRequest
     public string Title { get; set; }
 
     [MaxLength(2000)]
+    [Required]
     public string Annotation { get; set; }
 
     [Required]
