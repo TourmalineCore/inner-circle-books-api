@@ -46,4 +46,21 @@ public class CreateBookCommandTests
         Assert.Equal("Test Book", book.Title);
         Assert.Equal(bookId, book.Id);
     }
+
+    [Fact]
+    public async Task CreateWithouAuthorsAsync_ShouldThrowException()
+    {
+        var createBookRequest = new CreateBookRequest
+        {
+            Title = "Test Book",
+            Annotation = "Test annotation",
+            Language = "ru",
+            BookCoverUrl = "http://test-images.com/img404.png",
+            Authors = new List<AuthorModel>
+            {
+            }
+        };
+
+        await Assert.ThrowsAsync<ArgumentException>(async () => await _command.CreateAsync(createBookRequest, TENANT_ID));
+    }
 }
