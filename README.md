@@ -6,12 +6,12 @@ erDiagram
 Book{
   long id PK "Example: 1"
   long tenantId "Example: 1"
-  text title "Example: Example title" 
-  text annotation "Example: Example annotation"
-  text authors "Example: [{'fullName': 'Author1'}, {'fullName': 'Author2'}]"
+  text title "Example: Пиши, сокращай 2025: Как создавать сильный текст" 
+  text annotation "Example: Книга о создании текста для всех, кто пишет по работе"
+  text authors "Example: [{'fullName': 'Максим Ильяхов'}, {'fullName': 'Людмила Сарычева'}]"
   enum language "Example: ru"
-  datetime createdAtUtc "Example: 2024-12-12 08:30:30"
-  datetime deletedAtUtc "Example: 2024-12-13 08:30:30"
-  text artworkUrl "Example: http://images-example.com/image.png"
+  datetime createdAtUtc "Example: 2024-12-25 09:20:25.695197+00"
+  datetime deletedAtUtc "Example: 2024-12-25 09:20:25.695197+00"
+  text artworkUrl "Example: https://cdn.litres.ru/pub/c/cover/70193008.jpg"
 }
 ```
