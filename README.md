@@ -11,7 +11,7 @@ Book{
   text authors "Example: [{'fullName': 'Максим Ильяхов'}, {'fullName': 'Людмила Сарычева'}]"
   enum language "Example: ru"
   datetime createdAtUtc "Example: 2024-12-25 09:20:25.695197+00"
-  datetime deletedAtUtc "Example: 2024-12-25 09:20:25.695197+00"
-  text artworkUrl "Example: https://cdn.litres.ru/pub/c/cover/70193008.jpg"
+  datetime deletedAtUtc "nullable, Example: 2024-12-25 09:20:25.695197+00"
+  text artworkUrl "nullable, Example: https://cdn.litres.ru/pub/c/cover/70193008.jpg"
 }
 ```
