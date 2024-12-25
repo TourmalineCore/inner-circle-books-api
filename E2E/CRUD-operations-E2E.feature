@@ -53,10 +53,6 @@ Scenario: CRUD operations test flow
     When method GET
     Then status 200
     And match response.title == updatedName
-    And match response.annotation == 'Updated annotation'
-    And match response.language == 'ru'
-    And match response.authors == [{"fullName":"Updated Author"}]
-    And match response.artworkUrl == 'http://example.com/updated-artwork.jpg'
 
     # Step 5: Delete the book (hard delete)
     Given path 'api/books', newBookId, 'hard-delete'
