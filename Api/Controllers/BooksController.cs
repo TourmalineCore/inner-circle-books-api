@@ -57,7 +57,7 @@ public class BooksController : Controller
                 Id = x.Id,
                 Title = x.Title,
                 Annotation = x.Annotation,
-                ArtworkUrl = x.ArtworkUrl,
+                BookCoverUrl = x.BookCoverUrl,
                 Authors = x.Authors.Select(a => new AuthorResponse()
                 {
                     FullName = a.FullName
@@ -79,7 +79,7 @@ public class BooksController : Controller
             Id = book.Id,
             Title = book.Title,
             Annotation = book.Annotation,
-            ArtworkUrl = book.ArtworkUrl,
+            BookCoverUrl = book.BookCoverUrl,
             Authors = book.Authors.Select(a => new AuthorResponse()
             {
                 FullName = a.FullName

@@ -24,7 +24,7 @@ public class UpdateBookCommand : IUpdateBookCommand
         book.Annotation = updateBookRequest.Annotation;
         book.Language = (Language)Enum.Parse(typeof(Language), updateBookRequest.Language);
         book.Authors = updateBookRequest.Authors.Select(x => new Author() { FullName = x.FullName }).ToList();
-        book.ArtworkUrl = updateBookRequest.ArtworkUrl;
+        book.BookCoverUrl = updateBookRequest.BookCoverUrl;
 
         _context.Books.Update(book);
         await _context.SaveChangesAsync();

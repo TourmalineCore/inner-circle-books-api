@@ -15,5 +15,5 @@ public class UpdateBookRequest
     [Required]
     public List<AuthorModel> Authors { get; set; }
 
-    public string ArtworkUrl { get; set; }
+    public string BookCoverUrl { get; set; }
 }

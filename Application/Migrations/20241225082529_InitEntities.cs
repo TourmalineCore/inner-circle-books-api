@@ -25,7 +25,7 @@ namespace Application.Migrations
                     Language = table.Column<string>(type: "text", nullable: false),
                     CreatedAtUtc = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
                     DeletedAtUtc = table.Column<DateTime>(type: "timestamp with time zone", nullable: true),
-                    ArtworkUrl = table.Column<string>(type: "text", nullable: false)
+                    BookCoverUrl = table.Column<string>(type: "text", nullable: false)
                 },
                 constraints: table =>
                 {

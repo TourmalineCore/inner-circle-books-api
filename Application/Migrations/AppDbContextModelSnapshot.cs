@@ -34,11 +34,11 @@ namespace Application.Migrations
                         .IsRequired()
                         .HasColumnType("text");
 
-                    b.Property<string>("ArtworkUrl")
+                    b.Property<string>("Authors")
                         .IsRequired()
                         .HasColumnType("text");
 
-                    b.Property<string>("Authors")
+                    b.Property<string>("BookCoverUrl")
                         .IsRequired()
                         .HasColumnType("text");
 
@@ -61,7 +61,7 @@ namespace Application.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Books", (string)null);
+                    b.ToTable("Books");
                 });
 #pragma warning restore 612, 618
         }

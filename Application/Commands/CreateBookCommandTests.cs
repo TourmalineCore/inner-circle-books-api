@@ -29,7 +29,7 @@ public class CreateBookCommandTests
             Title = "Test Book",
             Annotation = "Test annotation",
             Language = "ru",
-            ArtworkUrl = "http://test-images.com/img404.png",
+            BookCoverUrl = "http://test-images.com/img404.png",
             Authors = new List<AuthorModel>
             {
                 new AuthorModel()

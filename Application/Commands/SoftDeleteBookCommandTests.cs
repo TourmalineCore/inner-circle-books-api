@@ -37,7 +37,7 @@ public class SoftDeleteBookCommandTests
                 }
             },
             Language = Language.en,
-            ArtworkUrl = "http://test-images.com/img404.png"
+            BookCoverUrl = "http://test-images.com/img404.png"
         };
 
         _context.Books.Add(book);

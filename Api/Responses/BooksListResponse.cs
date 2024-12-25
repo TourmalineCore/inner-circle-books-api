@@ -17,5 +17,5 @@ public class BookListItem
 
     public List<AuthorResponse> Authors { get; set; }
 
-    public string ArtworkUrl { get; set; }
+    public string BookCoverUrl { get; set; }
 }

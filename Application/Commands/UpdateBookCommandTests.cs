@@ -38,7 +38,7 @@ public class UpdateBookCommandTests
                 }
             },
             Language = Language.en,
-            ArtworkUrl = "http://test-images.com/img404.png"
+            BookCoverUrl = "http://test-images.com/img404.png"
         };
 
         var updateBookRequest = new UpdateBookRequest
@@ -57,7 +57,7 @@ public class UpdateBookCommandTests
         _context.Books.Add(book);
         await _context.SaveChangesAsync();
 
-        await _command.UpdateAsync(1L, updateBookRequest, TENANT_ID);
+        await _command.UpdateAsync(1, updateBookRequest, TENANT_ID);
 
         var updatedBook = await _context.Books.FindAsync(book.Id);
         Assert.Equal(updatedBook.Title, updatedBook.Title);

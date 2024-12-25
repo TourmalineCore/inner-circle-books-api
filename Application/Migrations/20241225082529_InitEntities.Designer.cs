@@ -12,7 +12,7 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace Application.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20241224063608_InitEntities")]
+    [Migration("20241225082529_InitEntities")]
     partial class InitEntities
     {
         /// <inheritdoc />
@@ -37,11 +37,11 @@ namespace Application.Migrations
                         .IsRequired()
                         .HasColumnType("text");
 
-                    b.Property<string>("ArtworkUrl")
+                    b.Property<string>("Authors")
                         .IsRequired()
                         .HasColumnType("text");
 
-                    b.Property<string>("Authors")
+                    b.Property<string>("BookCoverUrl")
                         .IsRequired()
                         .HasColumnType("text");
 

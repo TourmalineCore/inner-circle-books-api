@@ -18,5 +18,5 @@ public class CreateBookRequest
     [Required]
     public string Language { get; set; }
 
-    public string ArtworkUrl { get; set; }
+    public string BookCoverUrl { get; set; }
 }

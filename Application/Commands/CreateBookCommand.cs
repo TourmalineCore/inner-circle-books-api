@@ -26,7 +26,7 @@ public class CreateBookCommand : ICreateBookCommand
             createBookRequest.Annotation,
             createBookRequest.Authors.Select(x => new Author() { FullName = x.FullName }).ToList(),
             (Language)Enum.Parse(typeof(Language), createBookRequest.Language),
-            createBookRequest.ArtworkUrl);
+            createBookRequest.BookCoverUrl);
 
         await _context.Books.AddAsync(book);
         await _context.SaveChangesAsync();

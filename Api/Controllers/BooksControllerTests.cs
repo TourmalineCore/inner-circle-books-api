@@ -75,7 +75,7 @@ public class BooksControllerTests
                     }
                 },
                 Language = Language.en,
-                ArtworkUrl = "http://test1-images.com/img404.png"
+                BookCoverUrl = "http://test1-images.com/img404.png"
             },
             new()
             {
@@ -91,7 +91,7 @@ public class BooksControllerTests
                     }
                 },
                 Language = Language.en,
-                ArtworkUrl = "http://test2-images.com/img404.png"
+                BookCoverUrl = "http://test2-images.com/img404.png"
             }
         };
         _getAllBooksQueryMock
@@ -125,7 +125,7 @@ public class BooksControllerTests
                     }
                 },
                 Language = Language.en,
-                ArtworkUrl = "http://test1-images.com/img404.png"
+                BookCoverUrl = "http://test1-images.com/img404.png"
             },
             new()
             {
@@ -141,7 +141,7 @@ public class BooksControllerTests
                     }
                 },
                 Language = Language.en,
-                ArtworkUrl = "http://test2-images.com/img404.png"
+                BookCoverUrl = "http://test2-images.com/img404.png"
             }
         };
         _getBookByIdQueryMock
@@ -167,7 +167,7 @@ public class BooksControllerTests
                     FullName = "Test Author"
                 }
             },
-            ArtworkUrl = "http://test1-images.com/img404.png",
+            BookCoverUrl = "http://test1-images.com/img404.png",
             Language = "ru"
         };
         _createBookCommandMock

@@ -8,14 +8,14 @@ public class Book
         string annotation,
         List<Author> authors,
         Language language,
-        string artworkUrl)
+        string bookCoverUrl)
     {
         TenantId = tenantId;
         Title = title;
         Annotation = annotation;
         Authors = authors;
         Language = language;
-        ArtworkUrl = artworkUrl;
+        BookCoverUrl = bookCoverUrl;
         CreatedAtUtc = DateTime.UtcNow;
     }
 
@@ -39,5 +39,5 @@ public class Book
 
     public DateTime? DeletedAtUtc { get; set; } = null;
 
-    public string ArtworkUrl { get; set; }
+    public string BookCoverUrl { get; set; }
 }
