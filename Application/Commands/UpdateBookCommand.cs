@@ -26,7 +26,7 @@ public class EditBookCommand : IEditBookCommand
         book.Authors = editBookRequest.Authors.Select(x => new Author() { FullName = x.FullName }).ToList();
         book.BookCoverUrl = editBookRequest.BookCoverUrl;
 
-        _context.Books.edit(book);
+        _context.Books.Update(book);
         await _context.SaveChangesAsync();
     }
 }
