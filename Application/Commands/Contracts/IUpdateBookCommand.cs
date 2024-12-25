@@ -2,7 +2,7 @@ using Application.Requests;
 
 namespace Application.Commands.Contracts;
 
-public interface IUpdateBookCommand
+public interface IEditBookCommand
 {
-    Task UpdateAsync(long id, UpdateBookRequest updateBookRequest, long tenantId);
+    Task EditAsync(long id, EditBookRequest editBookRequest, long tenantId);
 }

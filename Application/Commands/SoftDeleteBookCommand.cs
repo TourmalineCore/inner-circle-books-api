@@ -22,7 +22,7 @@ public class SoftDeleteBookCommand : ISoftDeleteBookCommand
         {
             book.DeletedAtUtc = DateTime.UtcNow;
 
-            _context.Books.Update(book);
+            _context.Books.edit(book);
             await _context.SaveChangesAsync();
         }
     }

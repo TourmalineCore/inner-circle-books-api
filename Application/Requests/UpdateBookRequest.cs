@@ -2,7 +2,7 @@ using System.ComponentModel.DataAnnotations;
 
 namespace Application.Requests;
 
-public class UpdateBookRequest
+public class EditBookRequest
 {
     [Required]
     [MaxLength(255)]

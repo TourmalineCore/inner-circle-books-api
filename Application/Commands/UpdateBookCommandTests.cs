@@ -5,24 +5,24 @@ using Core.Entities;
 using Microsoft.EntityFrameworkCore;
 using Xunit;
 
-public class UpdateBookCommandTests
+public class EditBookCommandTests
 {
     private const long TENANT_ID = 1;
-    private readonly UpdateBookCommand _command;
+    private readonly EditBookCommand _command;
     private readonly AppDbContext _context;
 
-    public UpdateBookCommandTests()
+    public EditBookCommandTests()
     {
         var options = new DbContextOptionsBuilder<AppDbContext>()
-            .UseInMemoryDatabase("UpdateBookCommandBooksDatabase")
+            .UseInMemoryDatabase("EditBookCommandBooksDatabase")
             .Options;
 
         _context = new AppDbContext(options);
-        _command = new UpdateBookCommand(_context);
+        _command = new EditBookCommand(_context);
     }
 
     [Fact]
-    public async Task UpdateAsync_ShouldSetDifferentValues()
+    public async Task EditAsync_ShouldSetDifferentValues()
     {
         var book = new Book
         {
@@ -41,7 +41,7 @@ public class UpdateBookCommandTests
             BookCoverUrl = "http://test-images.com/img404.png"
         };
 
-        var updateBookRequest = new UpdateBookRequest
+        var editBookRequest = new EditBookRequest
         {
             Title = "Another title",
             Annotation = "Another annotation",
@@ -49,7 +49,7 @@ public class UpdateBookCommandTests
             {
                 new AuthorModel()
                 {
-                    FullName = "Updated Test Author"
+                    FullName = "Editd Test Author"
                 }
             },
             Language = "ru"
@@ -57,11 +57,11 @@ public class UpdateBookCommandTests
         _context.Books.Add(book);
         await _context.SaveChangesAsync();
 
-        await _command.UpdateAsync(1, updateBookRequest, TENANT_ID);
+        await _command.EditAsync(1, editBookRequest, TENANT_ID);
 
-        var updatedBook = await _context.Books.FindAsync(book.Id);
-        Assert.Equal(updatedBook.Title, updatedBook.Title);
-        Assert.Equal(updatedBook.Annotation, updatedBook.Annotation);
-        Assert.Contains(updatedBook.Authors, x => x.FullName == "Updated Test Author");
+        var editdBook = await _context.Books.FindAsync(book.Id);
+        Assert.Equal(editdBook.Title, editdBook.Title);
+        Assert.Equal(editdBook.Annotation, editdBook.Annotation);
+        Assert.Contains(editdBook.Authors, x => x.FullName == "Editd Test Author");
     }
 }

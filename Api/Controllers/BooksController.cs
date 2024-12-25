@@ -21,7 +21,7 @@ public class BooksController : Controller
     private readonly IGetAllBooksQuery _getAllBooksQuery;
     private readonly IGetBookByIdQuery _getBookByIdQuery;
     private readonly ISoftDeleteBookCommand _softDeleteBookCommand;
-    private readonly IUpdateBookCommand _updateBookCommand;
+    private readonly IEditBookCommand _editBookCommand;
 
     /// <summary>
     ///     Controller with actions to books
@@ -30,7 +30,7 @@ public class BooksController : Controller
         IGetAllBooksQuery getAllBooksQuery,
         IGetBookByIdQuery getBookByIdQuery,
         ICreateBookCommand createBookCommand,
-        IUpdateBookCommand updateBookCommand,
+        IEditBookCommand editBookCommand,
         IDeleteBookCommand deleteBookCommand,
         ISoftDeleteBookCommand softDeleteBookCommand
     )
@@ -38,7 +38,7 @@ public class BooksController : Controller
         _getAllBooksQuery = getAllBooksQuery;
         _getBookByIdQuery = getBookByIdQuery;
         _createBookCommand = createBookCommand;
-        _updateBookCommand = updateBookCommand;
+        _editBookCommand = editBookCommand;
         _deleteBookCommand = deleteBookCommand;
         _softDeleteBookCommand = softDeleteBookCommand;
     }
@@ -104,15 +104,15 @@ public class BooksController : Controller
     }
 
     /// <summary>
-    ///     Update book
+    ///     Edit book
     /// </summary>
     /// <param name="id"></param>
-    /// <param name="updateBookRequest"></param>
+    /// <param name="editBookRequest"></param>
     [RequiresPermission(UserClaimsProvider.CanManageBooks)]
     [HttpPost("{id}/edit")]
-    public Task UpdateBook([Required][FromRoute] long id, [Required][FromBody] UpdateBookRequest updateBookRequest)
+    public Task EditBook([Required][FromRoute] long id, [Required][FromBody] EditBookRequest editBookRequest)
     {
-        return _updateBookCommand.UpdateAsync(id, updateBookRequest, User.GetTenantId());
+        return _editBookCommand.EditAsync(id, editBookRequest, User.GetTenantId());
     }
 
     /// <summary>

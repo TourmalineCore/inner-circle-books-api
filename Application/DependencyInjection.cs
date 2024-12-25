@@ -19,7 +19,7 @@ public static class DependencyInjection
         services.AddDbContext<AppDbContext>(options => { options.UseNpgsql(connectionString); }
         );
         services.AddTransient<ICreateBookCommand, CreateBookCommand>();
-        services.AddTransient<IUpdateBookCommand, UpdateBookCommand>();
+        services.AddTransient<IEditBookCommand, EditBookCommand>();
         services.AddTransient<IDeleteBookCommand, DeleteBookCommand>();
         services.AddTransient<ISoftDeleteBookCommand, SoftDeleteBookCommand>();
         services.AddTransient<IGetBookByIdQuery, GetBookByIdQuery>();

@@ -19,14 +19,14 @@ public class BooksControllerTests
     private readonly Mock<IGetAllBooksQuery> _getAllBooksQueryMock;
     private readonly Mock<IGetBookByIdQuery> _getBookByIdQueryMock;
     private readonly Mock<ISoftDeleteBookCommand> _softDeleteBookCommandMock;
-    private readonly Mock<IUpdateBookCommand> _updateBookCommandMock;
+    private readonly Mock<IEditBookCommand> _editBookCommandMock;
 
     public BooksControllerTests()
     {
         _getAllBooksQueryMock = new Mock<IGetAllBooksQuery>();
         _getBookByIdQueryMock = new Mock<IGetBookByIdQuery>();
         _createBookCommandMock = new Mock<ICreateBookCommand>();
-        _updateBookCommandMock = new Mock<IUpdateBookCommand>();
+        _editBookCommandMock = new Mock<IEditBookCommand>();
         _deleteBookCommandMock = new Mock<IDeleteBookCommand>();
         _softDeleteBookCommandMock = new Mock<ISoftDeleteBookCommand>();
 
@@ -44,7 +44,7 @@ public class BooksControllerTests
             _getAllBooksQueryMock.Object,
             _getBookByIdQueryMock.Object,
             _createBookCommandMock.Object,
-            _updateBookCommandMock.Object,
+            _editBookCommandMock.Object,
             _deleteBookCommandMock.Object,
             _softDeleteBookCommandMock.Object
         )
@@ -191,9 +191,9 @@ public class BooksControllerTests
     }
 
     [Fact]
-    public async Task UpdateBook_ShouldCallUpdateAsync()
+    public async Task EditBook_ShouldCallEditAsync()
     {
-        var updateBookRequest = new UpdateBookRequest
+        var editBookRequest = new EditBookRequest
         {
             Annotation = "Another annotation",
             Title = "Another title",
@@ -201,14 +201,14 @@ public class BooksControllerTests
             {
                 new AuthorModel()
                 {
-                    FullName = "Updated Author"
+                    FullName = "Editd Author"
                 }
             },
             Language = "en"
         };
 
-        await _controller.UpdateBook(1, updateBookRequest);
+        await _controller.EditBook(1, editBookRequest);
 
-        _updateBookCommandMock.Verify(command => command.UpdateAsync(1, updateBookRequest, TENANT_ID), Times.Once);
+        _editBookCommandMock.Verify(command => command.EditAsync(1, editBookRequest, TENANT_ID), Times.Once);
     }
 }
