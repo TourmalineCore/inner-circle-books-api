@@ -26,7 +26,7 @@ Scenario: CRUD operations test flow
     * configure headers = jsUtils().getAuthHeaders(accessToken)
 
     # Step 1: Create a new book
-    * def randomName = 'Book-' + Math.random()
+    * def randomName = 'Test-book-' + Math.random()
     Given url apiRootUrl
     Given path 'api/books'
     And request { title: '#(randomName)', annotation: 'Test annotation', language: 'en', authors: [{fullName: 'Author Name'}], artworkUrl: 'http://example.com/artwork.jpg' }
@@ -42,7 +42,7 @@ Scenario: CRUD operations test flow
     And match response.title == randomName
 
     # Step 3: Update the book's details
-    * def updatedName = 'Updated-' + Math.random()
+    * def updatedName = 'Test-updated-book' + Math.random()
     Given path 'api/books', newBookId, 'edit'
     And request { title: '#(updatedName)', annotation: 'Updated annotation', language: 'ru', authors: [{fullName:'Updated Author'}], artworkUrl: 'http://example.com/updated-artwork.jpg' }
     When method POST
