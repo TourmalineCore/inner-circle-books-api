@@ -38,7 +38,7 @@ jobs:
       packages: write
       contents: read
       attestations: write
-    if: github.event_name == 'pull_request' && github.event_name == 'push'
+    if: github.event_name == 'pull_request' || github.event_name == 'push'
     steps:
         - name: Check out the repo
           uses: actions/checkout@v4
