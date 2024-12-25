@@ -7,7 +7,7 @@ namespace Application.Commands;
 
 public class CreateBookCommandTests
 {
-    private const long TENANT_ID = 1L;
+    private const long TENANT_ID = 1;
     private readonly CreateBookCommand _command;
     private readonly AppDbContext _context;
 

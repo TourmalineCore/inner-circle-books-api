@@ -6,7 +6,7 @@ using Xunit;
 
 public class GetAllBooksQueryTests
 {
-    private const long TENANT_ID = 1L;
+    private const long TENANT_ID = 1;
     private readonly AppDbContext _context;
     private readonly GetAllBooksQuery _query;
 
@@ -25,7 +25,7 @@ public class GetAllBooksQueryTests
     {
         var book1 = new Book
         {
-            Id = 1L,
+            Id = 1,
             TenantId = TENANT_ID,
             Title = "Test Book 1",
             Annotation = "Test annotation 1",
@@ -41,7 +41,7 @@ public class GetAllBooksQueryTests
         };
         var book2 = new Book
         {
-            Id = 2L,
+            Id = 2,
             TenantId = TENANT_ID,
             Title = "Test Book 2",
             Annotation = "Test annotation 2",
@@ -57,7 +57,7 @@ public class GetAllBooksQueryTests
         };
         var book3 = new Book
         {
-            Id = 3L,
+            Id = 3,
             TenantId = TENANT_ID,
             Title = "Test Book 3",
             Annotation = "Test annotation 3",
@@ -79,8 +79,8 @@ public class GetAllBooksQueryTests
 
         Assert.NotNull(result);
         Assert.Equal(3, result.Count);
-        Assert.Contains(result, t => t.Id == 1L && t.Title == "Test Book 1");
-        Assert.Contains(result, t => t.Id == 2L && t.Title == "Test Book 2");
-        Assert.Contains(result, t => t.Id == 3L && t.Title == "Test Book 3");
+        Assert.Contains(result, t => t.Id == 1 && t.Title == "Test Book 1");
+        Assert.Contains(result, t => t.Id == 2 && t.Title == "Test Book 2");
+        Assert.Contains(result, t => t.Id == 3 && t.Title == "Test Book 3");
     }
 }

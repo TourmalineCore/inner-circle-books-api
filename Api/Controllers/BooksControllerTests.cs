@@ -12,7 +12,7 @@ namespace Api.Controllers;
 
 public class BooksControllerTests
 {
-    private const long TENANT_ID = 1L;
+    private const long TENANT_ID = 1;
     private readonly BooksController _controller;
     private readonly Mock<ICreateBookCommand> _createBookCommandMock;
     private readonly Mock<IDeleteBookCommand> _deleteBookCommandMock;
@@ -63,7 +63,7 @@ public class BooksControllerTests
         {
             new()
             {
-                Id = 1L,
+                Id = 1,
                 TenantId = TENANT_ID,
                 Title = "Test Book 1",
                 Annotation = "Test annotation 1",
@@ -79,7 +79,7 @@ public class BooksControllerTests
             },
             new()
             {
-                Id = 2L,
+                Id = 2,
                 TenantId = TENANT_ID,
                 Title = "Test Book 2",
                 Annotation = "Test annotation 2",
@@ -113,7 +113,7 @@ public class BooksControllerTests
         {
             new()
             {
-                Id = 1L,
+                Id = 1,
                 TenantId = TENANT_ID,
                 Title = "Test Book 1",
                 Annotation = "Test annotation 1",
@@ -129,7 +129,7 @@ public class BooksControllerTests
             },
             new()
             {
-                Id = 2L,
+                Id = 2,
                 TenantId = TENANT_ID,
                 Title = "Test Book 2",
                 Annotation = "Test annotation 2",
@@ -145,10 +145,10 @@ public class BooksControllerTests
             }
         };
         _getBookByIdQueryMock
-            .Setup(query => query.GetByIdAsync(1L, TENANT_ID))
-            .ReturnsAsync(books.Where(x => x.Id == 1L).Single);
+            .Setup(query => query.GetByIdAsync(1, TENANT_ID))
+            .ReturnsAsync(books.Where(x => x.Id == 1).Single);
 
-        var result = await _controller.GetBookByIdAsync(1L);
+        var result = await _controller.GetBookByIdAsync(1);
 
         Assert.Equal("Test Book 1", result.Title);
     }
@@ -183,7 +183,7 @@ public class BooksControllerTests
     [Fact]
     public async Task DeleteBook_ShouldCallDeleteAsync()
     {
-        var bookId = 1L;
+        var bookId = 1;
 
         await _controller.HardDeleteBook(bookId);
 
@@ -207,8 +207,8 @@ public class BooksControllerTests
             Language = "en"
         };
 
-        await _controller.UpdateBook(1L, updateBookRequest);
+        await _controller.UpdateBook(1, updateBookRequest);
 
-        _updateBookCommandMock.Verify(command => command.UpdateAsync(1L, updateBookRequest, TENANT_ID), Times.Once);
+        _updateBookCommandMock.Verify(command => command.UpdateAsync(1, updateBookRequest, TENANT_ID), Times.Once);
     }
 }

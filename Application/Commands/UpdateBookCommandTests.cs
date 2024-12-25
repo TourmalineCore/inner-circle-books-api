@@ -7,7 +7,7 @@ using Xunit;
 
 public class UpdateBookCommandTests
 {
-    private const long TENANT_ID = 1L;
+    private const long TENANT_ID = 1;
     private readonly UpdateBookCommand _command;
     private readonly AppDbContext _context;
 
@@ -26,7 +26,7 @@ public class UpdateBookCommandTests
     {
         var book = new Book
         {
-            Id = 1L,
+            Id = 1,
             TenantId = TENANT_ID,
             Title = "Test Book",
             Annotation = "Test annotation",

@@ -6,7 +6,7 @@ using Xunit;
 
 public class DeleteBookCommandTests
 {
-    private const long TENANT_ID = 1L;
+    private const long TENANT_ID = 1;
     private readonly DeleteBookCommand _command;
     private readonly AppDbContext _context;
 
@@ -25,7 +25,7 @@ public class DeleteBookCommandTests
     {
         var book = new Book
         {
-            Id = 1L,
+            Id = 1,
             TenantId = TENANT_ID,
             Title = "Test Book",
             Annotation = "Test annotation",

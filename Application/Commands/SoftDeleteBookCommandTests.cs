@@ -6,7 +6,7 @@ using Xunit;
 
 public class SoftDeleteBookCommandTests
 {
-    private const long TENANT_ID = 1L;
+    private const long TENANT_ID = 1;
     private readonly SoftDeleteBookCommand _command;
     private readonly AppDbContext _context;
 

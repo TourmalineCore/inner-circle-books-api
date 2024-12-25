@@ -6,7 +6,7 @@ using Xunit;
 
 public class GetBookByIdQueryTests
 {
-    private const long TENANT_ID = 1L;
+    private const long TENANT_ID = 1;
     private readonly AppDbContext _context;
     private readonly GetBookByIdQuery _query;
 
