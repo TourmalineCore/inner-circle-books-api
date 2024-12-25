@@ -50,3 +50,19 @@ java -jar /karate.jar .
 - LocalEnvForDevelopment - used locally when you run the service in Visual Studio and you want to connect to its external deps from Local Env (ToDo not there yet)
 - ProdForDevelopment - used locally when you run the service in Visual Studio and want to connect to its external deps from Prod specially dedicated Local Development Tenant (ToDo, need to complete tenants, secrets need to be available in the developer PC env vars)
 - ProdForDeployment - used when we run the service in Prod, it shouldn't contain any secrets, it should be a Release build, using real Prod external deps
+
+## Database scheme 
+```mermaid
+erDiagram
+Book{
+  long id PK "Example: '1'"
+  long tenantId "Example: '1'"
+  text title "Example: 'Пиши, сокращай 2025: Как создавать сильный текст'" 
+  text annotation "Example: 'Книга о создании текста для всех, кто пишет по работе'"
+  text authors "Example: '[{'fullName': 'Максим Ильяхов'}, {'fullName': 'Людмила Сарычева'}]'"
+  enum language "Example: 'ru'"
+  datetime createdAtUtc "Example: '2024-12-25 09:20:25.695197+00'"
+  datetime deletedAtUtc "nullable, Example: '2024-12-25 09:20:25.695197+00'"
+  text artworkUrl "nullable, Example: 'https://cdn.litres.ru/pub/c/cover/70193008.jpg'"
+}
+```
