@@ -16,7 +16,8 @@ public class GetAllBooksQuery : IGetAllBooksQuery
     public async Task<List<Book>> GetAllAsync(long tenantId)
     {
         var booksList = await _context.Books
-            .Where(x => x.DeletedAtUtc == null && x.TenantId == tenantId)
+            .Where(x => x.TenantId == tenantId)
+            .Where(x => x.DeletedAtUtc == null)
             .ToListAsync();
         return booksList;
     }

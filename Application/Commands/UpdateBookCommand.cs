@@ -17,7 +17,8 @@ public class EditBookCommand : IEditBookCommand
     public async Task EditAsync(long id, EditBookRequest editBookRequest, long tenantId)
     {
         var book = await _context.Books
-            .Where(x => x.Id == id && x.TenantId == tenantId)
+            .Where(x => x.TenantId == tenantId)
+            .Where(x => x.Id == id)
             .SingleAsync();
 
         book.Title = editBookRequest.Title;

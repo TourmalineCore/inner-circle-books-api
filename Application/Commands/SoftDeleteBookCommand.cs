@@ -15,7 +15,8 @@ public class SoftDeleteBookCommand : ISoftDeleteBookCommand
     public async Task SoftDeleteAsync(long id, long tenantId)
     {
         var book = await _context.Books
-            .Where(x => x.Id == id && x.TenantId == tenantId)
+            .Where(x => x.TenantId == tenantId)
+            .Where(x => x.Id == id)
             .SingleOrDefaultAsync();
 
         if (book != null)
