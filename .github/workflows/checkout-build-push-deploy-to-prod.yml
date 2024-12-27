@@ -69,7 +69,7 @@ jobs:
         uses: WyriHaximus/github-action-helm3@v3
         with:
           exec: |
-            RELEASE_NAME=compensations-api
+            RELEASE_NAME=books-api
             helm repo add bitnami https://charts.bitnami.com/bitnami
             helm upgrade --install --namespace dev-inner-circle --create-namespace --values ./Api/ci/values-custom.yaml \
             --set "ingress.enabled=true" \
