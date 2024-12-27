@@ -15,6 +15,7 @@ on:
   push:
     branches:
       - master
+      - feature/*
   pull_request:    
 
 jobs:
