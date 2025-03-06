@@ -46,7 +46,7 @@ public class BooksController : Controller
     /// <summary>
     ///     Get all books
     /// </summary>
-    // TODO add new permission
+    // TODO add new permission to account management
     //[RequiresPermission(UserClaimsProvider.CanViewBooks)]
     [HttpGet]
     public async Task<BooksListResponse> GetAllBooksAsync()
