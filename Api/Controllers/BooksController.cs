@@ -1,8 +1,8 @@
 using System.ComponentModel.DataAnnotations;
 using Api.Responses;
-using Application.Commands.Contracts;
+using Application.Commands;
 using Application.Queries.Contracts;
-using Application.Requests;
+using Api.Requests;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using TourmalineCore.AspNetCore.JwtAuthentication.Core.Filters;
@@ -16,12 +16,12 @@ namespace Api.Controllers;
 [Route("api/books")]
 public class BooksController : Controller
 {
-    private readonly ICreateBookCommand _createBookCommand;
-    private readonly IDeleteBookCommand _deleteBookCommand;
+    private readonly CreateBookCommand _createBookCommand;
+    private readonly DeleteBookCommand _deleteBookCommand;
     private readonly IGetAllBooksQuery _getAllBooksQuery;
     private readonly IGetBookByIdQuery _getBookByIdQuery;
-    private readonly ISoftDeleteBookCommand _softDeleteBookCommand;
-    private readonly IEditBookCommand _editBookCommand;
+    private readonly SoftDeleteBookCommand _softDeleteBookCommand;
+    private readonly EditBookCommand _editBookCommand;
 
     /// <summary>
     ///     Controller with actions to books
@@ -29,10 +29,10 @@ public class BooksController : Controller
     public BooksController(
         IGetAllBooksQuery getAllBooksQuery,
         IGetBookByIdQuery getBookByIdQuery,
-        ICreateBookCommand createBookCommand,
-        IEditBookCommand editBookCommand,
-        IDeleteBookCommand deleteBookCommand,
-        ISoftDeleteBookCommand softDeleteBookCommand
+        CreateBookCommand createBookCommand,
+        EditBookCommand editBookCommand,
+        DeleteBookCommand deleteBookCommand,
+        SoftDeleteBookCommand softDeleteBookCommand
     )
     {
         _getAllBooksQuery = getAllBooksQuery;
@@ -46,6 +46,8 @@ public class BooksController : Controller
     /// <summary>
     ///     Get all books
     /// </summary>
+    // TODO add new permission
+    //[RequiresPermission(UserClaimsProvider.CanViewBooks)]
     [HttpGet]
     public async Task<BooksListResponse> GetAllBooksAsync()
     {
@@ -70,6 +72,7 @@ public class BooksController : Controller
     /// <summary>
     ///     Get book by id
     /// </summary>
+    //[RequiresPermission(UserClaimsProvider.CanViewBooks)]
     [HttpGet("{id}")]
     public async Task<SingleBookResponse> GetBookByIdAsync([Required][FromRoute] long id)
     {
@@ -96,7 +99,17 @@ public class BooksController : Controller
     [HttpPost]
     public async Task<CreateBookResponse> CreateBookAsync([Required][FromBody] CreateBookRequest createBookRequest)
     {
-        var newBookId = await _createBookCommand.CreateAsync(createBookRequest, User.GetTenantId());
+        var createBookCommandParams = new CreateBookCommandParams
+        {
+            Title = createBookRequest.Title,
+            Annotation = createBookRequest.Annotation,
+            Authors = createBookRequest.Authors,
+            Language = createBookRequest.Language,
+            BookCoverUrl = createBookRequest.BookCoverUrl,
+        };
+
+        var newBookId = await _createBookCommand.CreateAsync(createBookCommandParams, User.GetTenantId());
+
         return new CreateBookResponse()
         {
             NewBookId = newBookId
