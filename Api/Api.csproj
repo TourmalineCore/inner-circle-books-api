@@ -13,7 +13,6 @@
     <Content Remove="E2E\**" />
     <EmbeddedResource Remove="E2E\**" />
     <None Remove="E2E\**" />
-    <None Remove="Requests\" />
   </ItemGroup>
 
   <ItemGroup>
@@ -50,12 +49,8 @@
 	<ItemGroup>
 	  <ProjectReference Include="..\Application\Application.csproj" />
 	</ItemGroup>
-	<ItemGroup>
-	  <Folder Include="Requests\" />
-	</ItemGroup>
 	<PropertyGroup>
 		<GenerateDocumentationFile>true</GenerateDocumentationFile>
 	</PropertyGroup>
 
-	<PropertyGroup Condition=" '$(RunConfiguration)' == 'http' " />
 </Project>
