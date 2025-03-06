@@ -1,12 +1,12 @@
 using System.Security.Claims;
 using Api.Responses;
-using Application.Commands.Contracts;
 using Application.Queries.Contracts;
-using Application.Requests;
+using Api.Requests;
 using Core.Entities;
 using Microsoft.AspNetCore.Mvc;
 using Moq;
 using Xunit;
+using Application.Commands;
 
 namespace Api.Controllers;
 
@@ -14,21 +14,21 @@ public class BooksControllerTests
 {
     private const long TENANT_ID = 1;
     private readonly BooksController _controller;
-    private readonly Mock<ICreateBookCommand> _createBookCommandMock;
-    private readonly Mock<IDeleteBookCommand> _deleteBookCommandMock;
+    private readonly Mock<CreateBookCommand> _createBookCommandMock;
+    private readonly Mock<DeleteBookCommand> _deleteBookCommandMock;
     private readonly Mock<IGetAllBooksQuery> _getAllBooksQueryMock;
     private readonly Mock<IGetBookByIdQuery> _getBookByIdQueryMock;
-    private readonly Mock<ISoftDeleteBookCommand> _softDeleteBookCommandMock;
-    private readonly Mock<IEditBookCommand> _editBookCommandMock;
+    private readonly Mock<SoftDeleteBookCommand> _softDeleteBookCommandMock;
+    private readonly Mock<EditBookCommand> _editBookCommandMock;
 
     public BooksControllerTests()
     {
         _getAllBooksQueryMock = new Mock<IGetAllBooksQuery>();
         _getBookByIdQueryMock = new Mock<IGetBookByIdQuery>();
-        _createBookCommandMock = new Mock<ICreateBookCommand>();
-        _editBookCommandMock = new Mock<IEditBookCommand>();
-        _deleteBookCommandMock = new Mock<IDeleteBookCommand>();
-        _softDeleteBookCommandMock = new Mock<ISoftDeleteBookCommand>();
+        _createBookCommandMock = new Mock<CreateBookCommand>();
+        _editBookCommandMock = new Mock<EditBookCommand>();
+        _deleteBookCommandMock = new Mock<DeleteBookCommand>();
+        _softDeleteBookCommandMock = new Mock<SoftDeleteBookCommand>();
 
         var claims = new[]
         {
@@ -171,13 +171,13 @@ public class BooksControllerTests
             Language = "ru"
         };
         _createBookCommandMock
-            .Setup(command => command.CreateAsync(request, TENANT_ID))
+            .Setup(command => command.CreateAsync(It.IsAny<CreateBookCommandParams>(), TENANT_ID))
             .ReturnsAsync(1);
 
         var result = await _controller.CreateBookAsync(request);
 
         Assert.Equal(1, result.NewBookId);
-        _createBookCommandMock.Verify(command => command.CreateAsync(request, TENANT_ID), Times.Once);
+        _createBookCommandMock.Verify(command => command.CreateAsync(It.IsAny<CreateBookCommandParams>(), TENANT_ID), Times.Once);
     }
 
     [Fact]
@@ -209,6 +209,6 @@ public class BooksControllerTests
 
         await _controller.EditBook(1, editBookRequest);
 
-        _editBookCommandMock.Verify(command => command.EditAsync(1, editBookRequest, TENANT_ID), Times.Once);
+        _editBookCommandMock.Verify(command => command.EditAsync(1, It.IsAny<EditBookCommandParams>(), TENANT_ID), Times.Once);
     }
 }

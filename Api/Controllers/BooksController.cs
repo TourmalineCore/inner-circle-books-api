@@ -123,9 +123,19 @@ public class BooksController : Controller
     /// <param name="editBookRequest"></param>
     [RequiresPermission(UserClaimsProvider.CanManageBooks)]
     [HttpPost("{id}/edit")]
+    // TODO naming is different, need to leave or edit or update
     public Task EditBook([Required][FromRoute] long id, [Required][FromBody] EditBookRequest editBookRequest)
     {
-        return _editBookCommand.EditAsync(id, editBookRequest, User.GetTenantId());
+        var editBookCommandParams = new EditBookCommandParams
+        {
+            Title = editBookRequest.Title,
+            Annotation = editBookRequest.Annotation,
+            Authors = editBookRequest.Authors,
+            Language = editBookRequest.Language,
+            BookCoverUrl = editBookRequest.BookCoverUrl,
+        };
+
+        return _editBookCommand.EditAsync(id, editBookCommandParams, User.GetTenantId());
     }
 
     /// <summary>
