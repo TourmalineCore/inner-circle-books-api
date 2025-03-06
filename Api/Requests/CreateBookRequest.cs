@@ -1,7 +1,6 @@
 using System.ComponentModel.DataAnnotations;
-using Core.Entities;
 
-namespace Application.Requests;
+namespace Api.Requests;
 
 public class CreateBookRequest
 {

@@ -1,6 +1,6 @@
 using System.ComponentModel.DataAnnotations;
 
-namespace Application.Requests;
+namespace Api.Requests;
 
 public class EditBookRequest
 {
@@ -11,8 +11,10 @@ public class EditBookRequest
     [MaxLength(2000)]
     [Required]
     public string Annotation { get; set; }
+
     [Required]
     public string Language { get; set; }
+
     [Required]
     public List<AuthorModel> Authors { get; set; }
 
