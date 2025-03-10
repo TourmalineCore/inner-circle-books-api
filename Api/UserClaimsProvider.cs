@@ -7,7 +7,7 @@ namespace Api
     {
         public const string PermissionClaimType = "permissions";
 
-        //public const string CanViewBooks = "CanViewBooks";
+        public const string CanViewBooks = "CanViewBooks";
         public const string CanManageBooks = "CanManageBooks";
         public const string IsBooksHardDeleteAllowed = "IsBooksHardDeleteAllowed";
 

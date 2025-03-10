@@ -201,7 +201,7 @@ public class BooksControllerTests
             {
                 new AuthorModel()
                 {
-                    FullName = "Editd Author"
+                    FullName = "Edited Author"
                 }
             },
             Language = "en"

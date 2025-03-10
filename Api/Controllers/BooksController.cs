@@ -47,8 +47,7 @@ public class BooksController : Controller
     /// <summary>
     ///     Get all books
     /// </summary>
-    // TODO add new permission to account management
-    //[RequiresPermission(UserClaimsProvider.CanViewBooks)]
+    [RequiresPermission(UserClaimsProvider.CanViewBooks)]
     [HttpGet]
     public async Task<BooksListResponse> GetAllBooksAsync()
     {
@@ -73,7 +72,7 @@ public class BooksController : Controller
     /// <summary>
     ///     Get book by id
     /// </summary>
-    //[RequiresPermission(UserClaimsProvider.CanViewBooks)]
+    [RequiresPermission(UserClaimsProvider.CanViewBooks)]
     [HttpGet("{id}")]
     public async Task<SingleBookResponse> GetBookByIdAsync([Required][FromRoute] long id)
     {
@@ -100,10 +99,13 @@ public class BooksController : Controller
     [HttpPost]
     public async Task<CreateBookResponse> CreateBookAsync([Required][FromBody] CreateBookRequest createBookRequest)
     {
-        var authors = createBookRequest.Authors.Select(author => new Author
-        {
-            FullName = author.FullName,
-        }).ToList();
+        var authors = createBookRequest
+            .Authors
+            .Select(author => new Author
+            {
+                FullName = author.FullName,
+            })
+            .ToList();
 
         var createBookCommandParams = new CreateBookCommandParams
         {
@@ -129,13 +131,14 @@ public class BooksController : Controller
     /// <param name="editBookRequest"></param>
     [RequiresPermission(UserClaimsProvider.CanManageBooks)]
     [HttpPost("{id}/edit")]
-    // TODO naming is different, need to leave or edit or update
     public Task EditBook([Required][FromRoute] long id, [Required][FromBody] EditBookRequest editBookRequest)
     {
-        var authors = editBookRequest.Authors.Select(author => new Author
-        {
-            FullName = author.FullName,
-        }).ToList();
+        var authors = editBookRequest
+            .Authors
+            .Select(author => new Author {
+                FullName = author.FullName,
+            })
+            .ToList();
 
         var editBookCommandParams = new EditBookCommandParams
         {
