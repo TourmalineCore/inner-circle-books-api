@@ -24,4 +24,8 @@ public class DeleteBookCommand
             await _context.SaveChangesAsync();
         }
     }
+
+    public DeleteBookCommand()
+    {
+    }
 }

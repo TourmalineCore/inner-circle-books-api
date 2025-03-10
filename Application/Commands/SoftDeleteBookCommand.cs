@@ -26,4 +26,8 @@ public class SoftDeleteBookCommand
             await _context.SaveChangesAsync();
         }
     }
+
+    public SoftDeleteBookCommand()
+    {
+    }
 }
