@@ -6,6 +6,7 @@ using Api.Requests;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using TourmalineCore.AspNetCore.JwtAuthentication.Core.Filters;
+using Core.Entities;
 
 namespace Api.Controllers;
 
@@ -99,11 +100,16 @@ public class BooksController : Controller
     [HttpPost]
     public async Task<CreateBookResponse> CreateBookAsync([Required][FromBody] CreateBookRequest createBookRequest)
     {
+        var authors = createBookRequest.Authors.Select(author => new Author
+        {
+            FullName = author.FullName,
+        }).ToList();
+
         var createBookCommandParams = new CreateBookCommandParams
         {
             Title = createBookRequest.Title,
             Annotation = createBookRequest.Annotation,
-            Authors = createBookRequest.Authors,
+            Authors = authors,
             Language = createBookRequest.Language,
             BookCoverUrl = createBookRequest.BookCoverUrl,
         };
@@ -126,11 +132,16 @@ public class BooksController : Controller
     // TODO naming is different, need to leave or edit or update
     public Task EditBook([Required][FromRoute] long id, [Required][FromBody] EditBookRequest editBookRequest)
     {
+        var authors = editBookRequest.Authors.Select(author => new Author
+        {
+            FullName = author.FullName,
+        }).ToList();
+
         var editBookCommandParams = new EditBookCommandParams
         {
             Title = editBookRequest.Title,
             Annotation = editBookRequest.Annotation,
-            Authors = editBookRequest.Authors,
+            Authors = authors,
             Language = editBookRequest.Language,
             BookCoverUrl = editBookRequest.BookCoverUrl,
         };
