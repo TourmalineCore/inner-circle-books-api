@@ -35,10 +35,19 @@ public class EditBookCommand
         book.Title = editBookCommandParams.Title;
         book.Annotation = editBookCommandParams.Annotation;
         book.Language = (Language)Enum.Parse(typeof(Language), editBookCommandParams.Language);
-        book.Authors = editBookCommandParams.Authors.Select(x => new Author() { FullName = x.FullName }).ToList();
+        book.Authors = editBookCommandParams
+            .Authors
+            .Select(x => new Author() {
+                FullName = x.FullName
+            })
+            .ToList();
         book.BookCoverUrl = editBookCommandParams.BookCoverUrl;
 
         _context.Books.Update(book);
         await _context.SaveChangesAsync();
+    }
+
+    public EditBookCommand()
+    {
     }
 }
