@@ -44,7 +44,7 @@ Scenario: CRUD operations test flow
     # Step 3: Edit the book's details
     * def editedName = 'Test-edited-book' + Math.random()
     Given path 'api/books', newBookId, 'edit'
-    And request { title: '#(editedName)', annotation: 'Edited annotation', language: 'ru', authors: [{fullName:'Edited Author'}], bookCoverUrl: 'http://example.com/edited-artwork.jpg' }
+    And request { title: '#(editedName)', annotation: 'Edited annotation', language: 'ru', authors: [{fullName: 'Edited Author'}], bookCoverUrl: 'http://example.com/edited-artwork.jpg' }
     When method POST
     Then status 200
 
