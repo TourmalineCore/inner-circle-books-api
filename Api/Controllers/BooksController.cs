@@ -1,12 +1,12 @@
 using System.ComponentModel.DataAnnotations;
 using Api.Responses;
-using Application.Commands;
-using Application.Queries.Contracts;
 using Api.Requests;
+using Application.Commands;
+using Application.Queries;
+using Core.Entities;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using TourmalineCore.AspNetCore.JwtAuthentication.Core.Filters;
-using Core.Entities;
 
 namespace Api.Controllers;
 
@@ -19,8 +19,8 @@ public class BooksController : Controller
 {
     private readonly CreateBookCommand _createBookCommand;
     private readonly DeleteBookCommand _deleteBookCommand;
-    private readonly IGetAllBooksQuery _getAllBooksQuery;
-    private readonly IGetBookByIdQuery _getBookByIdQuery;
+    private readonly GetAllBooksQuery _getAllBooksQuery;
+    private readonly GetBookByIdQuery _getBookByIdQuery;
     private readonly SoftDeleteBookCommand _softDeleteBookCommand;
     private readonly EditBookCommand _editBookCommand;
 
@@ -28,8 +28,8 @@ public class BooksController : Controller
     ///     Controller with actions to books
     /// </summary>
     public BooksController(
-        IGetAllBooksQuery getAllBooksQuery,
-        IGetBookByIdQuery getBookByIdQuery,
+        GetAllBooksQuery getAllBooksQuery,
+        GetBookByIdQuery getBookByIdQuery,
         CreateBookCommand createBookCommand,
         EditBookCommand editBookCommand,
         DeleteBookCommand deleteBookCommand,

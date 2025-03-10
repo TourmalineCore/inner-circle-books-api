@@ -1,10 +1,9 @@
-using Application.Queries.Contracts;
 using Core.Entities;
 using Microsoft.EntityFrameworkCore;
 
 namespace Application.Queries;
 
-public class GetAllBooksQuery : IGetAllBooksQuery
+public class GetAllBooksQuery
 {
     private readonly AppDbContext _context;
 
@@ -20,5 +19,9 @@ public class GetAllBooksQuery : IGetAllBooksQuery
             .Where(x => x.DeletedAtUtc == null)
             .ToListAsync();
         return booksList;
+    }
+
+    public GetAllBooksQuery()
+    {
     }
 }

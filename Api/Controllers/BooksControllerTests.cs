@@ -1,12 +1,12 @@
 using System.Security.Claims;
 using Api.Responses;
-using Application.Queries.Contracts;
 using Api.Requests;
+using Application.Commands;
+using Application.Queries;
 using Core.Entities;
 using Microsoft.AspNetCore.Mvc;
 using Moq;
 using Xunit;
-using Application.Commands;
 
 namespace Api.Controllers;
 
@@ -16,15 +16,15 @@ public class BooksControllerTests
     private readonly BooksController _controller;
     private readonly Mock<CreateBookCommand> _createBookCommandMock;
     private readonly Mock<DeleteBookCommand> _deleteBookCommandMock;
-    private readonly Mock<IGetAllBooksQuery> _getAllBooksQueryMock;
-    private readonly Mock<IGetBookByIdQuery> _getBookByIdQueryMock;
+    private readonly Mock<GetAllBooksQuery> _getAllBooksQueryMock;
+    private readonly Mock<GetBookByIdQuery> _getBookByIdQueryMock;
     private readonly Mock<SoftDeleteBookCommand> _softDeleteBookCommandMock;
     private readonly Mock<EditBookCommand> _editBookCommandMock;
 
     public BooksControllerTests()
     {
-        _getAllBooksQueryMock = new Mock<IGetAllBooksQuery>();
-        _getBookByIdQueryMock = new Mock<IGetBookByIdQuery>();
+        _getAllBooksQueryMock = new Mock<GetAllBooksQuery>();
+        _getBookByIdQueryMock = new Mock<GetBookByIdQuery>();
         _createBookCommandMock = new Mock<CreateBookCommand>();
         _editBookCommandMock = new Mock<EditBookCommand>();
         _deleteBookCommandMock = new Mock<DeleteBookCommand>();
