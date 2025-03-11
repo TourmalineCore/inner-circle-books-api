@@ -7,9 +7,8 @@ releases:
     labels:
       app: books-api
     wait: true
-    chart: bitnami/nginx
-    # after 15.3.5 our docker file or setup can no longer start, need to investigate what is wrong for the newer versions
-    version: 15.3.5
+    chart: bitnami/aspnet-core
+    version: 4.4.7
     values:
       - values.yaml
       - image:
