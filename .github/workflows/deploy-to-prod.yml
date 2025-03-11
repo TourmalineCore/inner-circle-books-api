@@ -39,7 +39,7 @@ jobs:
           helmfile-auto-init: "false"
 
   e2e-test-prod:
-    runs-on: ubuntu-22.04
+    runs-on: ubuntu-latest
     needs: [deploy-to-prod]
     steps:
       - name: Check out the repo
