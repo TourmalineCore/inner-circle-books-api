@@ -1,0 +1,75 @@
+name: Deploy to Prod and e2e test to prod
+
+on:
+  push:
+    branches:
+      - master
+
+jobs:
+  push_to_registry:
+    uses: ./.github/workflows/docker-build-and-push.yml
+    secrets: inherit
+
+  deploy-to-prod:
+    name: Deploy service to k8s for prod environment  
+    needs: [push_to_registry]
+    runs-on: ubuntu-22.04
+    steps:
+      - name: Check out the repo
+        uses: actions/checkout@v4
+
+      - name: Create default global .kube/config file
+        run: |
+          cd $HOME
+          mkdir .kube
+          echo "${{ secrets.KUBECONFIG }}" > .kube/config
+
+      - name: Deploy
+        uses: helmfile/helmfile-action@v1.9.0
+        with:
+          helmfile-version: 'v0.164.0'
+          helm-version: 'v3.14.4'
+          helmfile-args: >
+            apply --namespace dev-inner-circle -f Api/ci/helmfile.yaml 
+            --state-values-set image.tag=sha-${{ github.sha }} 
+            --state-values-set ingress.hostname=${{ secrets.HOST }}
+            --state-values-set "extraSecretEnvVars.ConnectionStrings__DefaultConnection=${{ secrets.POSTGRESQL_CONNECTION_STRING }}" \
+            --state-values-set "extraSecretEnvVars.AuthenticationOptions__PublicSigningKey=${{ secrets.PUBLIC_SIGNING_KEY }}" \
+          helmfile-auto-init: "false"       
+
+  e2e-test-prod:
+    runs-on: ubuntu-22.04
+    needs: [deploy-to-prod]
+    steps:
+      - name: Check out the repo
+        uses: actions/checkout@v4
+      # Get secrets to sign in
+      - name: Set up Docker Compose environment variables
+        run: |
+          echo AUTH_LOGIN=${{ secrets.AUTH_LOGIN }} >> .env
+          echo AUTH_PASSWORD=${{ secrets.AUTH_PASSWORD }} >> .env
+      - name: Run service via docker-compose and run Karate-tests
+      # Hide credentials and token from logs, get the number of failed and passed tests
+        run: |
+          LOGS=$(docker compose --profile production-e2e-tests up --abort-on-container-exit)
+          FILTERED_LOGS=$(echo "$LOGS" | sed -E 's/"login":"[^"]*"/"login":"****"/g' \
+                                    | sed -E 's/"password":"[^"]*"/"password":"****"/g' \
+                                    | sed -E 's/"accessToken":[^,}]*"[^"]*"/"accessToken":"****"/g' \
+                                    | sed -E 's/"Authorization":"[^"]*"/"Authorization":"****"/g' \
+                                    | sed -E 's/"X-DEBUG-TOKEN":[^,}]*"[^"]*"/"X-DEBUG-TOKEN":"****"/g' \
+                                    | sed -E 's/accessToken":\{[^}]*\}/accessToken":{"value":"****"}/g' \
+                                    | sed -E 's/X-DEBUG-TOKEN: [^ ]*/X-DEBUG-TOKEN: ****/g' \
+                                    | sed -E 's/Authorization: [^ ]*/Authorization: ****/g')
+          echo "$FILTERED_LOGS"
+          FAILED=$(echo "$FILTERED_LOGS" | grep -oP 'failed: *\K\d+')
+          PASSED=$(echo "$FILTERED_LOGS" | grep -oP 'passed: *\K\d+')
+          echo "Failed tests: $FAILED"
+          echo "Passed tests: $PASSED"
+          if [ "$FAILED" -gt 0 ]; then
+            echo "Failed tests found! Failing the pipeline..."
+            exit 1
+          fi
+          if [ "$PASSED" -eq 0 ]; then
+            echo "No tests passed! Failing the pipeline..."
+            exit 1
+          fi
