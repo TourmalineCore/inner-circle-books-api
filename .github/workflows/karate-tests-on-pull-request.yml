@@ -51,12 +51,13 @@ jobs:
         run: |
           echo AUTH_LOGIN="ceo@tourmalinecore.com" >> .env
           echo AUTH_PASSWORD="cEoPa$$wo1d" >> .env
+          echo AUTH_API_ROOT_URL: "http://localhost:40100/api" >> .env
+          echo API_ROOT_URL: "http://localhost:40100" >> .env
 
-      - name: Run service via docker-compose and run Karate-tests
+      - name: Run Karate-tests in local-env
       # Hide credentials and token from logs, get the number of failed and passed tests
       # Find text with 'failed' and 'passed' in logs from karate-testing container
         run: |
-          LOGS=$(docker compose --profile LocalEnvForDevelopment up --abort-on-container-exit)
           FILTERED_LOGS=$(echo "$LOGS" | sed -E 's/"login":"[^"]*"/"login":"****"/g' \
                                   | sed -E 's/"password":"[^"]*"/"password":"****"/g' \
                                   | sed -E 's/"accessToken":[^,}]*"[^"]*"/"accessToken":"****"/g' \
