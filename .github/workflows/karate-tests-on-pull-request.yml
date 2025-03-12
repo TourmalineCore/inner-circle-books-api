@@ -45,7 +45,13 @@ jobs:
 
       - name: Checkout api
         uses: actions/checkout@v4
-
+      
+      # Get secrets to sign in
+      - name: Set up Docker Compose environment variables
+        run: |
+          echo AUTH_LOGIN="ceo@tourmalinecore.com"  >> .env
+          echo AUTH_PASSWORD="cEoPa$$wo1d" >> .env
+      
       - name: Run Karate-tests in local-env
         run: |
           # Get logs
