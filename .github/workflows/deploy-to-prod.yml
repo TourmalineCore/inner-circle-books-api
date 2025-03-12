@@ -55,7 +55,9 @@ jobs:
       - name: Run service via docker-compose and run Karate-tests
       # Hide credentials and token from logs, get the number of failed and passed tests
         run: |
+          # Get logs
           LOGS=$(docker compose --profile production-e2e-tests up --abort-on-container-exit)
+          # Filter logs and mask sensitive information          
           FILTERED_LOGS=$(echo "$LOGS" | sed -E 's/"login":"[^"]*"/"login":"****"/g' \
                                     | sed -E 's/"password":"[^"]*"/"password":"****"/g' \
                                     | sed -E 's/"accessToken":[^,}]*"[^"]*"/"accessToken":"****"/g' \
@@ -65,6 +67,7 @@ jobs:
                                     | sed -E 's/X-DEBUG-TOKEN: [^ ]*/X-DEBUG-TOKEN: ****/g' \
                                     | sed -E 's/Authorization: [^ ]*/Authorization: ****/g')
           echo "$FILTERED_LOGS"
+          # Count failed and passed tests
           FAILED=$(echo "$FILTERED_LOGS" | grep -oP 'failed: *\K\d+')
           PASSED=$(echo "$FILTERED_LOGS" | grep -oP 'passed: *\K\d+')
           echo "Failed tests: $FAILED"

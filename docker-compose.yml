@@ -98,6 +98,22 @@ services:
       SHOULD_USE_FAKE_EXTERNAL_DEPENDENCIES: "false"
       AUTH_LOGIN: ${AUTH_LOGIN}
       AUTH_PASSWORD: ${AUTH_PASSWORD}
+  
+  local-env-karate-tests:
+    container_name: 'local-env-karate-tests'
+    profiles: ['local-env-karate-tests']
+    build:
+      dockerfile: KarateDockerfile
+      context: .
+    command: ["karate", "/karate"]
+    volumes:
+      - .:/karate
+    environment:
+      AUTH_API_ROOT_URL: "http://localhos:40100/api"
+      API_ROOT_URL: "http://localhos:40100"
+      SHOULD_USE_FAKE_EXTERNAL_DEPENDENCIES: "false"
+      AUTH_LOGIN: "ceo@tourmalinecore.com"
+      AUTH_PASSWORD: "cEoPa$$wo1d"
 
 networks:
   books-network:
