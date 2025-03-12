@@ -59,7 +59,7 @@ jobs:
       # Find text with 'failed' and 'passed' in logs from karate-testing container
         run: |
           # Get logs from pod
-          LOGS=$(kubectl logs -l app=inner-circle-auth-api)
+          LOGS=$(kubectl logs -l app=inner-circle-books-api)
           FILTERED_LOGS=$(echo "$LOGS" | sed -E 's/"login":"[^"]*"/"login":"****"/g' \
                                   | sed -E 's/"password":"[^"]*"/"password":"****"/g' \
                                   | sed -E 's/"accessToken":[^,}]*"[^"]*"/"accessToken":"****"/g' \
