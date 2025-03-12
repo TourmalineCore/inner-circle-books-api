@@ -58,6 +58,8 @@ jobs:
       # Hide credentials and token from logs, get the number of failed and passed tests
       # Find text with 'failed' and 'passed' in logs from karate-testing container
         run: |
+          # check connection to Kubernetes
+          kubectl cluster-info || { echo "Kubernetes cluster is not reachable."; exit 1; }
           # Get logs from pod
           LOGS=$(kubectl logs -l app=inner-circle-books-api)
           FILTERED_LOGS=$(echo "$LOGS" | sed -E 's/"login":"[^"]*"/"login":"****"/g' \
