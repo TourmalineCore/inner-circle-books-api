@@ -51,8 +51,6 @@ jobs:
         run: |
           echo AUTH_LOGIN="ceo@tourmalinecore.com"  >> .env
           echo AUTH_PASSWORD="cEoPa$$wo1d" >> .env
-          echo AUTH_API_ROOT_URL="http://localhos:40100/api" >> .env
-          echo API_ROOT_URL="http://localhos:40100" >> .env
       
       - name: Run Karate-tests in local-env
         run: |
