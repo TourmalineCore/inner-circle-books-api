@@ -4,7 +4,6 @@ on:
   push:
     branches:
       - master
-      - feature/*
 
 jobs:
   push_to_registry:
@@ -39,7 +38,7 @@ jobs:
           helmfile-auto-init: "false"
 
   e2e-test-prod:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-22.04
     needs: [deploy-to-prod]
     steps:
       - name: Check out the repo
