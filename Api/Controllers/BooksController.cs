@@ -1,8 +1,9 @@
 using System.ComponentModel.DataAnnotations;
 using Api.Responses;
-using Application.Commands.Contracts;
-using Application.Queries.Contracts;
-using Application.Requests;
+using Api.Requests;
+using Application.Commands;
+using Application.Queries;
+using Core.Entities;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using TourmalineCore.AspNetCore.JwtAuthentication.Core.Filters;
@@ -16,23 +17,23 @@ namespace Api.Controllers;
 [Route("api/books")]
 public class BooksController : Controller
 {
-    private readonly ICreateBookCommand _createBookCommand;
-    private readonly IDeleteBookCommand _deleteBookCommand;
-    private readonly IGetAllBooksQuery _getAllBooksQuery;
-    private readonly IGetBookByIdQuery _getBookByIdQuery;
-    private readonly ISoftDeleteBookCommand _softDeleteBookCommand;
-    private readonly IEditBookCommand _editBookCommand;
+    private readonly CreateBookCommand _createBookCommand;
+    private readonly DeleteBookCommand _deleteBookCommand;
+    private readonly GetAllBooksQuery _getAllBooksQuery;
+    private readonly GetBookByIdQuery _getBookByIdQuery;
+    private readonly SoftDeleteBookCommand _softDeleteBookCommand;
+    private readonly EditBookCommand _editBookCommand;
 
     /// <summary>
     ///     Controller with actions to books
     /// </summary>
     public BooksController(
-        IGetAllBooksQuery getAllBooksQuery,
-        IGetBookByIdQuery getBookByIdQuery,
-        ICreateBookCommand createBookCommand,
-        IEditBookCommand editBookCommand,
-        IDeleteBookCommand deleteBookCommand,
-        ISoftDeleteBookCommand softDeleteBookCommand
+        GetAllBooksQuery getAllBooksQuery,
+        GetBookByIdQuery getBookByIdQuery,
+        CreateBookCommand createBookCommand,
+        EditBookCommand editBookCommand,
+        DeleteBookCommand deleteBookCommand,
+        SoftDeleteBookCommand softDeleteBookCommand
     )
     {
         _getAllBooksQuery = getAllBooksQuery;
@@ -46,6 +47,7 @@ public class BooksController : Controller
     /// <summary>
     ///     Get all books
     /// </summary>
+    [RequiresPermission(UserClaimsProvider.CanViewBooks)]
     [HttpGet]
     public async Task<BooksListResponse> GetAllBooksAsync()
     {
@@ -70,6 +72,7 @@ public class BooksController : Controller
     /// <summary>
     ///     Get book by id
     /// </summary>
+    [RequiresPermission(UserClaimsProvider.CanViewBooks)]
     [HttpGet("{id}")]
     public async Task<SingleBookResponse> GetBookByIdAsync([Required][FromRoute] long id)
     {
@@ -96,7 +99,25 @@ public class BooksController : Controller
     [HttpPost]
     public async Task<CreateBookResponse> CreateBookAsync([Required][FromBody] CreateBookRequest createBookRequest)
     {
-        var newBookId = await _createBookCommand.CreateAsync(createBookRequest, User.GetTenantId());
+        var authors = createBookRequest
+            .Authors
+            .Select(author => new Author
+            {
+                FullName = author.FullName,
+            })
+            .ToList();
+
+        var createBookCommandParams = new CreateBookCommandParams
+        {
+            Title = createBookRequest.Title,
+            Annotation = createBookRequest.Annotation,
+            Authors = authors,
+            Language = createBookRequest.Language,
+            BookCoverUrl = createBookRequest.BookCoverUrl,
+        };
+
+        var newBookId = await _createBookCommand.CreateAsync(createBookCommandParams, User.GetTenantId());
+
         return new CreateBookResponse()
         {
             NewBookId = newBookId
@@ -112,7 +133,23 @@ public class BooksController : Controller
     [HttpPost("{id}/edit")]
     public Task EditBook([Required][FromRoute] long id, [Required][FromBody] EditBookRequest editBookRequest)
     {
-        return _editBookCommand.EditAsync(id, editBookRequest, User.GetTenantId());
+        var authors = editBookRequest
+            .Authors
+            .Select(author => new Author {
+                FullName = author.FullName,
+            })
+            .ToList();
+
+        var editBookCommandParams = new EditBookCommandParams
+        {
+            Title = editBookRequest.Title,
+            Annotation = editBookRequest.Annotation,
+            Authors = authors,
+            Language = editBookRequest.Language,
+            BookCoverUrl = editBookRequest.BookCoverUrl,
+        };
+
+        return _editBookCommand.EditAsync(id, editBookCommandParams, User.GetTenantId());
     }
 
     /// <summary>

@@ -1,7 +1,5 @@
 using Application.Commands;
-using Application.Commands.Contracts;
 using Application.Queries;
-using Application.Queries.Contracts;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -18,11 +16,11 @@ public static class DependencyInjection
 
         services.AddDbContext<AppDbContext>(options => { options.UseNpgsql(connectionString); }
         );
-        services.AddTransient<ICreateBookCommand, CreateBookCommand>();
-        services.AddTransient<IEditBookCommand, EditBookCommand>();
-        services.AddTransient<IDeleteBookCommand, DeleteBookCommand>();
-        services.AddTransient<ISoftDeleteBookCommand, SoftDeleteBookCommand>();
-        services.AddTransient<IGetBookByIdQuery, GetBookByIdQuery>();
-        services.AddTransient<IGetAllBooksQuery, GetAllBooksQuery>();
+        services.AddTransient<CreateBookCommand>();
+        services.AddTransient<EditBookCommand>();
+        services.AddTransient<DeleteBookCommand>();
+        services.AddTransient<SoftDeleteBookCommand>();
+        services.AddTransient<GetBookByIdQuery>();
+        services.AddTransient<GetAllBooksQuery>();
     }
 }

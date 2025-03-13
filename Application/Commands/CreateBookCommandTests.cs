@@ -1,4 +1,3 @@
-using Application.Requests;
 using Core.Entities;
 using Microsoft.EntityFrameworkCore;
 using Xunit;
@@ -24,15 +23,15 @@ public class CreateBookCommandTests
     [Fact]
     public async Task CreateAsync_ShouldAddNewBookToDbSet()
     {
-        var createBookRequest = new CreateBookRequest
+        var createBookRequest = new CreateBookCommandParams
         {
             Title = "Test Book",
             Annotation = "Test annotation",
             Language = "ru",
             BookCoverUrl = "http://test-images.com/img404.png",
-            Authors = new List<AuthorModel>
+            Authors = new List<Author>
             {
-                new AuthorModel()
+                new Author()
                 {
                     FullName = "Test Author"
                 }
@@ -50,13 +49,13 @@ public class CreateBookCommandTests
     [Fact]
     public async Task CreateWithouAuthorsAsync_ShouldThrowException()
     {
-        var createBookRequest = new CreateBookRequest
+        var createBookRequest = new CreateBookCommandParams
         {
             Title = "Test Book",
             Annotation = "Test annotation",
             Language = "ru",
             BookCoverUrl = "http://test-images.com/img404.png",
-            Authors = new List<AuthorModel>
+            Authors = new List<Author>
             {
             }
         };

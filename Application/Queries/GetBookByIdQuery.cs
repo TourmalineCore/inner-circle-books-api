@@ -1,10 +1,9 @@
-using Application.Queries.Contracts;
 using Core.Entities;
 using Microsoft.EntityFrameworkCore;
 
 namespace Application.Queries;
 
-public class GetBookByIdQuery : IGetBookByIdQuery
+public class GetBookByIdQuery
 {
     private readonly AppDbContext _context;
 

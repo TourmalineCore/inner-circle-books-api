@@ -44,7 +44,7 @@ Scenario: CRUD operations test flow
     # Step 3: Edit the book's details
     * def editedName = 'Test-edited-book' + Math.random()
     Given path 'api/books', newBookId, 'edit'
-    And request { title: '#(editedName)', annotation: 'Edited annotation', language: 'ru', authors: [{fullName:'Edited Author'}], bookCoverUrl: 'http://example.com/edited-artwork.jpg' }
+    And request { title: '#(editedName)', annotation: 'Edited annotation', language: 'ru', authors: [{fullName: 'Edited Author'}], bookCoverUrl: 'http://example.com/edited-artwork.jpg' }
     When method POST
     Then status 200
 
@@ -54,8 +54,8 @@ Scenario: CRUD operations test flow
     Then status 200
     And match response.title == editedName
 
-    # Step 5: Delete the book (hard delete)
-    Given path 'api/books', newBookId, 'hard-delete'
+    # Step 5: Delete the book (soft delete)
+    Given path 'api/books', newBookId, 'soft-delete'
     When method DELETE
     Then status 200
     And match response == { isDeleted: true }
@@ -66,3 +66,9 @@ Scenario: CRUD operations test flow
     When method GET
     Then status 200
     And match response.books !contains { id: '#(newBookId)' }
+
+    # Step 7: Delete the book (hard delete)
+    Given path 'api/books', newBookId, 'hard-delete'
+    When method DELETE
+    Then status 200
+    And match response == { isDeleted: true }

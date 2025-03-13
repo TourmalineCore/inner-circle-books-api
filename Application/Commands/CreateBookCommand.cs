@@ -1,10 +1,21 @@
-using Application.Commands.Contracts;
-using Application.Requests;
 using Core.Entities;
 
 namespace Application.Commands;
 
-public class CreateBookCommand : ICreateBookCommand
+public class CreateBookCommandParams
+{
+    public string Title { get; set; }
+
+    public string Annotation { get; set; }
+
+    public List<Author> Authors { get; set; }
+
+    public string Language { get; set; }
+
+    public string BookCoverUrl { get; set; }
+}
+
+public class CreateBookCommand
 {
     private readonly AppDbContext _context;
 
@@ -13,20 +24,20 @@ public class CreateBookCommand : ICreateBookCommand
         _context = context;
     }
 
-    public async Task<long> CreateAsync(CreateBookRequest createBookRequest, long tenantId)
+    public async Task<long> CreateAsync(CreateBookCommandParams createBookCommandParams, long tenantId)
     {
-        if (createBookRequest.Authors == null || createBookRequest.Authors.Count == 0)
+        if (createBookCommandParams.Authors == null || createBookCommandParams.Authors.Count == 0)
         {
             throw new ArgumentException("List of authors cannot be empty or null.");
         }
 
         var book = new Book(
             tenantId,
-            createBookRequest.Title,
-            createBookRequest.Annotation,
-            createBookRequest.Authors.Select(x => new Author() { FullName = x.FullName }).ToList(),
-            (Language)Enum.Parse(typeof(Language), createBookRequest.Language),
-            createBookRequest.BookCoverUrl);
+            createBookCommandParams.Title,
+            createBookCommandParams.Annotation,
+            createBookCommandParams.Authors.Select(x => new Author() { FullName = x.FullName }).ToList(),
+            (Language)Enum.Parse(typeof(Language), createBookCommandParams.Language),
+            createBookCommandParams.BookCoverUrl);
 
         await _context.Books.AddAsync(book);
         await _context.SaveChangesAsync();

@@ -1,6 +1,5 @@
 using Application;
 using Application.Commands;
-using Application.Requests;
 using Core.Entities;
 using Microsoft.EntityFrameworkCore;
 using Xunit;
@@ -41,13 +40,13 @@ public class EditBookCommandTests
             BookCoverUrl = "http://test-images.com/img404.png"
         };
 
-        var editBookRequest = new EditBookRequest
+        var editBookRequest = new EditBookCommandParams
         {
             Title = "Another title",
             Annotation = "Another annotation",
-            Authors = new List<AuthorModel>()
+            Authors = new List<Author>()
             {
-                new AuthorModel()
+                new Author()
                 {
                     FullName = "Editd Test Author"
                 }

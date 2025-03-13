@@ -1,9 +1,8 @@
-using Application.Commands.Contracts;
 using Microsoft.EntityFrameworkCore;
 
 namespace Application.Commands;
 
-public class SoftDeleteBookCommand : ISoftDeleteBookCommand
+public class SoftDeleteBookCommand
 {
     private readonly AppDbContext _context;
 
