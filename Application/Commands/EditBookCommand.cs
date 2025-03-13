@@ -46,8 +46,4 @@ public class EditBookCommand
         _context.Books.Update(book);
         await _context.SaveChangesAsync();
     }
-
-    public EditBookCommand()
-    {
-    }
 }

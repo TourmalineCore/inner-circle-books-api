@@ -18,10 +18,7 @@ public class GetAllBooksQuery
             .Where(x => x.TenantId == tenantId)
             .Where(x => x.DeletedAtUtc == null)
             .ToListAsync();
-        return booksList;
-    }
 
-    public GetAllBooksQuery()
-    {
+        return booksList;
     }
 }

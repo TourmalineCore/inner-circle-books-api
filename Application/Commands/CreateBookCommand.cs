@@ -44,8 +44,4 @@ public class CreateBookCommand
 
         return book.Id;
     }
-
-    public CreateBookCommand()
-    {
-    }
 }

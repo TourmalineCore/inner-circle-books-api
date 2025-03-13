@@ -20,8 +20,4 @@ public class GetBookByIdQuery
             .SingleOrDefaultAsync();
         return book;
     }
-
-    public GetBookByIdQuery()
-    {
-    }
 }
