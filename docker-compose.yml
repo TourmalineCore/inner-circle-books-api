@@ -28,7 +28,7 @@ services:
       dockerfile: Dockerfile
       context: .
     ports:
-      - 10012:80
+      - 10012:8080
     networks:
       - books-network
 
