@@ -29,7 +29,7 @@ Scenario: CRUD operations test flow
     * def randomName = 'Test-book-' + Math.random()
     Given url apiRootUrl
     Given path 'api/books'
-    And request { title: '#(randomName)', annotation: 'Test annotation', language: 'en', authors: [{fullName: 'Author Name'}], bookCoverUrl: 'http://example.com/artwork.jpg', countOfBookCopies: '(#2)' }
+    And request { title: '#(randomName)', annotation: 'Test annotation', language: 'en', authors: [{fullName: 'Author Name'}], bookCoverUrl: 'http://example.com/artwork.jpg', countOfBookCopies: #2 }
     When method POST
     Then status 200
     And match response.newBookId == '#number'
