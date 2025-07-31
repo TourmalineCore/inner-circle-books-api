@@ -49,7 +49,7 @@ Scenario: CRUD operations test flow
     And match response.newBookId == '#number'
     * def newBookId = response.newBookId
 
-    # Step 2: Check that the book is created
+    # Step 2: Check that the book is created and there are 2 book copies
     Given path 'api/books', newBookId
     When method GET
     Then status 200
