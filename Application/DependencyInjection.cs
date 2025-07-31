@@ -14,13 +14,15 @@ public static class DependencyInjection
     {
         var connectionString = configuration.GetConnectionString(DefaultConnection);
 
-        services.AddDbContext<AppDbContext>(options => { options.UseNpgsql(connectionString); }
-        );
+        services.AddDbContext<AppDbContext>(options => {
+            options.UseNpgsql(connectionString);
+        });
         services.AddTransient<CreateBookCommand>();
         services.AddTransient<EditBookCommand>();
         services.AddTransient<DeleteBookCommand>();
         services.AddTransient<SoftDeleteBookCommand>();
         services.AddTransient<GetBookByIdQuery>();
+        services.AddTransient<GetBookCopiesByBookIdQuery>();
         services.AddTransient<GetAllBooksQuery>();
     }
 }
