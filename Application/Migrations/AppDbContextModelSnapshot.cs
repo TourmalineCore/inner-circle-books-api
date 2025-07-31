@@ -62,22 +62,6 @@ namespace Application.Migrations
 
                     b.ToTable("Books");
                 });
-
-            modelBuilder.Entity("Core.Entities.BookCopy", b =>
-                {
-                    b.Property<long>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("bigint");
-
-                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<long>("Id"));
-
-                    b.Property<long>("BookId")
-                        .HasColumnType("bigint");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("BooksCopies");
-                });
 #pragma warning restore 612, 618
         }
     }
