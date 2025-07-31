@@ -21,6 +21,7 @@ public class BooksController : Controller
     private readonly DeleteBookCommand _deleteBookCommand;
     private readonly GetAllBooksQuery _getAllBooksQuery;
     private readonly GetBookByIdQuery _getBookByIdQuery;
+    private readonly GetBookCopiesByBookIdQuery _getBookCopiesByBookIdQuery;
     private readonly SoftDeleteBookCommand _softDeleteBookCommand;
     private readonly EditBookCommand _editBookCommand;
 
@@ -30,6 +31,7 @@ public class BooksController : Controller
     public BooksController(
         GetAllBooksQuery getAllBooksQuery,
         GetBookByIdQuery getBookByIdQuery,
+        GetBookCopiesByBookIdQuery getBookCopiesByBookIdQuery,
         CreateBookCommand createBookCommand,
         EditBookCommand editBookCommand,
         DeleteBookCommand deleteBookCommand,
@@ -38,6 +40,7 @@ public class BooksController : Controller
     {
         _getAllBooksQuery = getAllBooksQuery;
         _getBookByIdQuery = getBookByIdQuery;
+        _getBookCopiesByBookIdQuery = getBookCopiesByBookIdQuery;
         _createBookCommand = createBookCommand;
         _editBookCommand = editBookCommand;
         _deleteBookCommand = deleteBookCommand;
@@ -77,6 +80,9 @@ public class BooksController : Controller
     public async Task<SingleBookResponse> GetBookByIdAsync([Required][FromRoute] long id)
     {
         var book = await _getBookByIdQuery.GetByIdAsync(id, User.GetTenantId());
+
+        var bookCopies = await _getBookCopiesByBookIdQuery.GetByBookIdAsync(id);
+
         return new SingleBookResponse()
         {
             Id = book.Id,
@@ -87,7 +93,11 @@ public class BooksController : Controller
             {
                 FullName = a.FullName
             }).ToList(),
-            Language = book.Language.ToString()
+            Language = book.Language.ToString(),
+            BookCopies = bookCopies.Select(copy => new BookCopyResponse()
+            {
+                Id = copy.Id
+            }).ToList(),
         };
     }
 
@@ -114,6 +124,7 @@ public class BooksController : Controller
             Authors = authors,
             Language = createBookRequest.Language,
             BookCoverUrl = createBookRequest.BookCoverUrl,
+            CountOfBookCopies = createBookRequest.CountOfBookCopies,
         };
 
         var newBookId = await _createBookCommand.CreateAsync(createBookCommandParams, User.GetTenantId());

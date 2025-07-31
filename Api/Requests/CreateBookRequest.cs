@@ -19,4 +19,6 @@ public class CreateBookRequest
     public string Language { get; set; }
 
     public string BookCoverUrl { get; set; }
+
+    public long CountOfBookCopies { get; set; }
 }

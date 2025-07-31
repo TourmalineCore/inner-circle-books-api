@@ -35,15 +35,30 @@ public class CreateBookCommandTests
                 {
                     FullName = "Test Author"
                 }
-            }
+            },
+            CountOfBookCopies = 2
         };
 
         var bookId = await _command.CreateAsync(createBookRequest, TENANT_ID);
 
+        // Verify the book is added correctly
         var book = await _context.Books.FindAsync(bookId);
         Assert.NotNull(book);
         Assert.Equal("Test Book", book.Title);
         Assert.Equal(bookId, book.Id);
+
+        // Verify the book copies are added correctly
+        var bookCopies = await _context.BooksCopies
+            .Where(copy => copy.BookId == bookId)
+            .ToListAsync();
+
+        Assert.NotNull(bookCopies);
+        Assert.Equal(createBookRequest.CountOfBookCopies, bookCopies.Count);
+
+        foreach (var copy in bookCopies)
+        {
+            Assert.Equal(bookId, copy.BookId);
+        }
     }
 
     [Fact]

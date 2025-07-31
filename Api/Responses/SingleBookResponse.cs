@@ -13,5 +13,7 @@ namespace Api.Responses
         public List<AuthorResponse> Authors { get; set; }
 
         public string BookCoverUrl { get; set; }
+
+        public List<BookCopyResponse> BookCopies { get; set; }
     }
 }

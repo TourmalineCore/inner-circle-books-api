@@ -13,6 +13,8 @@ public class CreateBookCommandParams
     public string Language { get; set; }
 
     public string BookCoverUrl { get; set; }
+
+    public long CountOfBookCopies { get; set; }
 }
 
 public class CreateBookCommand
@@ -40,6 +42,17 @@ public class CreateBookCommand
             createBookCommandParams.BookCoverUrl);
 
         await _context.Books.AddAsync(book);
+
+        for (int i = 0; i < createBookCommandParams.CountOfBookCopies; i++)
+        {
+            var bookCopy = new BookCopy
+            {
+                BookId = book.Id,
+            };
+
+            await _context.BooksCopies.AddAsync(bookCopy);
+        }
+
         await _context.SaveChangesAsync();
 
         return book.Id;
