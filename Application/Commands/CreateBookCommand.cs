@@ -42,6 +42,7 @@ public class CreateBookCommand
             createBookCommandParams.BookCoverUrl);
 
         await _context.Books.AddAsync(book);
+        await _context.SaveChangesAsync();
 
         for (int i = 0; i < createBookCommandParams.CountOfBookCopies; i++)
         {
@@ -52,7 +53,6 @@ public class CreateBookCommand
 
             await _context.BooksCopies.AddAsync(bookCopy);
         }
-
         await _context.SaveChangesAsync();
 
         return book.Id;
