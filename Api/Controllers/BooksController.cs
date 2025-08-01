@@ -81,8 +81,6 @@ public class BooksController : Controller
     {
         var book = await _getBookByIdQuery.GetByIdAsync(id, User.GetTenantId());
 
-        var copiesIds = await _getCopiesIdsByBookIdQuery.GetByBookIdAsync(id);
-
         return new SingleBookResponse()
         {
             Id = book.Id,
@@ -97,7 +95,10 @@ public class BooksController : Controller
                 })
                 .ToList(),
             Language = book.Language.ToString(),
-            CopiesIds = copiesIds,
+            CopiesIds = book
+                .Copies
+                .Select(x => x.Id)
+                .ToList(),
         };
     }
 
