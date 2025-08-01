@@ -21,7 +21,6 @@ public class BooksController : Controller
     private readonly DeleteBookCommand _deleteBookCommand;
     private readonly GetAllBooksQuery _getAllBooksQuery;
     private readonly GetBookByIdQuery _getBookByIdQuery;
-    private readonly GetCopiesIdsByBookIdQuery _getCopiesIdsByBookIdQuery;
     private readonly SoftDeleteBookCommand _softDeleteBookCommand;
     private readonly EditBookCommand _editBookCommand;
 
@@ -31,7 +30,6 @@ public class BooksController : Controller
     public BooksController(
         GetAllBooksQuery getAllBooksQuery,
         GetBookByIdQuery getBookByIdQuery,
-        GetCopiesIdsByBookIdQuery getCopiesIdsByBookIdQuery,
         CreateBookCommand createBookCommand,
         EditBookCommand editBookCommand,
         DeleteBookCommand deleteBookCommand,
@@ -40,7 +38,6 @@ public class BooksController : Controller
     {
         _getAllBooksQuery = getAllBooksQuery;
         _getBookByIdQuery = getBookByIdQuery;
-        _getCopiesIdsByBookIdQuery = getCopiesIdsByBookIdQuery;
         _createBookCommand = createBookCommand;
         _editBookCommand = editBookCommand;
         _deleteBookCommand = deleteBookCommand;
