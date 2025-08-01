@@ -40,8 +40,8 @@ Scenario: CRUD operations test flow
                 fullName: 'Author Name'
             }
         ],
-        bookCoverUrl: 'http://example.com/artwork.jpg',
-        countOfBookCopies: 2
+        coverUrl: 'http://example.com/artwork.jpg',
+        countOfCopies: 2
     }
     """
     When method POST
@@ -54,7 +54,7 @@ Scenario: CRUD operations test flow
     When method GET
     Then status 200
     And match response.title == randomName
-    And assert response.bookCopies.length == 2
+    And assert response.copiesIds.length == 2
 
     # Step 3: Edit the book's details
     * def editedName = 'Test-edited-book' + Math.random()
@@ -70,7 +70,7 @@ Scenario: CRUD operations test flow
                 fullName: 'Edited Author'
             }
         ],
-        bookCoverUrl: 'http://example.com/edited-artwork.jpg'
+        coverUrl: 'http://example.com/edited-artwork.jpg'
     }
     """
     When method POST

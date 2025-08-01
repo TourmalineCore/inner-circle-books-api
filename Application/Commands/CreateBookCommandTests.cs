@@ -27,8 +27,8 @@ public class CreateBookCommandTests
         {
             Title = "Test Book",
             Annotation = "Test annotation",
-            Language = "ru",
-            BookCoverUrl = "http://test-images.com/img404.png",
+            Language = 0,
+            CoverUrl = "http://test-images.com/img404.png",
             Authors = new List<Author>
             {
                 new Author()
@@ -36,7 +36,7 @@ public class CreateBookCommandTests
                     FullName = "Test Author"
                 }
             },
-            CountOfBookCopies = 2
+            CountOfCopies = 2
         };
 
         var bookId = await _command.CreateAsync(createBookRequest, TENANT_ID);
@@ -48,14 +48,14 @@ public class CreateBookCommandTests
         Assert.Equal(bookId, book.Id);
 
         // Verify the book copies are added correctly
-        var bookCopies = await _context.BooksCopies
+        var copies = await _context.BooksCopies
             .Where(copy => copy.BookId == bookId)
             .ToListAsync();
 
-        Assert.NotNull(bookCopies);
-        Assert.Equal(createBookRequest.CountOfBookCopies, bookCopies.Count);
+        Assert.NotNull(copies);
+        Assert.Equal(createBookRequest.CountOfCopies, copies.Count);
 
-        foreach (var copy in bookCopies)
+        foreach (var copy in copies)
         {
             Assert.Equal(bookId, copy.BookId);
         }
@@ -68,8 +68,8 @@ public class CreateBookCommandTests
         {
             Title = "Test Book",
             Annotation = "Test annotation",
-            Language = "ru",
-            BookCoverUrl = "http://test-images.com/img404.png",
+            Language = 0,
+            CoverUrl = "http://test-images.com/img404.png",
             Authors = new List<Author>
             {
             }

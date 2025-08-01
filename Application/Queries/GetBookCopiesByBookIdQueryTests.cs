@@ -4,26 +4,26 @@ using Xunit;
 
 namespace Application.Queries;
 
-public class GetBookCopiesByBookIdQueryTests
+public class GetCopiesIdsByBookIdQueryTests
 {
     private readonly AppDbContext _context;
-    private readonly GetBookCopiesByBookIdQuery _query;
+    private readonly GetCopiesIdsByBookIdQuery _query;
 
-    public GetBookCopiesByBookIdQueryTests()
+    public GetCopiesIdsByBookIdQueryTests()
     {
         var options = new DbContextOptionsBuilder<AppDbContext>()
-            .UseInMemoryDatabase("GetBookCopiesByBookIdQueryDatabase")
+            .UseInMemoryDatabase("GetCopiesIdsByBookIdQueryDatabase")
             .Options;
 
         _context = new AppDbContext(options);
-        _query = new GetBookCopiesByBookIdQuery(_context);
+        _query = new GetCopiesIdsByBookIdQuery(_context);
     }
 
     [Fact]
-    public async Task GetByBookIdAsync_ShouldReturnBookCopies()
+    public async Task GetByBookIdAsync_ShouldReturnCopiesIds()
     {
         var bookId = 1;
-        var bookCopies = new List<BookCopy>
+        var copies = new List<BookCopy>
         {
             new BookCopy {
                 Id = 1,
@@ -35,13 +35,13 @@ public class GetBookCopiesByBookIdQueryTests
             }
         };
 
-        _context.BooksCopies.AddRange(bookCopies);
+        _context.BooksCopies.AddRange(copies);
         await _context.SaveChangesAsync();
 
-        var result = await _query.GetByBookIdAsync(bookId);
+        var copiesIds = await _query.GetByBookIdAsync(bookId);
 
-        Assert.NotNull(result);
-        Assert.Equal(bookCopies.Count, result.Count);
-        Assert.All(result, copy => Assert.Equal(bookId, copy.BookId));
+        Assert.NotNull(copiesIds);
+        Assert.Equal(copies.Count, copiesIds.Count);
+        Assert.All(copiesIds, id => Assert.Contains(id, copies.Select(c => c.Id).ToList()));
     }
 }

@@ -37,7 +37,7 @@ public class EditBookCommandTests
                 }
             },
             Language = Language.en,
-            BookCoverUrl = "http://test-images.com/img404.png"
+            CoverUrl = "http://test-images.com/img404.png"
         };
 
         var editBookRequest = new EditBookCommandParams
@@ -51,7 +51,7 @@ public class EditBookCommandTests
                     FullName = "Editd Test Author"
                 }
             },
-            Language = "ru"
+            Language = 0
         };
         _context.Books.Add(book);
         await _context.SaveChangesAsync();

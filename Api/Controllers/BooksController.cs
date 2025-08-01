@@ -21,7 +21,7 @@ public class BooksController : Controller
     private readonly DeleteBookCommand _deleteBookCommand;
     private readonly GetAllBooksQuery _getAllBooksQuery;
     private readonly GetBookByIdQuery _getBookByIdQuery;
-    private readonly GetBookCopiesByBookIdQuery _getBookCopiesByBookIdQuery;
+    private readonly GetCopiesIdsByBookIdQuery _getCopiesIdsByBookIdQuery;
     private readonly SoftDeleteBookCommand _softDeleteBookCommand;
     private readonly EditBookCommand _editBookCommand;
 
@@ -31,7 +31,7 @@ public class BooksController : Controller
     public BooksController(
         GetAllBooksQuery getAllBooksQuery,
         GetBookByIdQuery getBookByIdQuery,
-        GetBookCopiesByBookIdQuery getBookCopiesByBookIdQuery,
+        GetCopiesIdsByBookIdQuery getCopiesIdsByBookIdQuery,
         CreateBookCommand createBookCommand,
         EditBookCommand editBookCommand,
         DeleteBookCommand deleteBookCommand,
@@ -40,7 +40,7 @@ public class BooksController : Controller
     {
         _getAllBooksQuery = getAllBooksQuery;
         _getBookByIdQuery = getBookByIdQuery;
-        _getBookCopiesByBookIdQuery = getBookCopiesByBookIdQuery;
+        _getCopiesIdsByBookIdQuery = getCopiesIdsByBookIdQuery;
         _createBookCommand = createBookCommand;
         _editBookCommand = editBookCommand;
         _deleteBookCommand = deleteBookCommand;
@@ -62,7 +62,7 @@ public class BooksController : Controller
                 Id = x.Id,
                 Title = x.Title,
                 Annotation = x.Annotation,
-                BookCoverUrl = x.BookCoverUrl,
+                CoverUrl = x.CoverUrl,
                 Authors = x.Authors.Select(a => new AuthorResponse()
                 {
                     FullName = a.FullName
@@ -81,23 +81,23 @@ public class BooksController : Controller
     {
         var book = await _getBookByIdQuery.GetByIdAsync(id, User.GetTenantId());
 
-        var bookCopies = await _getBookCopiesByBookIdQuery.GetByBookIdAsync(id);
+        var copiesIds = await _getCopiesIdsByBookIdQuery.GetByBookIdAsync(id);
 
         return new SingleBookResponse()
         {
             Id = book.Id,
             Title = book.Title,
             Annotation = book.Annotation,
-            BookCoverUrl = book.BookCoverUrl,
-            Authors = book.Authors.Select(a => new AuthorResponse()
-            {
-                FullName = a.FullName
-            }).ToList(),
+            CoverUrl = book.CoverUrl,
+            Authors = book
+                .Authors
+                .Select(a => new AuthorResponse()
+                {
+                    FullName = a.FullName
+                })
+                .ToList(),
             Language = book.Language.ToString(),
-            BookCopies = bookCopies.Select(copy => new BookCopyResponse()
-            {
-                Id = copy.Id
-            }).ToList(),
+            CopiesIds = copiesIds,
         };
     }
 
@@ -122,9 +122,9 @@ public class BooksController : Controller
             Title = createBookRequest.Title,
             Annotation = createBookRequest.Annotation,
             Authors = authors,
-            Language = createBookRequest.Language,
-            BookCoverUrl = createBookRequest.BookCoverUrl,
-            CountOfBookCopies = createBookRequest.CountOfBookCopies,
+            Language = (Language)Enum.Parse(typeof(Language), createBookRequest.Language),
+            CoverUrl = createBookRequest.CoverUrl,
+            CountOfCopies = createBookRequest.CountOfCopies,
         };
 
         var newBookId = await _createBookCommand.CreateAsync(createBookCommandParams, User.GetTenantId());
@@ -156,8 +156,8 @@ public class BooksController : Controller
             Title = editBookRequest.Title,
             Annotation = editBookRequest.Annotation,
             Authors = authors,
-            Language = editBookRequest.Language,
-            BookCoverUrl = editBookRequest.BookCoverUrl,
+            Language = (Language)Enum.Parse(typeof(Language), editBookRequest.Language),
+            CoverUrl = editBookRequest.CoverUrl,
         };
 
         return _editBookCommand.EditAsync(id, editBookCommandParams, User.GetTenantId());

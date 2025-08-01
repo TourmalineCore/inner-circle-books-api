@@ -22,7 +22,7 @@ public static class DependencyInjection
         services.AddTransient<DeleteBookCommand>();
         services.AddTransient<SoftDeleteBookCommand>();
         services.AddTransient<GetBookByIdQuery>();
-        services.AddTransient<GetBookCopiesByBookIdQuery>();
+        services.AddTransient<GetCopiesIdsByBookIdQuery>();
         services.AddTransient<GetAllBooksQuery>();
     }
 }

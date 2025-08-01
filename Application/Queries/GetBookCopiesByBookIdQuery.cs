@@ -1,24 +1,21 @@
-using System;
-using Core.Entities;
 using Microsoft.EntityFrameworkCore;
 
 namespace Application.Queries;
 
-public class GetBookCopiesByBookIdQuery
+public class GetCopiesIdsByBookIdQuery
 {
     private readonly AppDbContext _context;
 
-    public GetBookCopiesByBookIdQuery(AppDbContext context)
+    public GetCopiesIdsByBookIdQuery(AppDbContext context)
     {
         _context = context;
     }
 
-    public async Task<List<BookCopy>> GetByBookIdAsync(long id)
+    public async Task<List<long>> GetByBookIdAsync(long id)
     {
-        var bookCopies = await _context.BooksCopies
+        return await _context.BooksCopies
             .Where(x => x.BookId == id)
+            .Select(x => x.Id)
             .ToListAsync();
-
-        return bookCopies;
     }
 }

@@ -37,7 +37,7 @@ public class GetAllBooksQueryTests
                 }
             },
             Language = Language.en,
-            BookCoverUrl = "http://test1-images.com/img404.png"
+            CoverUrl = "http://test1-images.com/img404.png"
         };
         var book2 = new Book
         {
@@ -53,7 +53,7 @@ public class GetAllBooksQueryTests
                 }
             },
             Language = Language.en,
-            BookCoverUrl = "http://test2-images.com/img405.png"
+            CoverUrl = "http://test2-images.com/img405.png"
         };
         var book3 = new Book
         {
@@ -69,7 +69,7 @@ public class GetAllBooksQueryTests
                 }
             },
             Language = Language.en,
-            BookCoverUrl = "http://test3-images.com/img406.png"
+            CoverUrl = "http://test3-images.com/img406.png"
         };
 
         _context.Books.AddRange(book1, book2, book3);

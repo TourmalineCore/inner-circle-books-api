@@ -10,11 +10,11 @@ public class CreateBookCommandParams
 
     public List<Author> Authors { get; set; }
 
-    public string Language { get; set; }
+    public Language Language { get; set; }
 
-    public string BookCoverUrl { get; set; }
+    public string CoverUrl { get; set; }
 
-    public long CountOfBookCopies { get; set; }
+    public int CountOfCopies { get; set; }
 }
 
 public class CreateBookCommand
@@ -33,26 +33,28 @@ public class CreateBookCommand
             throw new ArgumentException("List of authors cannot be empty or null.");
         }
 
-        var book = new Book(
-            tenantId,
-            createBookCommandParams.Title,
-            createBookCommandParams.Annotation,
-            createBookCommandParams.Authors.Select(x => new Author() { FullName = x.FullName }).ToList(),
-            (Language)Enum.Parse(typeof(Language), createBookCommandParams.Language),
-            createBookCommandParams.BookCoverUrl);
+        var book = new Book
+        {
+            TenantId = tenantId,
+            Title = createBookCommandParams.Title,
+            Annotation = createBookCommandParams.Annotation,
+            Authors = createBookCommandParams
+                .Authors
+                .Select(x => new Author()
+                {
+                    FullName = x.FullName
+                })
+                .ToList(),
+            Language = createBookCommandParams.Language,
+            CoverUrl = createBookCommandParams.CoverUrl,
+            CreatedAtUtc = DateTime.UtcNow,
+            Copies = Enumerable
+                .Range(0, createBookCommandParams.CountOfCopies)
+                .Select(x => new BookCopy())
+                .ToList()
+        };
 
         await _context.Books.AddAsync(book);
-        await _context.SaveChangesAsync();
-
-        for (int i = 0; i < createBookCommandParams.CountOfBookCopies; i++)
-        {
-            var bookCopy = new BookCopy
-            {
-                BookId = book.Id,
-            };
-
-            await _context.BooksCopies.AddAsync(bookCopy);
-        }
         await _context.SaveChangesAsync();
 
         return book.Id;
