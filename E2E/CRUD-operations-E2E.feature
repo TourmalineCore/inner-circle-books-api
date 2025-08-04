@@ -29,22 +29,50 @@ Scenario: CRUD operations test flow
     * def randomName = 'Test-book-' + Math.random()
     Given url apiRootUrl
     Given path 'api/books'
-    And request { title: '#(randomName)', annotation: 'Test annotation', language: 'en', authors: [{fullName: 'Author Name'}], bookCoverUrl: 'http://example.com/artwork.jpg' }
+    And request
+    """
+    {
+        title: '#(randomName)',
+        annotation: 'Test annotation',
+        language: 'en',
+        authors: [
+            {
+                fullName: 'Author Name'
+            }
+        ],
+        coverUrl: 'http://example.com/artwork.jpg',
+        countOfCopies: 2
+    }
+    """
     When method POST
     Then status 200
     And match response.newBookId == '#number'
     * def newBookId = response.newBookId
 
-    # Step 2: Check that the book is created
+    # Step 2: Check that the book is created and there are 2 book copies
     Given path 'api/books', newBookId
     When method GET
     Then status 200
     And match response.title == randomName
+    And assert response.copiesIds.length == 2
 
     # Step 3: Edit the book's details
     * def editedName = 'Test-edited-book' + Math.random()
     Given path 'api/books', newBookId, 'edit'
-    And request { title: '#(editedName)', annotation: 'Edited annotation', language: 'ru', authors: [{fullName: 'Edited Author'}], bookCoverUrl: 'http://example.com/edited-artwork.jpg' }
+    And request
+    """
+    {
+        title: '#(editedName)',
+        annotation: 'Edited annotation',
+        language: 'ru',
+        authors: [
+            {
+                fullName: 'Edited Author'
+            }
+        ],
+        coverUrl: 'http://example.com/edited-artwork.jpg'
+    }
+    """
     When method POST
     Then status 200
 

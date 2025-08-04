@@ -9,11 +9,11 @@ public class EditBookCommandParams
 
     public string Annotation { get; set; }
 
-    public string Language { get; set; }
+    public Language Language { get; set; }
 
     public List<Author> Authors { get; set; }
 
-    public string BookCoverUrl { get; set; }
+    public string CoverUrl { get; set; }
 }
 
 public class EditBookCommand
@@ -34,14 +34,14 @@ public class EditBookCommand
 
         book.Title = editBookCommandParams.Title;
         book.Annotation = editBookCommandParams.Annotation;
-        book.Language = (Language)Enum.Parse(typeof(Language), editBookCommandParams.Language);
+        book.Language = editBookCommandParams.Language;
         book.Authors = editBookCommandParams
             .Authors
             .Select(x => new Author() {
                 FullName = x.FullName
             })
             .ToList();
-        book.BookCoverUrl = editBookCommandParams.BookCoverUrl;
+        book.CoverUrl = editBookCommandParams.CoverUrl;
 
         _context.Books.Update(book);
         await _context.SaveChangesAsync();

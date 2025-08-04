@@ -18,5 +18,5 @@ public class EditBookRequest
     [Required]
     public List<AuthorModel> Authors { get; set; }
 
-    public string BookCoverUrl { get; set; }
+    public string CoverUrl { get; set; }
 }

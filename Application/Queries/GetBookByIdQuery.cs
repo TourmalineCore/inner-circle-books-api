@@ -12,12 +12,12 @@ public class GetBookByIdQuery
         _context = context;
     }
 
-    public async Task<Book> GetByIdAsync(long id, long tenantId)
+    public Task<Book> GetByIdAsync(long id, long tenantId)
     {
-        var book = await _context.Books
+        return _context
+            .Books
             .Where(x => x.TenantId == tenantId)
-            .Where(x => x.Id == id)
-            .SingleOrDefaultAsync();
-        return book;
+            .Include(x => x.Copies)
+            .SingleAsync(x => x.Id == id);
     }
 }

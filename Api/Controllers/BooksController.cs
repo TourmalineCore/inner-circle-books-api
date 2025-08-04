@@ -59,7 +59,7 @@ public class BooksController : Controller
                 Id = x.Id,
                 Title = x.Title,
                 Annotation = x.Annotation,
-                BookCoverUrl = x.BookCoverUrl,
+                CoverUrl = x.CoverUrl,
                 Authors = x.Authors.Select(a => new AuthorResponse()
                 {
                     FullName = a.FullName
@@ -77,17 +77,25 @@ public class BooksController : Controller
     public async Task<SingleBookResponse> GetBookByIdAsync([Required][FromRoute] long id)
     {
         var book = await _getBookByIdQuery.GetByIdAsync(id, User.GetTenantId());
+
         return new SingleBookResponse()
         {
             Id = book.Id,
             Title = book.Title,
             Annotation = book.Annotation,
-            BookCoverUrl = book.BookCoverUrl,
-            Authors = book.Authors.Select(a => new AuthorResponse()
-            {
-                FullName = a.FullName
-            }).ToList(),
-            Language = book.Language.ToString()
+            CoverUrl = book.CoverUrl,
+            Authors = book
+                .Authors
+                .Select(a => new AuthorResponse()
+                {
+                    FullName = a.FullName
+                })
+                .ToList(),
+            Language = book.Language.ToString(),
+            CopiesIds = book
+                .Copies
+                .Select(x => x.Id)
+                .ToList(),
         };
     }
 
@@ -112,8 +120,9 @@ public class BooksController : Controller
             Title = createBookRequest.Title,
             Annotation = createBookRequest.Annotation,
             Authors = authors,
-            Language = createBookRequest.Language,
-            BookCoverUrl = createBookRequest.BookCoverUrl,
+            Language = (Language)Enum.Parse(typeof(Language), createBookRequest.Language),
+            CoverUrl = createBookRequest.CoverUrl,
+            CountOfCopies = createBookRequest.CountOfCopies,
         };
 
         var newBookId = await _createBookCommand.CreateAsync(createBookCommandParams, User.GetTenantId());
@@ -145,8 +154,8 @@ public class BooksController : Controller
             Title = editBookRequest.Title,
             Annotation = editBookRequest.Annotation,
             Authors = authors,
-            Language = editBookRequest.Language,
-            BookCoverUrl = editBookRequest.BookCoverUrl,
+            Language = (Language)Enum.Parse(typeof(Language), editBookRequest.Language),
+            CoverUrl = editBookRequest.CoverUrl,
         };
 
         return _editBookCommand.EditAsync(id, editBookCommandParams, User.GetTenantId());
