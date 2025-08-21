@@ -14,5 +14,5 @@ public class SingleBookResponse
 
     public string CoverUrl { get; set; }
 
-    public List<long> CopiesIds { get; set; }
+    public List<long> BookCopiesIds { get; set; }
 }

@@ -1,6 +1,7 @@
 using System.ComponentModel.DataAnnotations;
 using Api.Responses;
 using Api.Requests;
+using Application;
 using Application.Commands;
 using Application.Queries;
 using Core.Entities;
@@ -23,6 +24,8 @@ public class BooksController : Controller
     private readonly GetBookByIdQuery _getBookByIdQuery;
     private readonly SoftDeleteBookCommand _softDeleteBookCommand;
     private readonly EditBookCommand _editBookCommand;
+    private readonly TakeBookCommand _takeBookCommand;
+    private readonly IInnerCircleHttpClient _client;
 
     /// <summary>
     ///     Controller with actions to books
@@ -33,7 +36,9 @@ public class BooksController : Controller
         CreateBookCommand createBookCommand,
         EditBookCommand editBookCommand,
         DeleteBookCommand deleteBookCommand,
-        SoftDeleteBookCommand softDeleteBookCommand
+        SoftDeleteBookCommand softDeleteBookCommand,
+        TakeBookCommand takeBookCommand,
+        IInnerCircleHttpClient client
     )
     {
         _getAllBooksQuery = getAllBooksQuery;
@@ -42,6 +47,8 @@ public class BooksController : Controller
         _editBookCommand = editBookCommand;
         _deleteBookCommand = deleteBookCommand;
         _softDeleteBookCommand = softDeleteBookCommand;
+        _takeBookCommand = takeBookCommand;
+        _client = client;
     }
 
     /// <summary>
@@ -92,7 +99,7 @@ public class BooksController : Controller
                 })
                 .ToList(),
             Language = book.Language.ToString(),
-            CopiesIds = book
+            BookCopiesIds = book
                 .Copies
                 .Select(x => x.Id)
                 .ToList(),
@@ -130,6 +137,30 @@ public class BooksController : Controller
         return new CreateBookResponse()
         {
             NewBookId = newBookId
+        };
+    }
+
+    /// <summary>
+    ///     Take book
+    /// </summary>
+    /// <param name="takeBookRequest"></param>
+    [RequiresPermission(UserClaimsProvider.CanViewBooks)]
+    [HttpPost("take")]
+    public async Task<TakeBookResponse> TakeBookAsync([Required][FromBody] TakeBookRequest takeBookRequest)
+    {
+        var employee = await _client.GetEmployeeAsync(User.GetCorporateEmail());
+        
+        var takeBookCommandParams = new TakeBookCommandParams
+        {
+            BookCopyId = takeBookRequest.BookCopyId,
+            SheduledReturnDate = takeBookRequest.SheduledReturnDate,
+        };
+
+        var newBookCopyReadingHistoryId = await _takeBookCommand.TakeAsync(takeBookCommandParams, employee);
+
+        return new TakeBookResponse()
+        {
+            NewBookCopyReadingHistoryId = newBookCopyReadingHistoryId
         };
     }
 

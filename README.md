@@ -107,15 +107,29 @@ dotnet ef migrations remove -- --environment MockForDevelopment
 ## Database scheme 
 ```mermaid
 erDiagram
-Book{
-  long id PK "Example: '1'"
-  long tenantId "Example: '1'"
-  text title "Example: 'Пиши, сокращай 2025: Как создавать сильный текст'" 
-  text annotation "Example: 'Книга о создании текста для всех, кто пишет по работе'"
-  text authors "Example: '[{'fullName': 'Максим Ильяхов'}, {'fullName': 'Людмила Сарычева'}]'"
-  enum language "Example: 'ru'"
-  datetime createdAtUtc "Example: '2024-12-25 09:20:25.695197+00'"
-  datetime deletedAtUtc "nullable, Example: '2024-12-25 09:20:25.695197+00'"
-  text artworkUrl "nullable, Example: 'https://cdn.litres.ru/pub/c/cover/70193008.jpg'"
-}
+    Books ||--o{ BooksCopies : "1-to-many"
+    BooksCopies ||--o{ BooksCopiesReadingHistory : "1-to-many"
+    Books {
+        long id PK "Example: '1'"
+        long tenantId "Example: '1'"
+        text title "Example: 'Пиши, сокращай 2025: Как создавать сильный текст'" 
+        text annotation "Example: 'Книга о создании текста для всех, кто пишет по работе'"
+        text authors "Example: '[{'fullName': 'Максим Ильяхов'}, {'fullName': 'Людмила Сарычева'}]'"
+        enum language "Example: 'ru'"
+        datetime da "Example: '2024-12-25 09:20:25.695197+00'"
+        datetime deletedAtUtc "nullable, Example: '2024-12-25 09:20:25.695197+00'"
+        text artworkUrl "nullable, Example: 'https://cdn.litres.ru/pub/c/cover/70193008.jpg'"
+    }
+    BooksCopies {
+        long id PK "Example: '1'"
+        long bookId FK "Example: '1'"
+    }
+    BooksCopiesReadingHistory {
+        long id PK "Example: '1'"
+        long bookCopyId FK "Example: '1'"
+        long readerEmployeeId "Example: '1'"
+        datetime takenAtUtc "Example: '2024-12-25 09:20:25.695197+00'"
+        date sheduledReturnDate "Example: '2024-12-25'"
+        datetime actualReturnedAtUtc "Nullable" "Example: '2024-12-25 09:20:25.695197+00'"
+    }
 ```

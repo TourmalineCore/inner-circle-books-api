@@ -6,4 +6,6 @@ public class BookCopy
 
     public long BookId { get; set; }
     public Book Book { get; set; }
+
+    public List<BookCopyReadingHistory> ReadingHistoryList { get; set; }
 }
