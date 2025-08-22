@@ -8,5 +8,5 @@ public class TakeBookRequest
     public long BookCopyId { get; set; }
 
     [Required]
-    public string SheduledReturnDate { get; set; }
+    public string SсheduledReturnDate { get; set; }
 }

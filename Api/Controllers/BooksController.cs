@@ -153,7 +153,7 @@ public class BooksController : Controller
         var takeBookCommandParams = new TakeBookCommandParams
         {
             BookCopyId = takeBookRequest.BookCopyId,
-            SheduledReturnDate = takeBookRequest.SheduledReturnDate,
+            SсheduledReturnDate = takeBookRequest.SсheduledReturnDate,
         };
 
         var newBookCopyReadingHistoryId = await _takeBookCommand.TakeAsync(takeBookCommandParams, employee);

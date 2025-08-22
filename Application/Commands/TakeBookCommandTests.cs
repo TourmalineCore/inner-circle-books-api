@@ -27,7 +27,7 @@ public class TakeBookCommandTests
         var takeBookRequest = new TakeBookCommandParams
         {
             BookCopyId = 1,
-            SheduledReturnDate = "2025-11-22"
+            SсheduledReturnDate = "2025-11-22"
         };
 
         var employee = new Employee
