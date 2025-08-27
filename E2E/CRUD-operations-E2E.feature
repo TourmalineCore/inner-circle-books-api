@@ -55,8 +55,22 @@ Scenario: CRUD operations test flow
     Then status 200
     And match response.title == randomName
     And assert response.bookCopiesIds.length == 2
+    * def firstBookCopyId = response.bookCopiesIds[0]
 
-    # Step 3: Edit the book's details
+    # Step 3: Take book copy by ID
+    Given path 'api/books/take'
+    And request
+    """
+    {
+        bookCopyId: '#(firstBookCopyId)',
+        sсheduledReturnDate: '2025-10-22'
+    }
+    """
+    When method POST
+    Then status 200
+    And match response.newBookCopyReadingHistoryId == '#number'
+
+    # Step 4: Edit the book's details
     * def editedName = 'Test-edited-book' + Math.random()
     Given path 'api/books', newBookId, 'edit'
     And request
@@ -76,26 +90,26 @@ Scenario: CRUD operations test flow
     When method POST
     Then status 200
 
-    # Step 4: Get the edited book by ID and verify the details have changed
+    # Step 5: Get the edited book by ID and verify the details have changed
     Given path 'api/books', newBookId
     When method GET
     Then status 200
     And match response.title == editedName
 
-    # Step 5: Delete the book (soft delete)
+    # Step 6: Delete the book (soft delete)
     Given path 'api/books', newBookId, 'soft-delete'
     When method DELETE
     Then status 200
     And match response == { isDeleted: true }
 
-    # Step 6: Verify the book is no longer in the list
+    # Step 7: Verify the book is no longer in the list
     Given url apiRootUrl
     Given path 'api/books'
     When method GET
     Then status 200
     And match response.books !contains { id: '#(newBookId)' }
 
-    # Step 7: Delete the book (hard delete)
+    # Step 8: Delete the book (hard delete)
     Given path 'api/books', newBookId, 'hard-delete'
     When method DELETE
     Then status 200
