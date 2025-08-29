@@ -19,21 +19,19 @@ public class TakeBookCommand
         _context = context;
     }
 
-    public async Task<long> TakeAsync(TakeBookCommandParams takeBookCommandParams, Employee employee)
+    public async Task TakeAsync(TakeBookCommandParams takeBookCommandParams, Employee employee)
     {
         var result = DateTime.Parse(takeBookCommandParams.SсheduledReturnDate, null, System.Globalization.DateTimeStyles.RoundtripKind);
 
         var bookCopyReadingHistory = new BookCopyReadingHistory
         {
             BookCopyId = takeBookCommandParams.BookCopyId,
-            //ReaderEmployeeId = employee.Id,
+            ReaderEmployeeId = employee.EmployeeId,
             TakenAtUtc = DateTime.UtcNow,
             SсheduledReturnDate = new DateOnly(result.Year, result.Month, result.Day),
         };
 
         await _context.BooksCopiesReadingHistory.AddAsync(bookCopyReadingHistory);
         await _context.SaveChangesAsync();
-
-        return bookCopyReadingHistory.Id;
     }
 }

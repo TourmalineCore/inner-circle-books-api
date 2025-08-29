@@ -146,7 +146,7 @@ public class BooksController : Controller
     /// <param name="takeBookRequest"></param>
     [RequiresPermission(UserClaimsProvider.CanViewBooks)]
     [HttpPost("take")]
-    public async Task<TakeBookResponse> TakeBookAsync([Required][FromBody] TakeBookRequest takeBookRequest)
+    public async Task TakeBookAsync([Required][FromBody] TakeBookRequest takeBookRequest)
     {
         var employee = await _client.GetEmployeeAsync(User.GetCorporateEmail());
         
@@ -156,12 +156,7 @@ public class BooksController : Controller
             SсheduledReturnDate = takeBookRequest.SсheduledReturnDate,
         };
 
-        var newBookCopyReadingHistoryId = await _takeBookCommand.TakeAsync(takeBookCommandParams, employee);
-
-        return new TakeBookResponse()
-        {
-            NewBookCopyReadingHistoryId = newBookCopyReadingHistoryId
-        };
+        await _takeBookCommand.TakeAsync(takeBookCommandParams, employee);
     }
 
     /// <summary>
