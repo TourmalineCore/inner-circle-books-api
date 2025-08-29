@@ -1,3 +1,6 @@
+using System.Net.Http.Json;
+using System.Text;
+using System.Web;
 using Core;
 using Microsoft.Extensions.Options;
 using Newtonsoft.Json;
@@ -21,5 +24,30 @@ public class InnerCircleHttpClient : IInnerCircleHttpClient
         var response = await _client.GetStringAsync(link);
 
         return JsonConvert.DeserializeObject<Employee>(response);
+    }
+
+
+    public async Task<List<Employee>> GetEmployeesByIdsAsync(List<long> ids)
+    {
+        var link = $"{_urls.EmployeesServiceUrl}/internal/get-employees-by-ids";
+
+        var response = await _client.PostAsJsonAsync(
+            link,
+            new
+            {
+                employeesIds = ids
+            }
+        );
+
+        var responseContent = await response.Content.ReadAsStringAsync();
+
+        //var responseObject = JsonConvert.DeserializeAnonymousType(
+        //    responseContent,
+        //    new { employees = new List<Employee>() }
+        //);
+        Console.WriteLine(JsonConvert.DeserializeObject<List<Employee>>(responseContent));
+
+        return JsonConvert.DeserializeObject<List<Employee>>(responseContent);
+        //return responseObject.employees;
     }
 }

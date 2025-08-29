@@ -26,7 +26,7 @@ public class TakeBookCommand
         var bookCopyReadingHistory = new BookCopyReadingHistory
         {
             BookCopyId = takeBookCommandParams.BookCopyId,
-            ReaderEmployeeId = employee.Id,
+            //ReaderEmployeeId = employee.Id,
             TakenAtUtc = DateTime.UtcNow,
             SсheduledReturnDate = new DateOnly(result.Year, result.Month, result.Day),
         };
