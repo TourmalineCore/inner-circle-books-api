@@ -27,7 +27,7 @@ public class InnerCircleHttpClient : IInnerCircleHttpClient
     }
 
 
-    public async Task<List<Employee>> GetEmployeesByIdsAsync(List<long> ids)
+    public async Task<List<EmployeeById>> GetEmployeesByIdsAsync(List<long> ids)
     {
         var link = $"{_urls.EmployeesServiceUrl}/internal/get-employees-by-ids";
 
@@ -47,7 +47,7 @@ public class InnerCircleHttpClient : IInnerCircleHttpClient
         //);
         Console.WriteLine(JsonConvert.DeserializeObject<List<Employee>>(responseContent));
 
-        return JsonConvert.DeserializeObject<List<Employee>>(responseContent);
+        return JsonConvert.DeserializeObject<List<EmployeeById>>(responseContent);
         //return responseObject.employees;
     }
 }
