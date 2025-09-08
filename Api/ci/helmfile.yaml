@@ -18,3 +18,4 @@ releases:
       - extraSecretEnvVars:
           ConnectionStrings__DefaultConnection: "{{ .StateValues.extraSecretEnvVars.ConnectionStrings__DefaultConnection }}"
           AuthenticationOptions__PublicSigningKey: "{{ .StateValues.extraSecretEnvVars.AuthenticationOptions__PublicSigningKey }}"
+          InnerCircleServiceUrls__EmployeesServiceUrl: "{{ .StateValues.extraSecretEnvVars.HttpUrls__EmployeesServiceUrl }}"
