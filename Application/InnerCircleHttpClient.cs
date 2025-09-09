@@ -1,9 +1,9 @@
 using System.Net.Http.Json;
-using System.Text;
-using System.Web;
 using Core;
 using Microsoft.Extensions.Options;
 using Newtonsoft.Json;
+using System.Net.Http.Headers;
+using Microsoft.AspNetCore.Http;
 
 namespace Application;
 
@@ -11,11 +11,16 @@ public class InnerCircleHttpClient : IInnerCircleHttpClient
 {
     private readonly HttpClient _client;
     private readonly InnerCircleServiceUrls _urls;
+    private readonly IHttpContextAccessor _httpContextAccessor;
 
-    public InnerCircleHttpClient(IOptions<InnerCircleServiceUrls> urls)
+    public InnerCircleHttpClient(
+        IOptions<InnerCircleServiceUrls> urls,
+        IHttpContextAccessor httpContextAccessor
+    )
     {
         _client = new HttpClient();
         _urls = urls.Value;
+        _httpContextAccessor = httpContextAccessor;
     }
 
     public async Task<Employee> GetEmployeeAsync(string corporateEmail)
@@ -31,6 +36,17 @@ public class InnerCircleHttpClient : IInnerCircleHttpClient
     {
         var link = $"{_urls.EmployeesServiceUrl}/internal/get-employees-by-ids";
 
+        var authHeader = _httpContextAccessor
+            .HttpContext?
+            .Request
+            .Headers["Authorization"]
+            .ToString();
+
+        if (!string.IsNullOrEmpty(authHeader))
+        {
+            _client.DefaultRequestHeaders.Authorization = AuthenticationHeaderValue.Parse(authHeader);
+        }
+
         var response = await _client.PostAsJsonAsync(
             link,
             new
@@ -41,13 +57,14 @@ public class InnerCircleHttpClient : IInnerCircleHttpClient
 
         var responseContent = await response.Content.ReadAsStringAsync();
 
-        //var responseObject = JsonConvert.DeserializeAnonymousType(
-        //    responseContent,
-        //    new { employees = new List<Employee>() }
-        //);
-        Console.WriteLine(JsonConvert.DeserializeObject<List<Employee>>(responseContent));
+        var responseObject = JsonConvert.DeserializeAnonymousType(
+            responseContent,
+            new
+            {
+                employees = new List<EmployeeById>()
+            }
+        );
 
-        return JsonConvert.DeserializeObject<List<EmployeeById>>(responseContent);
-        //return responseObject.employees;
+        return responseObject.employees;
     }
 }

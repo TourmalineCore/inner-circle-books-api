@@ -20,4 +20,13 @@ public class GetBookByIdQuery
             .Include(x => x.Copies)
             .SingleAsync(x => x.Id == id);
     }
+
+    public Task<List<long>> GetEmployeesIdsByCopiesIdsAsync(List<long> copiesIds)
+    {
+        return _context
+            .BooksCopiesReadingHistory
+            .Where(x => copiesIds.Contains(x.BookCopyId))
+            .Select(x => x.ReaderEmployeeId)
+            .ToListAsync();
+    }
 }

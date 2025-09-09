@@ -8,6 +8,7 @@ using Core.Entities;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using TourmalineCore.AspNetCore.JwtAuthentication.Core.Filters;
+using Core;
 
 namespace Api.Controllers;
 
@@ -85,6 +86,17 @@ public class BooksController : Controller
     {
         var book = await _getBookByIdQuery.GetByIdAsync(id, User.GetTenantId());
 
+        var bookCopiesIds = book
+                .Copies
+                .Select(x => x.Id)
+                .ToList();
+
+        var employeesIds = await _getBookByIdQuery.GetEmployeesIdsByCopiesIdsAsync(bookCopiesIds);
+
+        var readers = employeesIds != null
+                ? await _client.GetEmployeesByIdsAsync(employeesIds)
+                : new List<EmployeeById>();
+
         return new SingleBookResponse()
         {
             Id = book.Id,
@@ -99,10 +111,8 @@ public class BooksController : Controller
                 })
                 .ToList(),
             Language = book.Language.ToString(),
-            BookCopiesIds = book
-                .Copies
-                .Select(x => x.Id)
-                .ToList(),
+            BookCopiesIds = bookCopiesIds,
+            Readers = readers
         };
     }
 
