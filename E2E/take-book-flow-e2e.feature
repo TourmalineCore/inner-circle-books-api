@@ -75,7 +75,7 @@ Scenario: CRUD operations test flow
     """
     {
         bookCopyId: '#(firstBookCopyId)',
-        sсheduledReturnDate: '2025-10-22'
+        scheduledReturnDate: '2025-10-22'
     }
     """
     When method POST
@@ -110,7 +110,7 @@ Scenario: CRUD operations test flow
     """
     {
         bookCopyId: '#(firstBookCopyId)',
-        sсheduledReturnDate: '2025-10-22'
+        scheduledReturnDate: '2025-10-22'
     }
     """
     When method POST
@@ -128,24 +128,28 @@ Scenario: CRUD operations test flow
     And request
     """
     {
-        "login": "#(firstUserAuthLogin)",
-        "password": "#(firstUserAuthPassword)"
+        "login": '#(firstUserAuthLogin)',
+        "password": '#(firstUserAuthPassword)'
     }
     """
     And method POST
     Then status 200
+
+    # Step 10: Check book readers
+    Given path 'api/books', firstBookCopyId
+    When method GET
+    Then status 200
+    And assert response.readers.length == 1
+    And assert response.readers[0].employeeId == 2
+    And assert response.readers[0].fullName == 'Name Name Name'
 
     # Step 10: Return book copy
     Given path 'api/books/return'
     And request
     """
     {
-        bookId: '#(newBookId)',
-        takenBookCopyId: '#(firstBookCopyId)',
-        string advantages: 'My advantages',
-        string disadvantages: 'My disadvantages',
-        float rating: 4.5,
-        string progressOfReading 'ReadEntirely'
+        "bookCopyId": '#(firstBookCopyId)',
+        "progressOfReading": 'ReadEntirely'
     }
     """
     When method POST
@@ -155,8 +159,7 @@ Scenario: CRUD operations test flow
     Given path 'api/books', newBookId
     When method GET
     Then status 200
-    And assert response.feedback.rating.length == 1
-    And match response.feedback[0].rating == 4.5
+    And assert response.progressOfReading.length == 'ReadEntirely'
 
     # Step 12: Delete the book (hard delete)
     Given path 'api/books', newBookId, 'hard-delete'
