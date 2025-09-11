@@ -106,9 +106,9 @@ public class BooksController : Controller
 
             var employeesIds = await _getBookByIdQuery.GetEmployeesIdsByCopiesIdsAsync(bookCopiesIds);
 
-            var readers = (employeesIds != null || employeesIds.Count < 1)
-                ? await _client.GetEmployeesByIdsAsync(employeesIds)
-                : new List<EmployeeById>();
+            var readers = (employeesIds == null || employeesIds.Count < 1)
+                ? new List<EmployeeById>()
+                : await _client.GetEmployeesByIdsAsync(employeesIds);
 
             var response = new SingleBookResponse()
             {
