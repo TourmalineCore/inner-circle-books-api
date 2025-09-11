@@ -31,7 +31,7 @@ public class TakeBookCommandTests
 
         var employee = new Employee
         {
-            EmployeeId = 1,
+            Id = 1,
             FullName = "Ivanov Ivan",
         };
 

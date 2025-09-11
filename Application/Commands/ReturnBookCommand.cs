@@ -26,7 +26,7 @@ public class ReturnBookCommand
         var bookCopyReadingHistory = await _context
             .BooksCopiesReadingHistory
             .FirstOrDefaultAsync(x => x.BookCopyId == returnBookCommandParams.BookCopyId
-                && x.ReaderEmployeeId == employee.EmployeeId
+                && x.ReaderEmployeeId == employee.Id
                 && x.ActualReturnedAtUtc == null);
 
         bookCopyReadingHistory.ActualReturnedAtUtc = returnBookCommandParams.ActualReturnedAtUtc;
