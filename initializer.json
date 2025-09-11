@@ -28,7 +28,7 @@
       "body": {
         "type": "JSON",
         "json": {
-          "employeeIds": []
+          "employeesIds": []
         }
       }
     },
@@ -47,26 +47,13 @@
       "body": {
         "type": "JSON",
         "json": {
-          "employeeIds": [2]
+          "employeesIds": [2]
         }
       }
     },
     "httpResponse": {
       "statusCode": 200,
       "body": "{ \"employees\": [ { \"employeeId\": 2, \"fullName\": \"Name Name Name\" } ] }",
-      "headers": {
-        "Content-Type": ["application/json"]
-      }
-    }
-  },
-  {
-    "httpRequest": {
-      "method": "POST",
-      "path": "/internal/get-employees-by-ids"
-    },
-    "httpResponse": {
-      "statusCode": 200,
-      "body": "{ \"employees\": [] }",
       "headers": {
         "Content-Type": ["application/json"]
       }
