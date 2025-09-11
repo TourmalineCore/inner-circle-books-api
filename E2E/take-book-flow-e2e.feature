@@ -71,7 +71,6 @@ Scenario: CRUD operations test flow
     * def firstBookCopyId = response.bookCopiesIds[0]
 
     # Take book copy by copy ID
-    Given url apiRootUrl
     Given path 'api/books/take'
     And request
     """
