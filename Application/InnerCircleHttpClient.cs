@@ -35,7 +35,10 @@ public class InnerCircleHttpClient : IInnerCircleHttpClient
     {
         var link = $"{_urls.EmployeesServiceUrl}/internal/get-employees-by-ids";
 
-        var headers = _httpContextAccessor.HttpContext?.Request.Headers;
+        var headers = _httpContextAccessor
+            .HttpContext?
+            .Request
+            .Headers;
 
         var authHeader = headers?["Authorization"].ToString();
 
@@ -54,8 +57,17 @@ public class InnerCircleHttpClient : IInnerCircleHttpClient
             _client.DefaultRequestHeaders.Authorization = AuthenticationHeaderValue.Parse(authHeader);
         }
 
-        var response = await _client.PostAsJsonAsync(link, new { employeesIds = ids });
-        var responseContent = await response.Content.ReadAsStringAsync();
+        var response = await _client.PostAsJsonAsync(
+            link,
+            new
+            {
+                employeesIds = ids
+            }
+        );
+
+        var responseContent = await response
+            .Content
+            .ReadAsStringAsync();
 
         if (!response.IsSuccessStatusCode)
         {

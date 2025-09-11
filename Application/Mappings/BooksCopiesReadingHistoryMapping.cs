@@ -9,6 +9,12 @@ public class BooksCopiesReadingHistoryMapping : IEntityTypeConfiguration<BookCop
     public void Configure(EntityTypeBuilder<BookCopyReadingHistory> builder)
     {
         builder
+            .Property(e => e.ProgressOfReading)
+            .HasConversion(
+                v => v.ToString(),
+                v => (ProgressOfReading)Enum.Parse(typeof(ProgressOfReading), v));
+
+        builder
             .HasOne(e => e.BookCopy)
             .WithMany(e => e.ReadingHistoryList)
             .HasForeignKey(e => e.BookCopyId)

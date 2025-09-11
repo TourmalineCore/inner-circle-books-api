@@ -14,4 +14,6 @@ public class BookCopyReadingHistory
     public DateOnly ScheduledReturnDate { get; set; }
 
     public DateTime? ActualReturnedAtUtc { get; set; } = null;
+
+    public ProgressOfReading? ProgressOfReading { get; set; } = null;
 }

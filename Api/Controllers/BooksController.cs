@@ -220,7 +220,7 @@ public class BooksController : Controller
         var returnBookCommandParams = new ReturnBookCommandParams
         {
             BookCopyId = returnBookRequest.BookCopyId,
-            ProgressOfReading = returnBookRequest.ProgressOfReading,
+            ProgressOfReading = (ProgressOfReading)Enum.Parse(typeof(ProgressOfReading), returnBookRequest.ProgressOfReading),
             ActualReturnedAtUtc = DateTime.UtcNow
         };
 

@@ -8,7 +8,8 @@ public class ReturnBookCommandParams
 {
     public long BookCopyId { get; set; }
 
-    public string ProgressOfReading { get; set; }
+    public ProgressOfReading ProgressOfReading { get; set; }
+
     public DateTime ActualReturnedAtUtc { get; set; }
 }
 
@@ -30,6 +31,7 @@ public class ReturnBookCommand
                 && x.ActualReturnedAtUtc == null);
 
         bookCopyReadingHistory.ActualReturnedAtUtc = returnBookCommandParams.ActualReturnedAtUtc;
+        bookCopyReadingHistory.ProgressOfReading = returnBookCommandParams.ProgressOfReading;
 
         _context.BooksCopiesReadingHistory.Update(bookCopyReadingHistory);
         await _context.SaveChangesAsync();
