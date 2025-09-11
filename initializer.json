@@ -28,13 +28,13 @@
       "body": {
         "type": "JSON",
         "json": {
-          "employeesIds": []
+          "employeesIds": [2]
         }
       }
     },
     "httpResponse": {
       "statusCode": 200,
-      "body": "{ \"employees\": [] }",
+      "body": "{ \"employees\": [ { \"employeeId\": 2, \"fullName\": \"Name Name Name\" } ] }",
       "headers": {
         "Content-Type": ["application/json"]
       }
@@ -47,13 +47,13 @@
       "body": {
         "type": "JSON",
         "json": {
-          "employeesIds": [2]
+          "employeesIds": []
         }
       }
     },
     "httpResponse": {
       "statusCode": 200,
-      "body": "{ \"employees\": [ { \"employeeId\": 2, \"fullName\": \"Name Name Name\" } ] }",
+      "body": "{ \"employees\": [] }",
       "headers": {
         "Content-Type": ["application/json"]
       }
