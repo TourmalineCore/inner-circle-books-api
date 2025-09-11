@@ -26,6 +26,7 @@ public class GetBookByIdQuery
         return _context
             .BooksCopiesReadingHistory
             .Where(x => copiesIds.Contains(x.BookCopyId))
+            .Where(x => x.ActualReturnedAtUtc == null)
             .Select(x => x.ReaderEmployeeId)
             .ToListAsync();
     }
