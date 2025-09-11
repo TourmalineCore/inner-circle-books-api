@@ -16,7 +16,7 @@ Scenario: CRUD operations test flow
     * def secondUserAuthLogin = jsUtils().getEnvVariable('SECOND_USER_AUTH_LOGIN')
     * def secondUserAuthPassword = jsUtils().getEnvVariable('SECOND_USER_AUTH_PASSWORD')
 
-    # Step 1: First user authentication 
+    # First user authentication 
     Given url authApiRootUrl
     And path '/auth/login'
     And request
@@ -33,7 +33,7 @@ Scenario: CRUD operations test flow
 
     * configure headers = jsUtils().getAuthHeaders(accessToken)
 
-    # Step 2: Create a new book
+    # Create a new book
     * def randomName = 'Test-book-' + Math.random()
 
     Given url apiRootUrl
@@ -59,17 +59,18 @@ Scenario: CRUD operations test flow
 
     * def newBookId = response.newBookId
 
-    # Step 3: Get book data to get book copy ID
+    # Get book data to get book copy ID
+    Given url apiRootUrl
     Given path 'api/books', newBookId
     When method GET
     Then status 200
     And match response.title == randomName
     And assert response.bookCopiesIds.length == 2
-    And assert response.feedback.rating.length == 0
+    And assert response.readers.length == 0
 
     * def firstBookCopyId = response.bookCopiesIds[0]
 
-    # Step 4: Take book copy by ID
+    # Take book copy by copy ID
     Given path 'api/books/take'
     And request
     """
@@ -81,14 +82,20 @@ Scenario: CRUD operations test flow
     When method POST
     Then status 200
 
-    # Step 5: First user logout
+    # Check that book has one reader
+    Given path 'api/books', newBookId
+    When method GET
+    Then status 200
+    And print response
+    And assert response.readers.length == 1
+
+    # First user logout
     Given url authApiRootUrl
     And path '/auth/logout'
     And method GET
     Then status 200
 
-    # Step 6: Second user authentication 
-    Given url authApiRootUrl
+    # Second user authentication 
     And path '/auth/login'
     And request
     """
@@ -104,7 +111,8 @@ Scenario: CRUD operations test flow
 
     * configure headers = jsUtils().getAuthHeaders(accessToken)
 
-    # Step 7: Take the same book copy by ID
+    # Try to take the same book copy by copy ID
+    Given url apiRootUrl
     Given path 'api/books/take'
     And request
     """
@@ -116,14 +124,13 @@ Scenario: CRUD operations test flow
     When method POST
     Then status 500
 
-    # Step 8: Second user logout
+    # Second user logout
     Given url authApiRootUrl
     And path '/auth/logout'
     And method GET
     Then status 200
 
-    # Step 9: First user authentication 
-    Given url authApiRootUrl
+    # First user authentication 
     And path '/auth/login'
     And request
     """
@@ -135,15 +142,16 @@ Scenario: CRUD operations test flow
     And method POST
     Then status 200
 
-    # Step 10: Check book readers
-    Given path 'api/books', firstBookCopyId
+    # Check that book still has one reader
+    Given url apiRootUrl
+    Given path 'api/books', newBookId
     When method GET
     Then status 200
     And assert response.readers.length == 1
     And assert response.readers[0].employeeId == 2
     And assert response.readers[0].fullName == 'Name Name Name'
 
-    # Step 10: Return book copy
+    # Return book copy
     Given path 'api/books/return'
     And request
     """
@@ -155,13 +163,13 @@ Scenario: CRUD operations test flow
     When method POST
     Then status 200
 
-    # Step 11: Verify
+    # Check that book has zero readers
     Given path 'api/books', newBookId
     When method GET
     Then status 200
-    And assert response.progressOfReading.length == 'ReadEntirely'
+    And assert response.readers.length == 0
 
-    # Step 12: Delete the book (hard delete)
+    # Delete the book (hard delete)
     Given path 'api/books', newBookId, 'hard-delete'
     When method DELETE
     Then status 200

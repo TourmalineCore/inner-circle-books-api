@@ -11,7 +11,7 @@ public class BookCopyReadingHistory
 
     public DateTime TakenAtUtc { get; set; }
 
-    public DateOnly SсheduledReturnDate { get; set; }
+    public DateOnly ScheduledReturnDate { get; set; }
 
     public DateTime? ActualReturnedAtUtc { get; set; } = null;
 }

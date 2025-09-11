@@ -26,6 +26,7 @@ public class BooksController : Controller
     private readonly SoftDeleteBookCommand _softDeleteBookCommand;
     private readonly EditBookCommand _editBookCommand;
     private readonly TakeBookCommand _takeBookCommand;
+    private readonly ReturnBookCommand _returnBookCommand;
     private readonly IInnerCircleHttpClient _client;
 
     /// <summary>
@@ -39,6 +40,7 @@ public class BooksController : Controller
         DeleteBookCommand deleteBookCommand,
         SoftDeleteBookCommand softDeleteBookCommand,
         TakeBookCommand takeBookCommand,
+        ReturnBookCommand returnBookCommand,
         IInnerCircleHttpClient client
     )
     {
@@ -49,6 +51,7 @@ public class BooksController : Controller
         _deleteBookCommand = deleteBookCommand;
         _softDeleteBookCommand = softDeleteBookCommand;
         _takeBookCommand = takeBookCommand;
+        _returnBookCommand = returnBookCommand;
         _client = client;
     }
 
@@ -82,38 +85,59 @@ public class BooksController : Controller
     /// </summary>
     [RequiresPermission(UserClaimsProvider.CanViewBooks)]
     [HttpGet("{id}")]
-    public async Task<SingleBookResponse> GetBookByIdAsync([Required][FromRoute] long id)
+    public async Task<ActionResult<SingleBookResponse>> GetBookByIdAsync([Required][FromRoute] long id)
     {
-        var book = await _getBookByIdQuery.GetByIdAsync(id, User.GetTenantId());
+        try
+        {
+            var book = await _getBookByIdQuery.GetByIdAsync(id, User.GetTenantId());
 
-        var bookCopiesIds = book
-                .Copies
-                .Select(x => x.Id)
-                .ToList();
+            if (book == null)
+            {
+                return NotFound(new
+                {
+                    Message = $"Book with id {id} not found"
+                });
+            }
 
-        var employeesIds = await _getBookByIdQuery.GetEmployeesIdsByCopiesIdsAsync(bookCopiesIds);
+            var bookCopiesIds = book
+                    .Copies
+                    .Select(x => x.Id)
+                    .ToList();
 
-        var readers = employeesIds != null
+            var employeesIds = await _getBookByIdQuery.GetEmployeesIdsByCopiesIdsAsync(bookCopiesIds);
+
+            var readers = (employeesIds != null || employeesIds.Count < 1)
                 ? await _client.GetEmployeesByIdsAsync(employeesIds)
                 : new List<EmployeeById>();
 
-        return new SingleBookResponse()
+            var response = new SingleBookResponse()
+            {
+                Id = book.Id,
+                Title = book.Title,
+                Annotation = book.Annotation,
+                CoverUrl = book.CoverUrl,
+                Authors = book
+                    .Authors
+                    .Select(a => new AuthorResponse()
+                    {
+                        FullName = a.FullName
+                    })
+                    .ToList(),
+                Language = book.Language.ToString(),
+                BookCopiesIds = bookCopiesIds,
+                Readers = readers
+            };
+
+            return Ok(response);
+        }
+        catch (Exception ex)
         {
-            Id = book.Id,
-            Title = book.Title,
-            Annotation = book.Annotation,
-            CoverUrl = book.CoverUrl,
-            Authors = book
-                .Authors
-                .Select(a => new AuthorResponse()
-                {
-                    FullName = a.FullName
-                })
-                .ToList(),
-            Language = book.Language.ToString(),
-            BookCopiesIds = bookCopiesIds,
-            Readers = readers
-        };
+            return StatusCode(StatusCodes.Status500InternalServerError, new
+            {
+                Exception = ex.Message,
+                Stack = ex.StackTrace
+            });
+        }
     }
 
     /// <summary>
@@ -156,17 +180,51 @@ public class BooksController : Controller
     /// <param name="takeBookRequest"></param>
     [RequiresPermission(UserClaimsProvider.CanViewBooks)]
     [HttpPost("take")]
-    public async Task TakeBookAsync([Required][FromBody] TakeBookRequest takeBookRequest)
+    public async Task<IActionResult> TakeBookAsync([Required][FromBody] TakeBookRequest takeBookRequest)
     {
+        try
+        {
+            var employee = await _client.GetEmployeeAsync(User.GetCorporateEmail());
+
+            var takeBookCommandParams = new TakeBookCommandParams
+            {
+                BookCopyId = takeBookRequest.BookCopyId,
+                ScheduledReturnDate = takeBookRequest.ScheduledReturnDate,
+            };
+
+            await _takeBookCommand.TakeAsync(takeBookCommandParams, employee);
+
+            return Ok(new { success = true });
+        }
+        catch (InvalidOperationException ex)
+        {
+            return StatusCode(StatusCodes.Status500InternalServerError, new
+            {
+                success = false,
+                message = ex.Message
+            });
+        }
+    }
+
+    /// <summary>
+    ///     Return book
+    /// </summary>
+    /// <param name="returnBookRequest"></param>
+    [RequiresPermission(UserClaimsProvider.CanViewBooks)]
+    [HttpPost("return")]
+    public async Task ReturnBookAsync([Required][FromBody] ReturnBookRequest returnBookRequest)
+    {
+        
         var employee = await _client.GetEmployeeAsync(User.GetCorporateEmail());
         
-        var takeBookCommandParams = new TakeBookCommandParams
+        var returnBookCommandParams = new ReturnBookCommandParams
         {
-            BookCopyId = takeBookRequest.BookCopyId,
-            SсheduledReturnDate = takeBookRequest.SсheduledReturnDate,
+            BookCopyId = returnBookRequest.BookCopyId,
+            ProgressOfReading = returnBookRequest.ProgressOfReading,
+            ActualReturnedAtUtc = DateTime.UtcNow
         };
 
-        await _takeBookCommand.TakeAsync(takeBookCommandParams, employee);
+        await _returnBookCommand.ReturnAsync(returnBookCommandParams, employee);
     }
 
     /// <summary>

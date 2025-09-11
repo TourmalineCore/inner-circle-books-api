@@ -1,5 +1,6 @@
 using Core;
 using Core.Entities;
+using Microsoft.EntityFrameworkCore;
 
 namespace Application.Commands;
 
@@ -7,7 +8,7 @@ public class TakeBookCommandParams
 {
     public long BookCopyId { get; set; }
 
-    public string SсheduledReturnDate { get; set; }
+    public string ScheduledReturnDate { get; set; }
 }
 
 public class TakeBookCommand
@@ -21,14 +22,23 @@ public class TakeBookCommand
 
     public async Task TakeAsync(TakeBookCommandParams takeBookCommandParams, Employee employee)
     {
-        var result = DateTime.Parse(takeBookCommandParams.SсheduledReturnDate, null, System.Globalization.DateTimeStyles.RoundtripKind);
+        var result = DateTime.Parse(takeBookCommandParams.ScheduledReturnDate, null, System.Globalization.DateTimeStyles.RoundtripKind);
+
+        var isAlreadyTaken = await _context.BooksCopiesReadingHistory
+                .AnyAsync(x => x.BookCopyId == takeBookCommandParams.BookCopyId 
+                            && x.ActualReturnedAtUtc == null);
+
+        if (isAlreadyTaken)
+        {
+            throw new InvalidOperationException("This copy of the book is already taken by another employee.");
+        }
 
         var bookCopyReadingHistory = new BookCopyReadingHistory
         {
             BookCopyId = takeBookCommandParams.BookCopyId,
             ReaderEmployeeId = employee.EmployeeId,
             TakenAtUtc = DateTime.UtcNow,
-            SсheduledReturnDate = new DateOnly(result.Year, result.Month, result.Day),
+            ScheduledReturnDate = new DateOnly(result.Year, result.Month, result.Day),
         };
 
         await _context.BooksCopiesReadingHistory.AddAsync(bookCopyReadingHistory);

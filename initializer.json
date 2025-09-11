@@ -5,24 +5,84 @@
       "path": "/auth/login"
     },
     "httpResponse": {
-        "statusCode": 200,
-        "body": "{\"accessToken\": { \"value\": \"eyJuYW1lSWRlbnRpZmllciI6Im1haWxAbWFpbC5ydSIsImNvcnBvcmF0ZUVtYWlsIjoibWFpbEBtYWlsLnJ1IiwidGVuYW50SWQiOiIxIiwiYWNjb3VudElkIjoiMyIsImVtcGxveWVlSWQiOiIyIiwicGVybWlzc2lvbnMiOlsiSXNCb29rc0hhcmREZWxldGVBbGxvd2VkIiwiQ2FuTWFuYWdlQm9va3MiLCJDYW5WaWV3Qm9va3MiXX0=\" }}",
-        "headers": {
-            "Content-Type": [ "application/json" ]
-        }
+      "statusCode": 200,
+      "body": "{\"accessToken\": { \"value\": \"eyJuYW1lSWRlbnRpZmllciI6Im1haWxAbWFpbC5ydSIsImNvcnBvcmF0ZUVtYWlsIjoibWFpbEBtYWlsLnJ1IiwidGVuYW50SWQiOiIxIiwiYWNjb3VudElkIjoiMyIsImVtcGxveWVlSWQiOiIyIiwicGVybWlzc2lvbnMiOlsiSXNCb29rc0hhcmREZWxldGVBbGxvd2VkIiwiQ2FuTWFuYWdlQm9va3MiLCJDYW5WaWV3Qm9va3MiXX0=\" }}",
+      "headers": {
+        "Content-Type": [ "application/json" ]
+      }
     }
   },
   {
     "httpRequest": {
       "method": "GET",
+      "path": "/auth/logout"
+    },
+    "httpResponse": {
+        "statusCode": 200
+    }
+  },
+  {
+    "httpRequest": {
+      "method": "POST",
       "path": "/internal/get-employees-by-ids",
-      "headers": {
-        "X-DEBUG-TOKEN": ["eyJuYW1lSWRlbnRpZmllciI6Im1haWxAbWFpbC5ydSIsImNvcnBvcmF0ZUVtYWlsIjoibWFpbEBtYWlsLnJ1IiwidGVuYW50SWQiOiIxIiwiYWNjb3VudElkIjoiMyIsImVtcGxveWVlSWQiOiIyIiwicGVybWlzc2lvbnMiOlsiSXNCb29rc0hhcmREZWxldGVBbGxvd2VkIiwiQ2FuTWFuYWdlQm9va3MiLCJDYW5WaWV3Qm9va3MiXX0="]
+      "body": {
+        "type": "JSON",
+        "json": {
+          "employeeIds": []
+        }
       }
     },
     "httpResponse": {
       "statusCode": 200,
-      "body": "{ \"employees\": [{ \"employeeId\": 2, \"fullName\": \"Name Name Name\" }, { \"employeeId\": 3, \"fullName\": \"Name2 Name2 Name2\" }]}",
+      "body": "{ \"employees\": [] }",
+      "headers": {
+        "Content-Type": ["application/json"]
+      }
+    }
+  },
+  {
+    "httpRequest": {
+      "method": "POST",
+      "path": "/internal/get-employees-by-ids",
+      "body": {
+        "type": "JSON",
+        "json": {
+          "employeeIds": [2]
+        }
+      }
+    },
+    "httpResponse": {
+      "statusCode": 200,
+      "body": "{ \"employees\": [ { \"employeeId\": 2, \"fullName\": \"Name Name Name\" } ] }",
+      "headers": {
+        "Content-Type": ["application/json"]
+      }
+    }
+  },
+  {
+    "httpRequest": {
+      "method": "POST",
+      "path": "/internal/get-employees-by-ids"
+    },
+    "httpResponse": {
+      "statusCode": 200,
+      "body": "{ \"employees\": [] }",
+      "headers": {
+        "Content-Type": ["application/json"]
+      }
+    }
+  },
+  {
+    "httpRequest": {
+      "method": "GET",
+      "path" : "/internal/get-employee",
+      "queryStringParameters" : {
+        "corporateEmail" : [ "mail@mail.ru" ]
+      }
+    },
+    "httpResponse": {
+      "statusCode": 200,
+      "body": "{ \"id\": 2, \"fullName\": \"Name Name Name\", \"corporateEmail\": \"mail@mail.ru\", \"tenantId\": 1 }",
       "headers": {
         "Content-Type": ["application/json"]
       }

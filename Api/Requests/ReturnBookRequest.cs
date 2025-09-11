@@ -2,11 +2,11 @@ using System.ComponentModel.DataAnnotations;
 
 namespace Api.Requests;
 
-public class TakeBookRequest
+public class ReturnBookRequest
 {
     [Required]
     public long BookCopyId { get; set; }
 
     [Required]
-    public string ScheduledReturnDate { get; set; }
+    public string ProgressOfReading { get; set; }
 }

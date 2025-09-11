@@ -50,8 +50,8 @@ services:
       - ASPNETCORE_ENVIRONMENT=MockForDevelopment
       - ConnectionStrings__DefaultConnection=User ID=postgres;Password=postgres;Host=books-db;port=5432;Database=books-db
 
-  booksMockServer:
-    container_name: 'booksMockServer'
+  books-mock-server:
+    container_name: 'books-mock-server'
     profiles: ['MockForPullRequest']
     image: mockserver/mockserver:5.15.0
     command: -logLevel INFO
@@ -72,14 +72,15 @@ services:
       context: .
     depends_on:
       - books-api-for-e2e
-      - booksMockServer
+      - books-mock-server
     command: ["karate", "/karate"]
     volumes:
       - .:/karate
     environment:
-      AUTH_API_ROOT_URL: "http://booksMockServer:1080"
+      AUTH_API_ROOT_URL: "http://books-mock-server:1080"
       API_ROOT_URL: "http://books-api-for-e2e"
       SHOULD_USE_FAKE_EXTERNAL_DEPENDENCIES: "true"
+      
     networks:
       - books-network
 

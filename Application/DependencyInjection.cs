@@ -24,6 +24,7 @@ public static class DependencyInjection
         services.AddTransient<GetBookByIdQuery>();
         services.AddTransient<GetAllBooksQuery>();
         services.AddTransient<TakeBookCommand>();
+        services.AddTransient<ReturnBookCommand>();
         services.AddTransient<IInnerCircleHttpClient, InnerCircleHttpClient>();
     }
 }

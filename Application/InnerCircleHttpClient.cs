@@ -30,32 +30,41 @@ public class InnerCircleHttpClient : IInnerCircleHttpClient
 
         return JsonConvert.DeserializeObject<Employee>(response);
     }
-
-
+    
     public async Task<List<EmployeeById>> GetEmployeesByIdsAsync(List<long> ids)
     {
         var link = $"{_urls.EmployeesServiceUrl}/internal/get-employees-by-ids";
 
-        var authHeader = _httpContextAccessor
-            .HttpContext?
-            .Request
-            .Headers["Authorization"]
-            .ToString();
+        var headers = _httpContextAccessor.HttpContext?.Request.Headers;
+
+        var authHeader = headers?["Authorization"].ToString();
+
+        if (string.IsNullOrEmpty(authHeader))
+        {
+            var debugToken = headers?["X-DEBUG-TOKEN"].ToString();
+
+            if (!string.IsNullOrEmpty(debugToken))
+            {
+                authHeader = $"Bearer {debugToken}";
+            }
+        }
 
         if (!string.IsNullOrEmpty(authHeader))
         {
             _client.DefaultRequestHeaders.Authorization = AuthenticationHeaderValue.Parse(authHeader);
         }
 
-        var response = await _client.PostAsJsonAsync(
-            link,
-            new
-            {
-                employeesIds = ids
-            }
-        );
-
+        var response = await _client.PostAsJsonAsync(link, new { employeesIds = ids });
         var responseContent = await response.Content.ReadAsStringAsync();
+
+        if (!response.IsSuccessStatusCode)
+        {
+            throw new Exception(
+                $"Request to {link} failed. " +
+                $"Status: {(int)response.StatusCode} {response.StatusCode}, " +
+                $"Body: {responseContent}"
+            );
+        }
 
         var responseObject = JsonConvert.DeserializeAnonymousType(
             responseContent,
@@ -64,6 +73,11 @@ public class InnerCircleHttpClient : IInnerCircleHttpClient
                 employees = new List<EmployeeById>()
             }
         );
+
+        if (responseObject?.employees == null)
+        {
+            throw new Exception($"Failed to parse employees response: {responseContent}");
+        }
 
         return responseObject.employees;
     }
