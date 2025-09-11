@@ -6,7 +6,7 @@
     },
     "httpResponse": {
       "statusCode": 200,
-      "body": "{\"accessToken\": { \"value\": \"eyJuYW1lSWRlbnRpZmllciI6Im1haWxAbWFpbC5ydSIsImNvcnBvcmF0ZUVtYWlsIjoibWFpbEBtYWlsLnJ1IiwidGVuYW50SWQiOiIxIiwiYWNjb3VudElkIjoiMyIsImVtcGxveWVlSWQiOiIyIiwicGVybWlzc2lvbnMiOlsiSXNCb29rc0hhcmREZWxldGVBbGxvd2VkIiwiQ2FuTWFuYWdlQm9va3MiLCJDYW5WaWV3Qm9va3MiXX0=\" }}",
+      "body": "{\"accessToken\": { \"value\": \"ew0KICAibmFtZUlkZW50aWZpZXIiOiAibWFpbEBtYWlsLnJ1IiwNCiAgImNvcnBvcmF0ZUVtYWlsIjogIm1haWxAbWFpbC5ydSIsDQogICJ0ZW5hbnRJZCI6ICIxIiwNCiAgImFjY291bnRJZCI6ICIzIiwNCiAgImVtcGxveWVlSWQiOiAiMiIsDQogICJwZXJtaXNzaW9ucyI6IFsNCiAgICAiQ2FuVmlld0Jvb2tzIiwNCiAgICAiQ2FuTWFuYWdlQm9va3MiLA0KICAgICJJc0Jvb2tzSGFyZERlbGV0ZUFsbG93ZWQiDQogIF19\" }}",
       "headers": {
         "Content-Type": [ "application/json" ]
       }
@@ -18,7 +18,7 @@
       "path": "/auth/logout"
     },
     "httpResponse": {
-        "statusCode": 200
+      "statusCode": 200
     }
   },
   {
