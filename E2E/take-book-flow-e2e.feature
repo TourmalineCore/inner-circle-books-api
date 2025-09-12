@@ -100,8 +100,8 @@ Scenario: CRUD operations test flow
     And request
     """
     {
-        "login": "#(secondUserAuthLogin)",
-        "password": "#(secondUserAuthPassword)"
+        "login": "#(firstUserAuthLogin)",
+        "password": "#(firstUserAuthPassword)"
     }
     """
     And method POST
