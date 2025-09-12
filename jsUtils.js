@@ -1,4 +1,11 @@
 function fn() {
+    function decodeString(string) {
+        var Bytes = Java.type('java.util.Base64');
+        var decodedBytes = Bytes.getDecoder().decode(string);
+        
+        return new java.lang.String(decodedBytes);
+    }
+
     return {
         getAuthHeaders: function (tokenValue) {
             return {
@@ -36,9 +43,16 @@ function fn() {
         },
 
         getEmployeeIdFromToken: function (tokenValue) {
-            var Bytes = Java.type('java.util.Base64');
-            var decodedBytes = Bytes.getDecoder().decode(tokenValue);
-            var decodedString = new java.lang.String(decodedBytes);
+            var decodedString;
+
+            if (tokenValue.includes('.')) {
+                var payload = tokenValue.split('.')[1];
+
+                decodedString = decodeString(payload);
+            } else {
+                decodedString = decodeString(tokenValue);
+            }
+
             var tokenData = JSON.parse(decodedString);
 
             return tokenData.employeeId;
