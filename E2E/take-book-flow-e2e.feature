@@ -94,7 +94,8 @@ Scenario: CRUD operations test flow
     And method GET
     Then status 200
 
-    # Second user authentication 
+    # Second user authentication
+    Given url authApiRootUrl
     And path '/auth/login'
     And request
     """
@@ -129,7 +130,8 @@ Scenario: CRUD operations test flow
     And method GET
     Then status 200
 
-    # First user authentication 
+    # First user authentication
+    Given url authApiRootUrl
     And path '/auth/login'
     And request
     """
