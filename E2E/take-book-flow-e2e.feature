@@ -90,7 +90,7 @@ Scenario: CRUD operations test flow
     And assert response.readers.length == 1
 
     # First user logout
-    Given url authApiRootUrl
+    Given url apiRootUrl
     And path '/auth/logout'
     And method GET
     Then status 200
@@ -125,7 +125,7 @@ Scenario: CRUD operations test flow
     Then status 500
 
     # Second user logout
-    Given url authApiRootUrl
+    Given url apiRootUrl
     And path '/auth/logout'
     And method GET
     Then status 200
