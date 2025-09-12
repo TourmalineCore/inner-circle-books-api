@@ -86,7 +86,6 @@ Scenario: CRUD operations test flow
     Given path 'api/books', newBookId
     When method GET
     Then status 200
-    And print response
     And assert response.readers.length == 1
 
     # First user logout
