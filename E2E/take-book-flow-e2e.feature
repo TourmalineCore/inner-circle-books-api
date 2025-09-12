@@ -37,7 +37,7 @@ Scenario: Take and return book flow
     * def randomName = 'Test-book-' + Math.random()
 
     Given url apiRootUrl
-    Given path 'api/books'
+    And path 'api/books'
     And request
     """
     {
@@ -60,8 +60,7 @@ Scenario: Take and return book flow
     * def newBookId = response.newBookId
 
     # Get book data to get book copy ID
-    Given url apiRootUrl
-    Given path 'api/books', newBookId
+    And path 'api/books', newBookId
     When method GET
     Then status 200
     And match response.title == randomName
@@ -73,7 +72,7 @@ Scenario: Take and return book flow
     # Take book copy by copy ID
     * def scheduledReturnDate = jsUtils().getDateTwoMonthsLaterThanCurrent()
 
-    Given path 'api/books/take'
+    And path 'api/books/take'
     And request
     """
     {
@@ -85,13 +84,12 @@ Scenario: Take and return book flow
     Then status 200
 
     # Check that book has one reader
-    Given path 'api/books', newBookId
+    And path 'api/books', newBookId
     When method GET
     Then status 200
     And assert response.readers.length == 1
 
     # First user logout
-    Given url apiRootUrl
     And path '/auth/logout'
     And method GET
     Then status 200
@@ -115,7 +113,7 @@ Scenario: Take and return book flow
 
     # Try to take the same book copy by copy ID
     Given url apiRootUrl
-    Given path 'api/books/take'
+    And path 'api/books/take'
     And request
     """
     {
@@ -127,7 +125,6 @@ Scenario: Take and return book flow
     Then status 500
 
     # Second user logout
-    Given url apiRootUrl
     And path '/auth/logout'
     And method GET
     Then status 200
@@ -151,7 +148,7 @@ Scenario: Take and return book flow
 
     # Check that book still has the same reader
     Given url apiRootUrl
-    Given path 'api/books', newBookId
+    And path 'api/books', newBookId
     When method GET
     Then status 200
     And assert response.readers.length == 1
@@ -159,7 +156,7 @@ Scenario: Take and return book flow
     And assert response.readers[0].fullName == 'Name Name Name'
 
     # Return book copy
-    Given path 'api/books/return'
+    And path 'api/books/return'
     And request
     """
     {
@@ -171,13 +168,13 @@ Scenario: Take and return book flow
     Then status 200
 
     # Check that book has zero readers
-    Given path 'api/books', newBookId
+    And path 'api/books', newBookId
     When method GET
     Then status 200
     And assert response.readers.length == 0
 
     # Delete the book (hard delete)
-    Given path 'api/books', newBookId, 'hard-delete'
+    And path 'api/books', newBookId, 'hard-delete'
     When method DELETE
     Then status 200
     And match response == { isDeleted: true }
