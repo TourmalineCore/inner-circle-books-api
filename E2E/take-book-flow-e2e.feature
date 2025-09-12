@@ -6,7 +6,7 @@ Background:
 * url 'http://localhost:1080/mockServer/verify'
 * header Content-Type = 'application/json'
 
-Scenario: CRUD operations test flow
+Scenario: Take and return book flow
 
     * def jsUtils = read('../jsUtils.js')
     * def authApiRootUrl = jsUtils().getEnvVariable('AUTH_API_ROOT_URL')
@@ -71,12 +71,14 @@ Scenario: CRUD operations test flow
     * def firstBookCopyId = response.bookCopiesIds[0]
 
     # Take book copy by copy ID
+    * def scheduledReturnDate = jsUtils().getDateTwoMonthsLaterThanCurrent()
+
     Given path 'api/books/take'
     And request
     """
     {
         bookCopyId: '#(firstBookCopyId)',
-        scheduledReturnDate: '2025-10-22'
+        scheduledReturnDate: '#(scheduledReturnDate)'
     }
     """
     When method POST
@@ -118,7 +120,7 @@ Scenario: CRUD operations test flow
     """
     {
         bookCopyId: '#(firstBookCopyId)',
-        scheduledReturnDate: '2025-10-22'
+        scheduledReturnDate: '#(scheduledReturnDate)'
     }
     """
     When method POST
@@ -143,7 +145,11 @@ Scenario: CRUD operations test flow
     And method POST
     Then status 200
 
-    # Check that book still has one reader
+    * def accessToken = karate.toMap(response.accessToken.value)
+
+    * configure headers = jsUtils().getAuthHeaders(accessToken)
+
+    # Check that book still has the same reader
     Given url apiRootUrl
     Given path 'api/books', newBookId
     When method GET

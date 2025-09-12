@@ -27,5 +27,12 @@ function fn() {
 
             return System.getenv(variable);
         },
+
+        getDateTwoMonthsLaterThanCurrent: function () {
+            const date = new Date();
+            date.setMonth(date.getMonth() + 3);
+
+            return date.toISOString().split('T')[0];
+        }
     }
 }
