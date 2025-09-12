@@ -33,6 +33,15 @@ function fn() {
             date.setMonth(date.getMonth() + 3);
 
             return date.toISOString().split('T')[0];
+        },
+
+        getEmployeeIdFromToken: function (tokenValue) {
+            var Bytes = Java.type('java.util.Base64');
+            var decodedBytes = Bytes.getDecoder().decode(tokenValue);
+            var decodedString = new java.lang.String(decodedBytes);
+            var tokenData = JSON.parse(decodedString);
+
+            return tokenData.employeeId;
         }
     }
 }

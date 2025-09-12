@@ -18,7 +18,7 @@ Scenario: Take and return book flow
 
     # First user authentication 
     Given url authApiRootUrl
-    And path '/auth/login'
+    And path '/api/auth/login'
     And request
     """
     {
@@ -32,6 +32,8 @@ Scenario: Take and return book flow
     * def accessToken = karate.toMap(response.accessToken.value)
 
     * configure headers = jsUtils().getAuthHeaders(accessToken)
+
+    * def employeeId = jsUtils().getEmployeeIdFromToken(accessToken)
 
     # Create a new book
     * def randomName = 'Test-book-' + Math.random()
@@ -88,15 +90,16 @@ Scenario: Take and return book flow
     When method GET
     Then status 200
     And assert response.readers.length == 1
+    And assert response.readers[0].employeeId == employeeId
 
     # First user logout
+    Given url authApiRootUrl
     And path '/auth/logout'
     And method GET
     Then status 200
 
     # Second user authentication
-    Given url authApiRootUrl
-    And path '/auth/login'
+    And path '/api/auth/login'
     And request
     """
     {
@@ -125,13 +128,13 @@ Scenario: Take and return book flow
     Then status 500
 
     # Second user logout
+    Given url authApiRootUrl
     And path '/auth/logout'
     And method GET
     Then status 200
 
     # First user authentication
-    Given url authApiRootUrl
-    And path '/auth/login'
+    And path '/api/auth/login'
     And request
     """
     {
@@ -152,8 +155,7 @@ Scenario: Take and return book flow
     When method GET
     Then status 200
     And assert response.readers.length == 1
-    And assert response.readers[0].employeeId == 2
-    And assert response.readers[0].fullName == 'Name Name Name'
+    And assert response.readers[0].employeeId == employeeId
 
     # Return book copy
     And path 'api/books/return'

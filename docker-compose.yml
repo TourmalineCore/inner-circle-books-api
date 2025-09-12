@@ -80,7 +80,6 @@ services:
       AUTH_API_ROOT_URL: "http://books-mock-server:1080"
       API_ROOT_URL: "http://books-api-for-e2e"
       SHOULD_USE_FAKE_EXTERNAL_DEPENDENCIES: "true"
-      
     networks:
       - books-network
 
@@ -94,7 +93,7 @@ services:
     volumes:
       - .:/karate
     environment:
-      AUTH_API_ROOT_URL: "https://innercircle.tourmalinecore.com/api"
+      AUTH_API_ROOT_URL: "https://innercircle.tourmalinecore.com"
       API_ROOT_URL: "https://innercircle.tourmalinecore.com"
       SHOULD_USE_FAKE_EXTERNAL_DEPENDENCIES: "false"
       AUTH_LOGIN: ${AUTH_LOGIN}
