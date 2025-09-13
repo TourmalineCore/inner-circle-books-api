@@ -18,5 +18,5 @@ public class SingleBookResponse
 
     public List<long> BookCopiesIds { get; set; }
 
-    public List<EmployeeById> Readers { get; set; }
+    public List<EmployeeById> EmployeesWhoReadNow { get; set; }
 }

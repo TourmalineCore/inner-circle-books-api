@@ -106,7 +106,7 @@ public class BooksController : Controller
 
             var employeesIds = await _getBookByIdQuery.GetEmployeesIdsByCopiesIdsAsync(bookCopiesIds);
 
-            var readers = (employeesIds == null || employeesIds.Count < 1)
+            var employeesWhoReadNow = (employeesIds == null || employeesIds.Count < 1)
                 ? new List<EmployeeById>()
                 : await _client.GetEmployeesByIdsAsync(employeesIds);
 
@@ -125,7 +125,7 @@ public class BooksController : Controller
                     .ToList(),
                 Language = book.Language.ToString(),
                 BookCopiesIds = bookCopiesIds,
-                Readers = readers
+                EmployeesWhoReadNow = employeesWhoReadNow
             };
 
             return Ok(response);

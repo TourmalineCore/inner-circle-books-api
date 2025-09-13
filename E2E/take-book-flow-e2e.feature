@@ -67,7 +67,7 @@ Scenario: Take and return book flow
     Then status 200
     And match response.title == randomName
     And assert response.bookCopiesIds.length == 2
-    And assert response.readers.length == 0
+    And assert response.employeesWhoReadNow.length == 0
 
     * def firstBookCopyId = response.bookCopiesIds[0]
 
@@ -89,8 +89,8 @@ Scenario: Take and return book flow
     And path 'api/books', newBookId
     When method GET
     Then status 200
-    And assert response.readers.length == 1
-    And assert response.readers[0].employeeId == employeeId
+    And assert response.employeesWhoReadNow.length == 1
+    And assert response.employeesWhoReadNow[0].employeeId == employeeId
 
     # Second user authentication
     Given url authApiRootUrl
@@ -144,8 +144,8 @@ Scenario: Take and return book flow
     And path 'api/books', newBookId
     When method GET
     Then status 200
-    And assert response.readers.length == 1
-    And assert response.readers[0].employeeId == employeeId
+    And assert response.employeesWhoReadNow.length == 1
+    And assert response.employeesWhoReadNow[0].employeeId == employeeId
 
     # Return book copy
     And path 'api/books/return'
@@ -159,11 +159,11 @@ Scenario: Take and return book flow
     When method POST
     Then status 200
 
-    # Check that book has zero readers
+    # Check that book has zero employeesWhoReadNow
     And path 'api/books', newBookId
     When method GET
     Then status 200
-    And assert response.readers.length == 0
+    And assert response.employeesWhoReadNow.length == 0
 
     # Delete the book (hard delete)
     And path 'api/books', newBookId, 'hard-delete'
