@@ -18,7 +18,7 @@ Scenario: Take and return book flow
 
     # First user authentication 
     Given url authApiRootUrl
-    And path '/api/auth/login'
+    And path '/auth/login'
     And request
     """
     {
@@ -92,14 +92,9 @@ Scenario: Take and return book flow
     And assert response.readers.length == 1
     And assert response.readers[0].employeeId == employeeId
 
-    # First user logout
-    Given url authApiRootUrl
-    And path '/auth/logout'
-    And method GET
-    Then status 200
-
     # Second user authentication
-    And path '/api/auth/login'
+    Given url authApiRootUrl
+    And path '/auth/login'
     And request
     """
     {
@@ -127,14 +122,9 @@ Scenario: Take and return book flow
     When method POST
     Then status 500
 
-    # Second user logout
-    Given url authApiRootUrl
-    And path '/auth/logout'
-    And method GET
-    Then status 200
-
     # First user authentication
-    And path '/api/auth/login'
+    Given url authApiRootUrl
+    And path '/auth/login'
     And request
     """
     {

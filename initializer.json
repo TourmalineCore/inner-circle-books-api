@@ -2,7 +2,7 @@
   {
     "httpRequest": {
       "method": "POST",
-      "path": "/api/auth/login"
+      "path": "/auth/login"
     },
     "httpResponse": {
       "statusCode": 200,
@@ -10,15 +10,6 @@
       "headers": {
         "Content-Type": [ "application/json" ]
       }
-    }
-  },
-  {
-    "httpRequest": {
-      "method": "GET",
-      "path": "/auth/logout"
-    },
-    "httpResponse": {
-      "statusCode": 200
     }
   },
   {

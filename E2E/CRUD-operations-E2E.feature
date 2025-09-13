@@ -16,7 +16,7 @@ Scenario: CRUD operations test flow
 
     # Authentication
     Given url authApiRootUrl
-    And path '/api/auth/login'
+    And path '/auth/login'
     And request
     """
     {
