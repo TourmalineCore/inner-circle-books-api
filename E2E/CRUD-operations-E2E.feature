@@ -3,12 +3,11 @@ Feature: Test Flow
 # https://github.com/karatelabs/karate?tab=readme-ov-file#karate-fork
 
 Background:
-* url 'http://localhost:1080/mockServer/verify'
 * header Content-Type = 'application/json'
 
 Scenario: CRUD operations test flow
 
-    * def jsUtils = read('../jsUtils.js')
+    * def jsUtils = read('./js-utils.js')
     * def authApiRootUrl = jsUtils().getEnvVariable('AUTH_API_ROOT_URL')
     * def apiRootUrl = jsUtils().getEnvVariable('API_ROOT_URL')
     * def authLogin = jsUtils().getEnvVariable('AUTH_LOGIN')
