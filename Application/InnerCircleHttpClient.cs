@@ -4,6 +4,7 @@ using Microsoft.Extensions.Options;
 using Newtonsoft.Json;
 using System.Net.Http.Headers;
 using Microsoft.AspNetCore.Http;
+using TourmalineCore.AspNetCore.JwtAuthentication.Core.Options;
 
 namespace Application;
 
@@ -11,15 +12,18 @@ public class InnerCircleHttpClient : IInnerCircleHttpClient
 {
     private readonly HttpClient _client;
     private readonly InnerCircleServiceUrls _urls;
+    private readonly AuthenticationOptions _authOptions;
     private readonly IHttpContextAccessor _httpContextAccessor;
 
     public InnerCircleHttpClient(
         IOptions<InnerCircleServiceUrls> urls,
+        IOptions<AuthenticationOptions> authOptions,
         IHttpContextAccessor httpContextAccessor
     )
     {
         _client = new HttpClient();
         _urls = urls.Value;
+        _authOptions = authOptions.Value;
         _httpContextAccessor = httpContextAccessor;
     }
 
@@ -35,27 +39,15 @@ public class InnerCircleHttpClient : IInnerCircleHttpClient
     {
         var link = $"{_urls.EmployeesServiceUrl}/internal/get-employees-by-ids";
 
-        var headers = _httpContextAccessor
-            .HttpContext?
+        var headerName = _authOptions.IsDebugTokenEnabled ? "X-DEBUG-TOKEN" : "Authorization";
+
+         var token = _httpContextAccessor
+            .HttpContext!
             .Request
-            .Headers;
+            .Headers[headerName]
+            .ToString();
 
-        var authHeader = headers?["Authorization"].ToString();
-
-        if (string.IsNullOrEmpty(authHeader))
-        {
-            var debugToken = headers?["X-DEBUG-TOKEN"].ToString();
-
-            if (!string.IsNullOrEmpty(debugToken))
-            {
-                authHeader = $"Bearer {debugToken}";
-            }
-        }
-
-        if (!string.IsNullOrEmpty(authHeader))
-        {
-            _client.DefaultRequestHeaders.Authorization = AuthenticationHeaderValue.Parse(authHeader);
-        }
+        _client.DefaultRequestHeaders.Add(headerName, token);
 
         var response = await _client.PostAsJsonAsync(
             link,

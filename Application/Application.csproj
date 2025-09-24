@@ -35,6 +35,7 @@
 	<PackageReference Include="Microsoft.Extensions.Configuration" Version="8.0.0" />
 	<PackageReference Include="Npgsql.EntityFrameworkCore.PostgreSQL" Version="8.0.4" />
 	<PackageReference Include="Microsoft.AspNetCore.Http" Version="2.3.0" />
+	<PackageReference Include="TourmalineCore.AspNetCore.JwtAuthentication.Core" Version="0.3.4" />
   </ItemGroup>
 
   <ItemGroup>
