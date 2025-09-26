@@ -30,11 +30,11 @@ Scenario: CRUD operations test flow
 
     * configure headers = jsUtils().getAuthHeaders(accessToken)
 
-    # Step 1: Create a new book
+    # Create a new book
     * def randomName = 'Test-book-' + Math.random()
 
     Given url apiRootUrl
-    Given path 'api/books'
+    And path 'api/books'
     And request
     """
     {
@@ -56,17 +56,17 @@ Scenario: CRUD operations test flow
 
     * def newBookId = response.newBookId
 
-    # Step 2: Check that the book is created and there are 2 book copies
-    Given path 'api/books', newBookId
+    # Check that the book is created and there are 2 book copies
+    And path 'api/books', newBookId
     When method GET
     Then status 200
     And match response.title == randomName
     And assert response.bookCopiesIds.length == 2
 
-    # Step 3: Edit the book's details
+    # Edit the book's details
     * def editedName = 'Test-edited-book' + Math.random()
 
-    Given path 'api/books', newBookId, 'edit'
+    And path 'api/books', newBookId, 'edit'
     And request
     """
     {
@@ -84,27 +84,26 @@ Scenario: CRUD operations test flow
     When method POST
     Then status 200
 
-    # Step 4: Get the edited book by ID and verify the details have changed
-    Given path 'api/books', newBookId
+    # Get the edited book by ID and verify the details have changed
+    And path 'api/books', newBookId
     When method GET
     Then status 200
     And match response.title == editedName
 
-    # Step 5: Delete the book (soft delete)
-    Given path 'api/books', newBookId, 'soft-delete'
+    # Delete the book (soft delete)
+    And path 'api/books', newBookId, 'soft-delete'
     When method DELETE
     Then status 200
     And match response == { isDeleted: true }
 
-    # Step 6: Verify the book is no longer in the list
-    Given url apiRootUrl
-    Given path 'api/books'
+    # Verify the book is no longer in the list
+    And path 'api/books'
     When method GET
     Then status 200
     And match response.books !contains { id: '#(newBookId)' }
 
-    # Step 7: Delete the book (hard delete)
-    Given path 'api/books', newBookId, 'hard-delete'
+    # Delete the book (hard delete)
+    And path 'api/books', newBookId, 'hard-delete'
     When method DELETE
     Then status 200
     And match response == { isDeleted: true }
