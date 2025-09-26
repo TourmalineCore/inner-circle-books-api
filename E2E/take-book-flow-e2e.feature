@@ -68,7 +68,7 @@ Scenario: Take and return book flow
     And assert response.bookCopiesIds.length == 2
     And assert response.employeesWhoReadNow.length == 0
 
-    * def firstBookCopyId = response.bookCopiesIds[0]
+    * def bookCopyId = response.bookCopiesIds[0]
 
     # Take book copy by copy ID
     * def scheduledReturnDate = jsUtils().getDateTwoMonthsLaterThanCurrent()
@@ -77,7 +77,7 @@ Scenario: Take and return book flow
     And request
     """
     {
-        bookCopyId: '#(firstBookCopyId)',
+        bookCopyId: '#(bookCopyId)',
         scheduledReturnDate: '#(scheduledReturnDate)'
     }
     """
@@ -90,6 +90,7 @@ Scenario: Take and return book flow
     Then status 200
     And assert response.employeesWhoReadNow.length == 1
     And assert response.employeesWhoReadNow[0].employeeId == employeeId
+    And assert response.employeesWhoReadNow[0].bookCopyId == bookCopyId
 
     # Second user authentication
     Given url authApiRootUrl
@@ -114,7 +115,7 @@ Scenario: Take and return book flow
     And request
     """
     {
-        bookCopyId: '#(firstBookCopyId)',
+        bookCopyId: '#(bookCopyId)',
         scheduledReturnDate: '#(scheduledReturnDate)'
     }
     """
@@ -151,7 +152,7 @@ Scenario: Take and return book flow
     And request
     """
     {
-        "bookCopyId": '#(firstBookCopyId)',
+        "bookCopyId": '#(bookCopyId)',
         "progressOfReading": 'ReadEntirely'
     }
     """
