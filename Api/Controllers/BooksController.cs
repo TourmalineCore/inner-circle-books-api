@@ -23,6 +23,7 @@ public class BooksController : Controller
     private readonly DeleteBookCommand _deleteBookCommand;
     private readonly GetAllBooksQuery _getAllBooksQuery;
     private readonly GetBookByIdQuery _getBookByIdQuery;
+    private readonly GetBookByCopyIdQuery _getBookByCopyIdQuery;
     private readonly SoftDeleteBookCommand _softDeleteBookCommand;
     private readonly EditBookCommand _editBookCommand;
     private readonly TakeBookCommand _takeBookCommand;
@@ -35,6 +36,7 @@ public class BooksController : Controller
     public BooksController(
         GetAllBooksQuery getAllBooksQuery,
         GetBookByIdQuery getBookByIdQuery,
+        GetBookByCopyIdQuery getBookByCopyIdQuery,
         CreateBookCommand createBookCommand,
         EditBookCommand editBookCommand,
         DeleteBookCommand deleteBookCommand,
@@ -46,6 +48,7 @@ public class BooksController : Controller
     {
         _getAllBooksQuery = getAllBooksQuery;
         _getBookByIdQuery = getBookByIdQuery;
+        _getBookByCopyIdQuery = getBookByCopyIdQuery;
         _createBookCommand = createBookCommand;
         _editBookCommand = editBookCommand;
         _deleteBookCommand = deleteBookCommand;
@@ -87,61 +90,27 @@ public class BooksController : Controller
     [HttpGet("{id}")]
     public async Task<ActionResult<SingleBookResponse>> GetBookByIdAsync([Required][FromRoute] long id)
     {
-        try
+        return await GetBookResponseAsync(id);
+    }
+
+    /// <summary>
+    ///     Get book by copyId
+    /// </summary>
+    [RequiresPermission(UserClaimsProvider.CanViewBooks)]
+    [HttpGet("/copy/{id}")]
+    public async Task<ActionResult<SingleBookResponse>> GetBookByCopyIdAsync([Required][FromRoute] long id)
+    {
+        var bookId = await _getBookByCopyIdQuery.GetBookIdByCopyIdAsync(id);
+
+        if (bookId == null)
         {
-            var book = await _getBookByIdQuery.GetByIdAsync(id, User.GetTenantId());
-
-            if (book == null)
+            return NotFound(new
             {
-                return NotFound(new
-                {
-                    Message = $"Book with id {id} not found"
-                });
-            }
-
-            var bookCopiesIds = book
-                    .Copies
-                    .Select(x => x.Id)
-                    .ToList();
-
-            var employeesIds = await _getBookByIdQuery.GetEmployeesIdsByCopiesIdsAsync(bookCopiesIds);
-
-            var employeesByIds = (!employeesIds.Any())
-                ? new List<EmployeeById>()
-                : await _client.GetEmployeesByIdsAsync(employeesIds);
-            
-            var employeesWhoReadNow = (!employeesByIds.Any())
-                ? new List<EmployeeWhoReadsNow>()
-                : await _getBookByIdQuery.GetEmployeesWhoReadNowAsync(employeesByIds);
-                
-            var response = new SingleBookResponse()
-            {
-                Id = book.Id,
-                Title = book.Title,
-                Annotation = book.Annotation,
-                CoverUrl = book.CoverUrl,
-                Authors = book
-                    .Authors
-                    .Select(a => new AuthorResponse()
-                    {
-                        FullName = a.FullName
-                    })
-                    .ToList(),
-                Language = book.Language.ToString(),
-                BookCopiesIds = bookCopiesIds,
-                EmployeesWhoReadNow = employeesWhoReadNow
-            };
-
-            return Ok(response);
-        }
-        catch (Exception ex)
-        {
-            return StatusCode(StatusCodes.Status500InternalServerError, new
-            {
-                Exception = ex.Message,
-                Stack = ex.StackTrace
+                Message = $"Book copy with id {id} not found"
             });
         }
+
+        return await GetBookResponseAsync(bookId);
     }
 
     /// <summary>
@@ -218,9 +187,9 @@ public class BooksController : Controller
     [HttpPost("return")]
     public async Task ReturnBookAsync([Required][FromBody] ReturnBookRequest returnBookRequest)
     {
-        
+
         var employee = await _client.GetEmployeeAsync(User.GetCorporateEmail());
-        
+
         var returnBookCommandParams = new ReturnBookCommandParams
         {
             BookCopyId = returnBookRequest.BookCopyId,
@@ -242,7 +211,8 @@ public class BooksController : Controller
     {
         var authors = editBookRequest
             .Authors
-            .Select(author => new Author {
+            .Select(author => new Author
+            {
                 FullName = author.FullName,
             })
             .ToList();
@@ -281,5 +251,64 @@ public class BooksController : Controller
     {
         await _softDeleteBookCommand.SoftDeleteAsync(id, User.GetTenantId());
         return new { isDeleted = true };
+    }
+
+    private async Task<ActionResult<SingleBookResponse>> GetBookResponseAsync(long id)
+    {
+        try
+        {
+            var book = await _getBookByIdQuery.GetByIdAsync(id, User.GetTenantId());
+
+            if (book == null)
+            {
+                return NotFound(new
+                {
+                    Message = $"Book with id {id} not found"
+                });
+            }
+
+            var bookCopiesIds = book
+                    .Copies
+                    .Select(x => x.Id)
+                    .ToList();
+
+            var employeesIds = await _getBookByIdQuery.GetEmployeesIdsByCopiesIdsAsync(bookCopiesIds);
+
+            var employeesByIds = (!employeesIds.Any())
+                ? new List<EmployeeById>()
+                : await _client.GetEmployeesByIdsAsync(employeesIds);
+
+            var employeesWhoReadNow = (!employeesByIds.Any())
+                ? new List<EmployeeWhoReadsNow>()
+                : await _getBookByIdQuery.GetEmployeesWhoReadNowAsync(employeesByIds);
+
+            var response = new SingleBookResponse()
+            {
+                Id = book.Id,
+                Title = book.Title,
+                Annotation = book.Annotation,
+                CoverUrl = book.CoverUrl,
+                Authors = book
+                    .Authors
+                    .Select(a => new AuthorResponse()
+                    {
+                        FullName = a.FullName
+                    })
+                    .ToList(),
+                Language = book.Language.ToString(),
+                BookCopiesIds = bookCopiesIds,
+                EmployeesWhoReadNow = employeesWhoReadNow
+            };
+
+            return Ok(response);
+        }
+        catch (Exception ex)
+        {
+            return StatusCode(StatusCodes.Status500InternalServerError, new
+            {
+                Exception = ex.Message,
+                Stack = ex.StackTrace
+            });
+        }
     }
 }
