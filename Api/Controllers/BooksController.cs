@@ -97,7 +97,7 @@ public class BooksController : Controller
     ///     Get book by copyId
     /// </summary>
     [RequiresPermission(UserClaimsProvider.CanViewBooks)]
-    [HttpGet("/copy/{id}")]
+    [HttpGet("copy/{id}")]
     public async Task<ActionResult<SingleBookResponse>> GetBookByCopyIdAsync([Required][FromRoute] long id)
     {
         var bookId = await _getBookByCopyIdQuery.GetBookIdByCopyIdAsync(id);
