@@ -272,15 +272,27 @@ public class BooksController : Controller
                     .Select(x => x.Id)
                     .ToList();
 
-            var employeesIds = await _getBookByIdQuery.GetEmployeesIdsByCopiesIdsAsync(bookCopiesIds);
+            var employeesWhoReadNowWithoutFullNames = await _getBookByIdQuery.GetEmployeesWhoReadNowAsync(bookCopiesIds);
 
-            var employeesByIds = (!employeesIds.Any())
+            var employeesByIds = (!employeesWhoReadNowWithoutFullNames.Any())
                 ? new List<EmployeeById>()
-                : await _client.GetEmployeesByIdsAsync(employeesIds);
+                : await _client.GetEmployeesByIdsAsync(employeesWhoReadNowWithoutFullNames
+                    .Select(x => x.EmployeeId)
+                    .ToList());
 
             var employeesWhoReadNow = (!employeesByIds.Any())
                 ? new List<EmployeeWhoReadsNow>()
-                : await _getBookByIdQuery.GetEmployeesWhoReadNowAsync(employeesByIds);
+                : employeesWhoReadNowWithoutFullNames.Select(reader =>
+                  {
+                      var employee = employeesByIds.FirstOrDefault(x => x.EmployeeId == reader.EmployeeId);
+
+                      return new EmployeeWhoReadsNow
+                      {
+                          EmployeeId = reader.EmployeeId,
+                          FullName = employee.FullName,
+                          BookCopyId = reader.BookCopyId
+                      };
+                  }).ToList();
 
             var response = new SingleBookResponse()
             {

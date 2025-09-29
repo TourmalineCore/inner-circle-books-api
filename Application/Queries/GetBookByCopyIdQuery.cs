@@ -1,5 +1,3 @@
-using Core;
-using Core.Entities;
 using Microsoft.EntityFrameworkCore;
 
 namespace Application.Queries;

@@ -22,39 +22,18 @@ public class GetBookByIdQuery
             .SingleAsync(x => x.Id == id);
     }
 
-    public Task<List<long>> GetEmployeesIdsByCopiesIdsAsync(List<long> copiesIds)
+    public Task<List<EmployeeWhoReadsNow>> GetEmployeesWhoReadNowAsync(List<long> copiesIds)
     {
         return _context
             .BooksCopiesReadingHistory
             .Where(x => copiesIds.Contains(x.BookCopyId))
             .Where(x => x.ActualReturnedAtUtc == null)
-            .Select(x => x.ReaderEmployeeId)
-            .ToListAsync();
-    }
-
-    public async Task<List<EmployeeWhoReadsNow>> GetEmployeesWhoReadNowAsync(List<EmployeeById> employeesByIds)
-    {
-        var employeesIds = employeesByIds
-            .Select(x => x.EmployeeId)
-            .ToList();
-
-        var readingHistory = await _context
-            .BooksCopiesReadingHistory
-            .Where(x => employeesIds.Contains(x.ReaderEmployeeId))
-            .ToListAsync();
-
-        return employeesByIds
-            .Select(employee =>
-            {
-                var bookCopy = readingHistory.FirstOrDefault(x => x.ReaderEmployeeId == employee.EmployeeId);
-
-                return new EmployeeWhoReadsNow
+            .Select(x => new EmployeeWhoReadsNow
                 {
-                    EmployeeId = employee.EmployeeId,
-                    FullName = employee.FullName,
-                    BookCopyId = bookCopy.BookCopyId
-                };
-            })
-            .ToList();
+                    EmployeeId = x.ReaderEmployeeId,
+                    BookCopyId = x.BookCopyId,
+                }
+            )
+            .ToListAsync();
     }
 }
