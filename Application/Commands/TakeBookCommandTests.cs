@@ -37,10 +37,12 @@ public class TakeBookCommandTests
 
         await _command.TakeAsync(takeBookRequest, employee);
 
-        // Verify the bookCopyReadingHistory is added correctly
-        //var bookCopyReadingHistory = await _context.BooksCopiesReadingHistory.FindAsync(bookCopyReadingHistoryId);
-        //Assert.NotNull(bookCopyReadingHistory);
-        //Assert.Equal(bookCopyReadingHistoryId, bookCopyReadingHistory.Id);
-        //Assert.Equal(employee.Id, bookCopyReadingHistory.ReaderEmployeeId);
+        var bookCopyReadingHistory = await _context
+            .BooksCopiesReadingHistory
+            .FirstOrDefaultAsync(x => x.BookCopyId == takeBookRequest.BookCopyId && x.ReaderEmployeeId == employee.Id);
+
+        Assert.NotNull(bookCopyReadingHistory);
+        Assert.Equal(takeBookRequest.BookCopyId, bookCopyReadingHistory.BookCopyId);
+        Assert.Equal(employee.Id, bookCopyReadingHistory.ReaderEmployeeId);
     }
 }
