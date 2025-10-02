@@ -32,14 +32,14 @@ jobs:
         uses: helmfile/helmfile-action@v1.9.0
         with:
           helmfile-version: 'v0.164.0'
-          helm-version: 'v3.14.4'
+          helm-version: 'v3.18.0'
           helmfile-args: >
-            apply --namespace dev-inner-circle -f Api/ci/helmfile.yaml 
+            apply --suppress-diff --namespace dev-inner-circle -f Api/ci/helmfile.yaml
             --state-values-set image.tag=sha-${{ github.sha }} 
             --state-values-set ingress.hostname=${{ secrets.HOST }}
             --state-values-set extraSecretEnvVars.ConnectionStrings__DefaultConnection=${{ secrets.POSTGRESQL_CONNECTION_STRING }}
             --state-values-set extraSecretEnvVars.AuthenticationOptions__PublicSigningKey=${{ secrets.PUBLIC_SIGNING_KEY }}
-            --set "extraSecretEnvVars.InnerCircleServiceUrls__EmployeesServiceUrl=${{ secrets.SALARY_SERVICE_URL }}" \
+            --state-values-set extraSecretEnvVars.InnerCircleServiceUrls__EmployeesServiceUrl=${{ secrets.SALARY_SERVICE_URL }}
           helmfile-auto-init: "false"
 
   e2e-test-prod:
