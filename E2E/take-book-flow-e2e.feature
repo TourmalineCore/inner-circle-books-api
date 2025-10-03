@@ -147,6 +147,8 @@ Scenario: Take and return book flow
     And assert response.employeesWhoReadNow.length == 1
     And assert response.employeesWhoReadNow[0].employeeId == employeeId
 
+    * def readerFullName = response.employeesWhoReadNow[0].fullName
+
     # Return book copy
     And path 'api/books/return'
     And request
@@ -164,6 +166,14 @@ Scenario: Take and return book flow
     When method GET
     Then status 200
     And assert response.employeesWhoReadNow.length == 0
+
+    # Check book history
+    And path 'api/books/history', newBookId
+    When method GET
+    Then status 200
+    And assert response.bookHistory.length == 1
+    And assert response.bookHistory.employeeFullName == readerFullName
+    And assert response.bookHistory.copyNumber == 1
 
     # Delete the book (hard delete)
     And path 'api/books', newBookId, 'hard-delete'
