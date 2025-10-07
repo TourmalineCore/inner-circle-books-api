@@ -23,6 +23,7 @@ public static class DependencyInjection
         services.AddTransient<SoftDeleteBookCommand>();
         services.AddTransient<GetBookByIdQuery>();
         services.AddTransient<GetBookByCopyIdQuery>();
+        services.AddTransient<GetBookHistoryByIdQuery>();
         services.AddTransient<GetAllBooksQuery>();
         services.AddTransient<TakeBookCommand>();
         services.AddTransient<ReturnBookCommand>();
