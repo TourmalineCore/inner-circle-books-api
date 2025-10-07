@@ -170,10 +170,11 @@ Scenario: Take and return book flow
     # Check book history
     And path 'api/books/history', newBookId
     When method GET
-    Then status 200
-    And assert response.bookHistory.length == 1
-    And assert response.bookHistory.employeeFullName == readerFullName
-    And assert response.bookHistory.copyNumber == 1
+    Then status 200    
+    And assert response.totalCount == 1
+    And assert response.list.length == 1
+    And assert response.list.employeeFullName == readerFullName
+    And assert response.list.copyNumber == 1
 
     # Delete the book (hard delete)
     And path 'api/books', newBookId, 'hard-delete'

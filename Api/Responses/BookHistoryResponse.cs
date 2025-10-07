@@ -2,7 +2,9 @@ namespace Api.Responses;
 
 public class BookHistoryResponse
 {
-    public List<BookHistoryItem> BookHistory { get; set; }
+    public List<BookHistoryItem> List { get; set; }
+    
+    public long TotalCount { get; set; }
 }
 
 public class BookHistoryItem

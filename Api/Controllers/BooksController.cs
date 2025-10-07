@@ -237,7 +237,7 @@ public class BooksController : Controller
         
         return new BookHistoryResponse
         {
-            BookHistory = bookHistory
+            List = bookHistory
                 .Select(history =>
                 {
                     return new BookHistoryItem
@@ -250,7 +250,8 @@ public class BooksController : Controller
                         ProgressOfReading = history.ProgressOfReading?.ToString()
                     };
                 })
-                .ToList()
+                .ToList(),
+            TotalCount = bookHistory.Count
         };
     }
 
