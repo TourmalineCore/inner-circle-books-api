@@ -173,8 +173,8 @@ Scenario: Take and return book flow
     Then status 200    
     And assert response.totalCount == 1
     And assert response.list.length == 1
-    And assert response.list.employeeFullName == readerFullName
-    And assert response.list.copyNumber == 1
+    And assert response.list[0].employeeFullName == readerFullName
+    And assert response.list[0].copyNumber == 1
 
     # Delete the book (hard delete)
     And path 'api/books', newBookId, 'hard-delete'
