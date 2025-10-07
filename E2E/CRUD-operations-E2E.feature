@@ -61,7 +61,7 @@ Scenario: CRUD operations test flow
     When method GET
     Then status 200
     And match response.title == randomName
-    And assert response.bookCopiesIds.length == 2
+    And assert response.bookCopies.length == 2
 
     # Edit the book's details
     * def editedName = 'Test-edited-book' + Math.random()

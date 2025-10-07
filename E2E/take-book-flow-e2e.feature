@@ -65,10 +65,10 @@ Scenario: Take and return book flow
     When method GET
     Then status 200
     And match response.title == randomName
-    And assert response.bookCopiesIds.length == 2
+    And assert response.bookCopies.length == 2
     And assert response.employeesWhoReadNow.length == 0
 
-    * def bookCopyId = response.bookCopiesIds[0]
+    * def bookCopyId = response.bookCopies[0].bookCopyId
 
     # Take book copy by copy ID
     * def scheduledReturnDate = jsUtils().getDateTwoMonthsLaterThanCurrent()

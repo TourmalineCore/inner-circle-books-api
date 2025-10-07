@@ -223,18 +223,10 @@ public class BooksController : Controller
 
         var uniqueBookCopyIds = bookHistory
             .Select(x => x.BookCopyId)
-            .Distinct()
-            .OrderBy(copyId => copyId)
             .ToList();
 
-        var bookCopyIdToCopyNumber = new List<(long BookCopyId, int CopyNumber)>();
-        int copyNumber = 1;
-        foreach (var bookCopyId in uniqueBookCopyIds)
-        {
-            bookCopyIdToCopyNumber.Add((bookCopyId, copyNumber));
-            copyNumber++;
-        }
-        
+        var bookCopyNumbers = GetBookCopyNumbers(uniqueBookCopyIds);
+
         return new BookHistoryResponse
         {
             List = bookHistory
@@ -242,7 +234,7 @@ public class BooksController : Controller
                 {
                     return new BookHistoryItem
                     {
-                        CopyNumber = bookCopyIdToCopyNumber.FirstOrDefault(x => x.BookCopyId == history.BookCopyId).CopyNumber,
+                        CopyNumber = bookCopyNumbers.FirstOrDefault(x => x.BookCopyId == history.BookCopyId).CopyNumber,
                         EmployeeFullName = employeesByIds.FirstOrDefault(x => x.EmployeeId == history.ReaderEmployeeId).FullName,
                         TakenDate = history.TakenAtUtc.ToString("dd.MM.yyyy"),
                         ScheduledReturnDate = history.ScheduledReturnDate.ToString("dd.MM.yyyy"),
@@ -322,10 +314,24 @@ public class BooksController : Controller
                 });
             }
 
-            var bookCopiesIds = book
-                    .Copies
-                    .Select(x => x.Id)
-                    .ToList();
+            var uniqueBookCopyIds = book
+                .Copies
+                .Select(copy => copy.Id)
+                .ToList();
+
+            var bookCopyNumbers = GetBookCopyNumbers(uniqueBookCopyIds);
+
+            var bookCopies = bookCopyNumbers
+                .Select(item => new BookCopyResponse
+                {
+                    BookCopyId = item.BookCopyId,
+                    CopyNumber = item.CopyNumber
+                })
+                .ToList();
+
+            var bookCopiesIds = bookCopies
+                .Select(x => x.BookCopyId)
+                .ToList();
 
             var employeesWhoReadNowWithoutFullNames = await _getBookByIdQuery.GetEmployeesWhoReadNowAsync(bookCopiesIds);
 
@@ -363,7 +369,7 @@ public class BooksController : Controller
                     })
                     .ToList(),
                 Language = book.Language.ToString(),
-                BookCopiesIds = bookCopiesIds,
+                BookCopies = bookCopies,
                 EmployeesWhoReadNow = employeesWhoReadNow
             };
 
@@ -377,5 +383,14 @@ public class BooksController : Controller
                 Stack = ex.StackTrace
             });
         }
+    }
+
+    private List<(long BookCopyId, int CopyNumber)> GetBookCopyNumbers(List<long> bookCopyIds)
+    {
+        return bookCopyIds
+            .Distinct()
+            .OrderBy(copyId => copyId)
+            .Select((copyId, index) => (copyId, index + 1))
+            .ToList();
     }
 }

@@ -16,7 +16,14 @@ public class SingleBookResponse
 
     public string CoverUrl { get; set; }
 
-    public List<long> BookCopiesIds { get; set; }
+    public List<BookCopyResponse> BookCopies { get; set; }
 
     public List<EmployeeWhoReadsNow> EmployeesWhoReadNow { get; set; }
+}
+
+public class BookCopyResponse
+{
+    public long BookCopyId { get; set; }
+
+    public int CopyNumber { get; set; }
 }
