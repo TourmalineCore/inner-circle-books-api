@@ -51,6 +51,11 @@ public class GetBookHistoryByIdQueryTests
             Id = 4L,
             BookId = bookId
         };
+        var bookCopy3 = new BookCopy
+        {
+            Id = 5L,
+            BookId = bookId
+        };
 
         var readingHistory1 = new BookCopyReadingHistory
         {
@@ -68,17 +73,26 @@ public class GetBookHistoryByIdQueryTests
             TakenAtUtc = new DateTime(2025, 3, 1),
             ScheduledReturnDate = new DateOnly(2025, 4, 1)
         };
+        var readingHistory3 = new BookCopyReadingHistory
+        {
+            Id = 3L,
+            BookCopyId = bookCopy3.Id,
+            ReaderEmployeeId = 3L,
+            TakenAtUtc = new DateTime(2025, 5, 1),
+            ScheduledReturnDate = new DateOnly(2025, 6, 1)
+        };
 
         _context.Books.Add(book);
-        _context.BooksCopies.AddRange(bookCopy1, bookCopy2);
-        _context.BooksCopiesReadingHistory.AddRange(readingHistory1, readingHistory2);
+        _context.BooksCopies.AddRange(bookCopy1, bookCopy2, bookCopy3);
+        _context.BooksCopiesReadingHistory.AddRange(readingHistory1, readingHistory2, readingHistory3);
         await _context.SaveChangesAsync();
 
-        var result = await _query.GetByIdAsync(bookId);
+        var (items, totalCount) = await _query.GetByIdAsync(bookId, page: 1, pageSize: 2);
 
-        Assert.NotEmpty(result);
-        Assert.Equal(2, result.Count);
-        Assert.Contains(result, x => x.BookCopyId == bookCopy1.Id);
-        Assert.Contains(result, x => x.BookCopyId == bookCopy2.Id);
+        Assert.NotEmpty(items);
+        Assert.Equal(2, items.Count);
+        Assert.Equal(3, totalCount);
+        Assert.Contains(items, x => x.BookCopyId == bookCopy1.Id);
+        Assert.Contains(items, x => x.BookCopyId == bookCopy2.Id);
     }
 }

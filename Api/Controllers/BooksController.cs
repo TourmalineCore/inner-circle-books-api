@@ -208,9 +208,13 @@ public class BooksController : Controller
     /// </summary>
     [RequiresPermission(UserClaimsProvider.CanViewBooks)]
     [HttpGet("history/{id}")]
-    public async Task<BookHistoryResponse> GetBookHistoryByIdAsync([Required][FromRoute] long id)
+    public async Task<BookHistoryResponse> GetBookHistoryByIdAsync(
+        [Required][FromRoute] long id,
+        [FromQuery] int page,
+        [FromQuery] int pageSize
+    )
     {
-        var bookHistory = await _getBookHistoryByIdQuery.GetByIdAsync(id);
+        var (bookHistory, totalCount) = await _getBookHistoryByIdQuery.GetByIdAsync(id, page, pageSize);
 
         var uniqueReaderEmployeeIds = bookHistory
             .Select(x => x.ReaderEmployeeId)
@@ -243,7 +247,7 @@ public class BooksController : Controller
                     };
                 })
                 .ToList(),
-            TotalCount = bookHistory.Count
+            TotalCount = totalCount
         };
     }
 

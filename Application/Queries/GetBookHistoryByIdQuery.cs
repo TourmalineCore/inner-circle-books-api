@@ -13,16 +13,25 @@ public class GetBookHistoryByIdQuery
         _context = context;
     }
 
-    public async Task<List<BookCopyReadingHistory>> GetByIdAsync(long id)
+    public async Task<(List<BookCopyReadingHistory> List, long TotalCount)> GetByIdAsync(long id, int page, int pageSize)
     {
         var bookCopies = await _context
             .BooksCopies
             .Where(x => x.BookId == id)
+            .Select(x => x.Id)
             .ToListAsync();
 
-        return await _context
+        var query = _context
             .BooksCopiesReadingHistory
-            .Where(h => bookCopies.Select(x => x.Id).Contains(h.BookCopyId))
+            .Where(x => bookCopies.Contains(x.BookCopyId));
+
+        long totalCount = await query.LongCountAsync();
+
+        var items = await query
+            .Skip((page - 1) * pageSize)
+            .Take(pageSize)
             .ToListAsync();
+
+        return (items, totalCount);
     }
 }
