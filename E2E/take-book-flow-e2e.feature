@@ -169,6 +169,8 @@ Scenario: Take and return book flow
 
     # Check book history
     And path 'api/books/history', newBookId
+    And param page = 1
+    And param pageSize = 10
     When method GET
     Then status 200    
     And assert response.totalCount == 1
