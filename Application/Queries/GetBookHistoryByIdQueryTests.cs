@@ -94,5 +94,6 @@ public class GetBookHistoryByIdQueryTests
         Assert.Equal(3, totalCount);
         Assert.Contains(items, x => x.BookCopyId == bookCopy3.Id);
         Assert.Contains(items, x => x.BookCopyId == bookCopy2.Id);
+        Assert.True(items[0].TakenAtUtc > items[1].TakenAtUtc);
     }
 }
