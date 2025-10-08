@@ -92,7 +92,7 @@ public class GetBookHistoryByIdQueryTests
         Assert.NotEmpty(items);
         Assert.Equal(2, items.Count);
         Assert.Equal(3, totalCount);
-        Assert.Contains(items, x => x.BookCopyId == bookCopy1.Id);
+        Assert.Contains(items, x => x.BookCopyId == bookCopy3.Id);
         Assert.Contains(items, x => x.BookCopyId == bookCopy2.Id);
     }
 }
