@@ -24,7 +24,7 @@ public class GetBookHistoryByIdQuery
         var query = _context
             .BooksCopiesReadingHistory
             .Where(x => bookCopies.Contains(x.BookCopyId))
-            .OrderByDescending(h => h.TakenAtUtc);
+            .OrderByDescending(x => x.TakenAtUtc);
 
         long totalCount = await query.LongCountAsync();
 
