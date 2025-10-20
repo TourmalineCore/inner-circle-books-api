@@ -1,5 +1,8 @@
 using Core;
+using Microsoft.AspNetCore.Authentication.OAuth;
+using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
+using TourmalineCore.AspNetCore.JwtAuthentication.Core.Options;
 using Xunit;
 
 namespace Application.Commands;
@@ -9,6 +12,8 @@ public class TakeBookCommandTests
     private const long TENANT_ID = 1;
     private readonly TakeBookCommand _command;
     private readonly AppDbContext _context;
+    private readonly ReturnBookCommand _returnBookCommand;
+    private readonly IInnerCircleHttpClient _client;
 
     public TakeBookCommandTests()
     {
@@ -17,7 +22,12 @@ public class TakeBookCommandTests
             .Options;
 
         _context = new AppDbContext(options);
-        _command = new TakeBookCommand(_context);
+
+        _returnBookCommand = new ReturnBookCommand(_context);
+
+        //_client = new  InnerCircleHttpClient();
+
+        _command = new TakeBookCommand(_context, _client, _returnBookCommand);
     }
 
     [Fact]
