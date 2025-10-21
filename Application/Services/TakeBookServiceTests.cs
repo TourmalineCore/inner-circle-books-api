@@ -2,8 +2,6 @@ using Application.Commands;
 using Core;
 using Core.Entities;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Options;
-using Moq;
 using Testcontainers.PostgreSql;
 using Xunit;
 
@@ -11,17 +9,19 @@ namespace Application.Services
 {
     public class TakeBookServiceTests : IAsyncLifetime
     {
-        private readonly TakeBookService _service;
-        private readonly AppDbContext _context;
+        private TakeBookService _service;
+        private AppDbContext _context;
         private readonly PostgreSqlContainer _postgreSqlContainer;
-        private readonly Mock<IInnerCircleHttpClient> _clientMock;
 
         public TakeBookServiceTests()
         {
             _postgreSqlContainer = new PostgreSqlBuilder()
                 .Build();
+        }
 
-            _clientMock = new Mock<IInnerCircleHttpClient>();
+        public async Task InitializeAsync()
+        {
+            await _postgreSqlContainer.StartAsync();
 
             var options = new DbContextOptionsBuilder<AppDbContext>()
                 .UseNpgsql(_postgreSqlContainer.GetConnectionString())
@@ -29,13 +29,8 @@ namespace Application.Services
 
             _context = new AppDbContext(options);
 
-            _service = new TakeBookService(_context, _clientMock.Object);
+            _service = new TakeBookService(_context);
 
-        }
-
-        public async Task InitializeAsync()
-        {
-            await _postgreSqlContainer.StartAsync();
             await _context.Database.MigrateAsync();
         }
 
@@ -48,6 +43,27 @@ namespace Application.Services
         [Fact]
         public async Task TakeAsync_WhenBookIsAlreadyTaken_ShouldReturnPreviousAndAddNew()
         {
+            var book = new Book
+            {
+                Id = 1,
+                Title = "Some test book",
+                Annotation = "Test annotation",
+                TenantId = 1,
+                CreatedAtUtc = DateTime.UtcNow,
+                Language = Language.en,
+                Authors = new List<Author>()
+            };
+
+            _context.Books.Add(book);
+
+            await _context.SaveChangesAsync();
+
+            var bookCopy = new BookCopy { Id = 2, BookId = book.Id };
+
+            _context.BooksCopies.Add(bookCopy);
+
+            await _context.SaveChangesAsync();
+
             var existingReader = new Employee { Id = 2, FullName = "Previous Reader" };
 
             _context.BooksCopiesReadingHistory.Add(new BookCopyReadingHistory
