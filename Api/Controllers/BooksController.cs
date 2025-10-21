@@ -9,6 +9,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using TourmalineCore.AspNetCore.JwtAuthentication.Core.Filters;
 using Core;
+using Application.Services;
 
 namespace Api.Controllers;
 
@@ -28,6 +29,7 @@ public class BooksController : Controller
     private readonly EditBookCommand _editBookCommand;
     private readonly TakeBookCommand _takeBookCommand;
     private readonly ReturnBookCommand _returnBookCommand;
+    private readonly TakeBookService _takeBookService;
     private readonly IInnerCircleHttpClient _client;
 
     /// <summary>
@@ -43,6 +45,7 @@ public class BooksController : Controller
         SoftDeleteBookCommand softDeleteBookCommand,
         TakeBookCommand takeBookCommand,
         ReturnBookCommand returnBookCommand,
+        TakeBookService takeBookService,
         IInnerCircleHttpClient client
     )
     {
@@ -55,6 +58,7 @@ public class BooksController : Controller
         _softDeleteBookCommand = softDeleteBookCommand;
         _takeBookCommand = takeBookCommand;
         _returnBookCommand = returnBookCommand;
+        _takeBookService = takeBookService;
         _client = client;
     }
 
@@ -165,7 +169,14 @@ public class BooksController : Controller
                 ScheduledReturnDate = takeBookRequest.ScheduledReturnDate,
             };
 
-            await _takeBookCommand.TakeAsync(takeBookCommandParams, employee);
+            var returnBookCommandParams = new ReturnBookCommandParams
+            {
+                BookCopyId = takeBookRequest.BookCopyId,
+                ProgressOfReading = ProgressOfReading.NotSpecified,
+                ActualReturnedAtUtc = DateTime.UtcNow
+            };
+
+            await _takeBookService.TakeAsync(takeBookCommandParams, returnBookCommandParams, employee);
 
             return Ok(new { success = true });
         }
