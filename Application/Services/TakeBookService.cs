@@ -1,5 +1,6 @@
 using Application.Commands;
 using Core;
+using Core.Entities;
 using Microsoft.EntityFrameworkCore;
 
 namespace Application.Services
@@ -25,16 +26,16 @@ namespace Application.Services
 
             try
             {
-                var currentReader = await _context.BooksCopiesReadingHistory
+                var currentRecordOfTakingBook = await _context.BooksCopiesReadingHistory
                          .Where(x => x.BookCopyId == returnBookCommandParams.BookCopyId
                                   && x.ActualReturnedAtUtc == null)
                          .FirstOrDefaultAsync();
 
-                if (currentReader != null)
+                if (currentRecordOfTakingBook != null)
                 {
                     var employeeReader = new Employee
                     {
-                        Id = currentReader.ReaderEmployeeId,
+                        Id = currentRecordOfTakingBook.ReaderEmployeeId,
                     };
 
                     await _returnBookCommand.ReturnAsync(returnBookCommandParams, employeeReader);
