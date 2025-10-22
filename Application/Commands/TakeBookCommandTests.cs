@@ -25,6 +25,27 @@ public class TakeBookCommandTests
     [Fact]
     public async Task TakeAsync_ShouldAddNewBookCopyReadingHistoryToDbSet()
     {
+        var book = new Book
+        {
+            Id = 1,
+            Title = "Some test book",
+            Annotation = "Test annotation",
+            TenantId = TENANT_ID,
+            CreatedAtUtc = DateTime.UtcNow,
+            Language = Language.en,
+            Authors = new List<Author>()
+        };
+
+        _context.Books.Add(book);
+
+        await _context.SaveChangesAsync();
+
+        var bookCopy = new BookCopy { Id = 1, BookId = book.Id };
+
+        _context.BooksCopies.Add(bookCopy);
+
+        await _context.SaveChangesAsync();
+
         var takeBookRequest = new TakeBookCommandParams
         {
             BookCopyId = 1,
