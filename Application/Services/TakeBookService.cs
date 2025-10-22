@@ -26,16 +26,16 @@ namespace Application.Services
 
             try
             {
-                var recordOfTakingBook = await _context.BooksCopiesReadingHistory
+                var recordOfTakingBookCopy = await _context.BooksCopiesReadingHistory
                          .Where(x => x.BookCopyId == returnBookCommandParams.BookCopyId
                                   && x.ActualReturnedAtUtc == null)
                          .FirstOrDefaultAsync();
 
-                if (recordOfTakingBook != null)
+                if (recordOfTakingBookCopy != null)
                 {
                     var employeeReader = new Employee
                     {
-                        Id = recordOfTakingBook.ReaderEmployeeId,
+                        Id = recordOfTakingBookCopy.ReaderEmployeeId,
                     };
 
                     await _returnBookCommand.ReturnAsync(returnBookCommandParams, employeeReader);
