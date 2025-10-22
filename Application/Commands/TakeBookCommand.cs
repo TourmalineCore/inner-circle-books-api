@@ -22,6 +22,15 @@ public class TakeBookCommand
 
     public async Task TakeAsync(TakeBookCommandParams takeBookCommandParams, Employee employee)
     {
+
+        var bookCopyExists = await _context.BooksCopies
+            .AnyAsync(x => x.Id == takeBookCommandParams.BookCopyId);
+
+        if (!bookCopyExists)
+        {
+            throw new ArgumentException($"BookCopy with id {takeBookCommandParams.BookCopyId} does not exist");
+        }
+
         var result = DateTime.Parse(takeBookCommandParams.ScheduledReturnDate, null, System.Globalization.DateTimeStyles.RoundtripKind);
 
         var bookCopyReadingHistory = new BookCopyReadingHistory

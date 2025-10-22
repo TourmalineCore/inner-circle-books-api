@@ -1,6 +1,5 @@
 using Application.Commands;
 using Core;
-using Core.Entities;
 using Microsoft.EntityFrameworkCore;
 
 namespace Application.Services
@@ -10,7 +9,7 @@ namespace Application.Services
         private readonly AppDbContext _context;
 
         private readonly TakeBookCommand _takeBookCommand;
-      
+
         private readonly ReturnBookCommand _returnBookCommand;
 
         public TakeBookService(AppDbContext context)
@@ -27,8 +26,7 @@ namespace Application.Services
             try
             {
                 var currentReader = await _context.BooksCopiesReadingHistory
-                          //.Where(x => x.TenantId == tenantId)
-                         .Where(x => x.BookCopyId == takeBookCommandParams.BookCopyId
+                         .Where(x => x.BookCopyId == returnBookCommandParams.BookCopyId
                                   && x.ActualReturnedAtUtc == null)
                          .FirstOrDefaultAsync();
 
@@ -52,5 +50,4 @@ namespace Application.Services
             }
         }
     }
-
 }
