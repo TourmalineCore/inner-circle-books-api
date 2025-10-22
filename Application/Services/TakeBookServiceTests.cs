@@ -89,7 +89,7 @@ namespace Application.Services
             var returnBookCommandParams = new ReturnBookCommandParams
             {
                 BookCopyId = 2,
-                ProgressOfReading = ProgressOfReading.NotSpecified,
+                ProgressOfReading = ProgressOfReading.Unknown,
                 ActualReturnedAtUtc = DateTime.UtcNow
             };
 
@@ -157,7 +157,7 @@ namespace Application.Services
             var returnBookCommandParams = new ReturnBookCommandParams
             {
                 BookCopyId = 2,
-                ProgressOfReading = ProgressOfReading.NotSpecified,
+                ProgressOfReading = ProgressOfReading.Unknown,
                 ActualReturnedAtUtc = DateTime.UtcNow
             };
 

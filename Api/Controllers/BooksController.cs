@@ -172,7 +172,7 @@ public class BooksController : Controller
             var returnBookCommandParams = new ReturnBookCommandParams
             {
                 BookCopyId = takeBookRequest.BookCopyId,
-                ProgressOfReading = ProgressOfReading.NotSpecified,
+                ProgressOfReading = ProgressOfReading.Unknown,
                 ActualReturnedAtUtc = DateTime.UtcNow
             };
 
