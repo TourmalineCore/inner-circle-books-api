@@ -353,7 +353,7 @@ public class BooksController : Controller
                     })
                     .ToList(),
                 Language = book.Language.ToString(),
-                bookCopiesIds = bookCopiesIds,
+                BookCopiesIds = bookCopiesIds,
                 EmployeesWhoReadNow = employeesWhoReadNow
             };
 
