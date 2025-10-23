@@ -9,7 +9,7 @@ public class BookHistoryResponse
 
 public class BookHistoryItem
 {
-    public int CopyNumber { get; set; }
+    public long BookCopyId { get; set; }
 
     public string EmployeeFullName { get; set; }
 

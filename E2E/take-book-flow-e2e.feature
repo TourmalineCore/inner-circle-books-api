@@ -65,10 +65,10 @@ Scenario: Take and return book flow
     When method GET
     Then status 200
     And match response.title == randomName
-    And assert response.bookCopies.length == 2
+    And assert response.bookCopiesIds.length == 2
     And assert response.employeesWhoReadNow.length == 0
 
-    * def bookCopyId = response.bookCopies[0].bookCopyId
+    * def bookCopyId = response.bookCopiesIds[0]
 
     # Take book copy by copy ID
     * def scheduledReturnDate = jsUtils().getDateTwoMonthsLaterThanCurrent()
@@ -176,7 +176,7 @@ Scenario: Take and return book flow
     And assert response.totalCount == 1
     And assert response.list.length == 1
     And assert response.list[0].employeeFullName == readerFullName
-    And assert response.list[0].copyNumber == 1
+    And assert response.list[0] == 1
 
     # Delete the book (hard delete)
     And path 'api/books', newBookId, 'hard-delete'
