@@ -21,17 +21,17 @@ namespace Application.Services
             _returnBookCommand = new ReturnBookCommand(_context);
         }
 
-        public async Task TakeAsync(TakeBookCommandParams takeBookCommandParams, ReturnBookCommandParams returnBookCommandParams, Employee employee, BookCopyReadingHistory? recordOfTakingBookCopy)
+        public async Task TakeAsync(TakeBookCommandParams takeBookCommandParams, ReturnBookCommandParams returnBookCommandParams, Employee employee, BookCopyReadingHistory? activeReading)
         {
             await using var transaction = await _context.Database.BeginTransactionAsync();
 
             try
             {
-                if (recordOfTakingBookCopy != null)
+                if (activeReading != null)
                 {
                     var employeeReader = new Employee
                     {
-                        Id = recordOfTakingBookCopy.ReaderEmployeeId,
+                        Id = activeReading.ReaderEmployeeId,
                     };
 
                     await _returnBookCommand.ReturnAsync(returnBookCommandParams, employeeReader);

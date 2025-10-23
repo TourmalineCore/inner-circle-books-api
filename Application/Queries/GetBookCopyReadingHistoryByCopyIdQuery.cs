@@ -3,16 +3,16 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Application.Queries
 {
-    public class GetRecordOfTakingBookCopyByCopyIdQuery
+    public class GetBookCopyReadingHistoryByCopyIdQuery
     {
         private readonly AppDbContext _context;
 
-        public GetRecordOfTakingBookCopyByCopyIdQuery(AppDbContext context)
+        public GetBookCopyReadingHistoryByCopyIdQuery(AppDbContext context)
         {
             _context = context;
         }
 
-        public Task<BookCopyReadingHistory?> GetAsync(long bookCopyId, long tenantId)
+        public Task<BookCopyReadingHistory?> GetActiveReadingAsync(long bookCopyId, long tenantId)
         {
             return _context
                 .BooksCopiesReadingHistory

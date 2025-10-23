@@ -25,7 +25,7 @@ public class BooksController : Controller
     private readonly GetAllBooksQuery _getAllBooksQuery;
     private readonly GetBookByIdQuery _getBookByIdQuery;
     private readonly GetBookByCopyIdQuery _getBookByCopyIdQuery;
-    private readonly GetRecordOfTakingBookCopyByCopyIdQuery _getRecordOfTakingBookCopyByCopyIdQuery;
+    private readonly GetBookCopyReadingHistoryByCopyIdQuery _getBookCopyReadingHistoryByCopyIdQuery;
     private readonly SoftDeleteBookCommand _softDeleteBookCommand;
     private readonly EditBookCommand _editBookCommand;
     private readonly ReturnBookCommand _returnBookCommand;
@@ -39,7 +39,7 @@ public class BooksController : Controller
         GetAllBooksQuery getAllBooksQuery,
         GetBookByIdQuery getBookByIdQuery,
         GetBookByCopyIdQuery getBookByCopyIdQuery,
-        GetRecordOfTakingBookCopyByCopyIdQuery getRecordOfTakingBookCopyByCopyIdQuery,
+        GetBookCopyReadingHistoryByCopyIdQuery getBookCopyReadingHistoryByCopyIdQuery,
         CreateBookCommand createBookCommand,
         EditBookCommand editBookCommand,
         DeleteBookCommand deleteBookCommand,
@@ -52,7 +52,7 @@ public class BooksController : Controller
         _getAllBooksQuery = getAllBooksQuery;
         _getBookByIdQuery = getBookByIdQuery;
         _getBookByCopyIdQuery = getBookByCopyIdQuery;
-        _getRecordOfTakingBookCopyByCopyIdQuery = getRecordOfTakingBookCopyByCopyIdQuery;
+        _getBookCopyReadingHistoryByCopyIdQuery = getBookCopyReadingHistoryByCopyIdQuery;
         _createBookCommand = createBookCommand;
         _editBookCommand = editBookCommand;
         _deleteBookCommand = deleteBookCommand;
@@ -176,9 +176,9 @@ public class BooksController : Controller
                 ActualReturnedAtUtc = DateTime.UtcNow
             };
 
-            var recordOfTakingBookCopy = await _getRecordOfTakingBookCopyByCopyIdQuery.GetAsync(returnBookCommandParams.BookCopyId, User.GetTenantId());
+            var activeReading = await _getBookCopyReadingHistoryByCopyIdQuery.GetActiveReadingAsync(returnBookCommandParams.BookCopyId, User.GetTenantId());
 
-            await _takeBookService.TakeAsync(takeBookCommandParams, returnBookCommandParams, employee, recordOfTakingBookCopy);
+            await _takeBookService.TakeAsync(takeBookCommandParams, returnBookCommandParams, employee, activeReading);
 
             return Ok(new { success = true });
         }
