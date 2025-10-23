@@ -368,13 +368,4 @@ public class BooksController : Controller
             });
         }
     }
-
-    private List<(long BookCopyId, int CopyNumber)> GetBookCopyNumbers(List<long> bookCopyIds)
-    {
-        return bookCopyIds
-            .Distinct()
-            .OrderBy(copyId => copyId)
-            .Select((copyId, index) => (copyId, index + 1))
-            .ToList();
-    }
 }
