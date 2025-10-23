@@ -13,6 +13,7 @@
 	  <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
 	  <PrivateAssets>all</PrivateAssets>
 	</PackageReference>
+	<PackageReference Include="Testcontainers.PostgreSql" Version="4.8.0" />
     <PackageReference Include="Moq" Version="4.20.70" />
 	<PackageReference Include="Moq.EntityFrameworkCore" Version="8.0.1.2" />
 	<PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.11.0" />
@@ -33,7 +34,6 @@
 	<PackageReference Include="Microsoft.Extensions.Configuration" Version="8.0.0" />
 	<PackageReference Include="Npgsql.EntityFrameworkCore.PostgreSQL" Version="8.0.4" />
 	<PackageReference Include="Microsoft.AspNetCore.Http" Version="2.3.0" />
-	<PackageReference Include="Testcontainers.PostgreSql" Version="4.8.0" />
 	<PackageReference Include="TourmalineCore.AspNetCore.JwtAuthentication.Core" Version="0.3.4" />
   </ItemGroup>
 
