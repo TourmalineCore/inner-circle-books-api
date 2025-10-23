@@ -25,9 +25,9 @@ public class BooksController : Controller
     private readonly GetAllBooksQuery _getAllBooksQuery;
     private readonly GetBookByIdQuery _getBookByIdQuery;
     private readonly GetBookByCopyIdQuery _getBookByCopyIdQuery;
+    private readonly GetRecordOfTakingBookCopyByCopyIdQuery _getRecordOfTakingBookCopyByCopyIdQuery;
     private readonly SoftDeleteBookCommand _softDeleteBookCommand;
     private readonly EditBookCommand _editBookCommand;
-    private readonly TakeBookCommand _takeBookCommand;
     private readonly ReturnBookCommand _returnBookCommand;
     private readonly TakeBookService _takeBookService;
     private readonly IInnerCircleHttpClient _client;
@@ -39,11 +39,11 @@ public class BooksController : Controller
         GetAllBooksQuery getAllBooksQuery,
         GetBookByIdQuery getBookByIdQuery,
         GetBookByCopyIdQuery getBookByCopyIdQuery,
+        GetRecordOfTakingBookCopyByCopyIdQuery getRecordOfTakingBookCopyByCopyIdQuery,
         CreateBookCommand createBookCommand,
         EditBookCommand editBookCommand,
         DeleteBookCommand deleteBookCommand,
         SoftDeleteBookCommand softDeleteBookCommand,
-        TakeBookCommand takeBookCommand,
         ReturnBookCommand returnBookCommand,
         TakeBookService takeBookService,
         IInnerCircleHttpClient client
@@ -52,11 +52,11 @@ public class BooksController : Controller
         _getAllBooksQuery = getAllBooksQuery;
         _getBookByIdQuery = getBookByIdQuery;
         _getBookByCopyIdQuery = getBookByCopyIdQuery;
+        _getRecordOfTakingBookCopyByCopyIdQuery = getRecordOfTakingBookCopyByCopyIdQuery;
         _createBookCommand = createBookCommand;
         _editBookCommand = editBookCommand;
         _deleteBookCommand = deleteBookCommand;
         _softDeleteBookCommand = softDeleteBookCommand;
-        _takeBookCommand = takeBookCommand;
         _returnBookCommand = returnBookCommand;
         _takeBookService = takeBookService;
         _client = client;
@@ -176,7 +176,9 @@ public class BooksController : Controller
                 ActualReturnedAtUtc = DateTime.UtcNow
             };
 
-            await _takeBookService.TakeAsync(takeBookCommandParams, returnBookCommandParams, employee);
+            var recordOfTakingBookCopy = await _getRecordOfTakingBookCopyByCopyIdQuery.GetAsync(returnBookCommandParams.BookCopyId, User.GetTenantId());
+
+            await _takeBookService.TakeAsync(takeBookCommandParams, returnBookCommandParams, employee, recordOfTakingBookCopy);
 
             return Ok(new { success = true });
         }

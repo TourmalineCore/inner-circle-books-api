@@ -1,4 +1,5 @@
 using Application.Commands;
+using Application.Queries;
 using Core;
 using Core.Entities;
 using Microsoft.EntityFrameworkCore;
@@ -20,17 +21,12 @@ namespace Application.Services
             _returnBookCommand = new ReturnBookCommand(_context);
         }
 
-        public async Task TakeAsync(TakeBookCommandParams takeBookCommandParams, ReturnBookCommandParams returnBookCommandParams, Employee employee)
+        public async Task TakeAsync(TakeBookCommandParams takeBookCommandParams, ReturnBookCommandParams returnBookCommandParams, Employee employee, BookCopyReadingHistory? recordOfTakingBookCopy)
         {
             await using var transaction = await _context.Database.BeginTransactionAsync();
 
             try
             {
-                var recordOfTakingBookCopy = await _context.BooksCopiesReadingHistory
-                         .Where(x => x.BookCopyId == returnBookCommandParams.BookCopyId
-                                  && x.ActualReturnedAtUtc == null)
-                         .FirstOrDefaultAsync();
-
                 if (recordOfTakingBookCopy != null)
                 {
                     var employeeReader = new Employee

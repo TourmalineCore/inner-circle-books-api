@@ -67,14 +67,16 @@ namespace Application.Services
 
             var existingReader = new Employee { Id = 2, FullName = "Previous Reader" };
 
-            _context.BooksCopiesReadingHistory.Add(new BookCopyReadingHistory
+            var bookCopyReadingHistory = new BookCopyReadingHistory
             {
                 BookCopyId = 2,
                 ReaderEmployeeId = existingReader.Id,
                 TakenAtUtc = DateTime.UtcNow.AddDays(-10),
                 ScheduledReturnDate = DateOnly.FromDateTime(DateTime.UtcNow.AddDays(5)),
                 ActualReturnedAtUtc = null
-            });
+            };
+
+            _context.BooksCopiesReadingHistory.Add(bookCopyReadingHistory);
 
             await _context.SaveChangesAsync();
 
@@ -93,7 +95,7 @@ namespace Application.Services
                 ActualReturnedAtUtc = DateTime.UtcNow
             };
 
-            await _service.TakeAsync(takeBookCommandParams, returnBookCommandParams, newEmployee);
+            await _service.TakeAsync(takeBookCommandParams, returnBookCommandParams, newEmployee, bookCopyReadingHistory);
 
             var oldRecord = await _context.BooksCopiesReadingHistory
                 .FirstAsync(x => x.ReaderEmployeeId == existingReader.Id && x.BookCopyId == 2);
@@ -134,14 +136,16 @@ namespace Application.Services
 
             var existingReader = new Employee { Id = 2, FullName = "Previous Reader" };
 
-            _context.BooksCopiesReadingHistory.Add(new BookCopyReadingHistory
+            var bookCopyReadingHistory = new BookCopyReadingHistory
             {
                 BookCopyId = 2,
                 ReaderEmployeeId = existingReader.Id,
                 TakenAtUtc = DateTime.UtcNow.AddDays(-10),
                 ScheduledReturnDate = DateOnly.FromDateTime(DateTime.UtcNow.AddDays(5)),
                 ActualReturnedAtUtc = null
-            });
+            };
+
+            _context.BooksCopiesReadingHistory.Add(bookCopyReadingHistory);
 
             await _context.SaveChangesAsync();
 
@@ -161,7 +165,7 @@ namespace Application.Services
                 ActualReturnedAtUtc = DateTime.UtcNow
             };
 
-            await _service.TakeAsync(takeBookCommandParams, returnBookCommandParams, newEmployee);
+            await _service.TakeAsync(takeBookCommandParams, returnBookCommandParams, newEmployee, bookCopyReadingHistory);
 
             // Without this, EF returns data from the cache of tracked entities, rather than from the database.
             // This method clears it, after which fresh data is returned from the database.
