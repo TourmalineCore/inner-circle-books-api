@@ -16,7 +16,7 @@ namespace Application.Queries
         {
             return _context
                 .BooksCopiesReadingHistory
-                //.Where(x => x.TenantId == tenantId)
+                .Where(x => x.TenantId == tenantId)
                 .Where(x => x.BookCopyId == bookCopyId && x.ActualReturnedAtUtc == null)
                 .FirstOrDefaultAsync();
         }

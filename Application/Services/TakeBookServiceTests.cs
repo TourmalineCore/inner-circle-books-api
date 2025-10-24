@@ -9,6 +9,7 @@ namespace Application.Services
 {
     public class TakeBookServiceTests : IAsyncLifetime
     {
+        private const long TENANT_ID = 1;
         private TakeBookService _service;
         private AppDbContext _context;
         private readonly PostgreSqlContainer _postgreSqlContainer;
@@ -49,7 +50,7 @@ namespace Application.Services
                 Id = 1,
                 Title = "Some test book",
                 Annotation = "Test annotation",
-                TenantId = 1,
+                TenantId = TENANT_ID,
                 CreatedAtUtc = DateTime.UtcNow,
                 Language = Language.en,
                 Authors = new List<Author>()
@@ -59,7 +60,12 @@ namespace Application.Services
 
             await _context.SaveChangesAsync();
 
-            var bookCopy = new BookCopy { Id = 2, BookId = book.Id };
+            var bookCopy = new BookCopy 
+            {
+                Id = 2,
+                BookId = book.Id,
+                TenantId = TENANT_ID
+            };
 
             _context.BooksCopies.Add(bookCopy);
 
@@ -73,7 +79,8 @@ namespace Application.Services
                 ReaderEmployeeId = existingReader.Id,
                 TakenAtUtc = DateTime.UtcNow.AddDays(-10),
                 ScheduledReturnDate = DateOnly.FromDateTime(DateTime.UtcNow.AddDays(5)),
-                ActualReturnedAtUtc = null
+                ActualReturnedAtUtc = null,
+                TenantId = TENANT_ID
             };
 
             _context.BooksCopiesReadingHistory.Add(bookCopyReadingHistory);
@@ -95,14 +102,16 @@ namespace Application.Services
                 ActualReturnedAtUtc = DateTime.UtcNow
             };
 
-            await _service.TakeAsync(takeBookCommandParams, returnBookCommandParams, newEmployee, bookCopyReadingHistory);
+            await _service.TakeAsync(takeBookCommandParams, returnBookCommandParams, newEmployee, TENANT_ID, bookCopyReadingHistory);
 
             var oldRecord = await _context.BooksCopiesReadingHistory
+                .Where(x => x.TenantId == TENANT_ID)
                 .FirstAsync(x => x.ReaderEmployeeId == existingReader.Id && x.BookCopyId == 2);
 
             Assert.NotNull(oldRecord.ActualReturnedAtUtc);
 
             var newRecord = await _context.BooksCopiesReadingHistory
+                .Where(x => x.TenantId == TENANT_ID)
                 .FirstOrDefaultAsync(x => x.ReaderEmployeeId == newEmployee.Id && x.BookCopyId == 2);
 
             Assert.NotNull(newRecord);
@@ -118,7 +127,7 @@ namespace Application.Services
                 Id = 1,
                 Title = "Some test book",
                 Annotation = "Test annotation",
-                TenantId = 1,
+                TenantId = TENANT_ID,
                 CreatedAtUtc = DateTime.UtcNow,
                 Language = Language.en,
                 Authors = new List<Author>()
@@ -128,7 +137,12 @@ namespace Application.Services
 
             await _context.SaveChangesAsync();
 
-            var bookCopy = new BookCopy { Id = 2, BookId = book.Id };
+            var bookCopy = new BookCopy
+            { 
+                Id = 2,
+                TenantId = TENANT_ID,
+                BookId = book.Id
+            };
 
             _context.BooksCopies.Add(bookCopy);
 
@@ -142,7 +156,8 @@ namespace Application.Services
                 ReaderEmployeeId = existingReader.Id,
                 TakenAtUtc = DateTime.UtcNow.AddDays(-10),
                 ScheduledReturnDate = DateOnly.FromDateTime(DateTime.UtcNow.AddDays(5)),
-                ActualReturnedAtUtc = null
+                ActualReturnedAtUtc = null,
+                TenantId = TENANT_ID
             };
 
             _context.BooksCopiesReadingHistory.Add(bookCopyReadingHistory);
@@ -165,18 +180,20 @@ namespace Application.Services
                 ActualReturnedAtUtc = DateTime.UtcNow
             };
 
-            await _service.TakeAsync(takeBookCommandParams, returnBookCommandParams, newEmployee, bookCopyReadingHistory);
+            await _service.TakeAsync(takeBookCommandParams, returnBookCommandParams, newEmployee, TENANT_ID, bookCopyReadingHistory);
 
             // Without this, EF returns data from the cache of tracked entities, rather than from the database.
             // This method clears it, after which fresh data is returned from the database.
             _context.ChangeTracker.Clear();
 
             var oldRecord = await _context.BooksCopiesReadingHistory
+                .Where(x => x.TenantId == TENANT_ID)
                 .FirstAsync(x => x.ReaderEmployeeId == existingReader.Id && x.BookCopyId == 2);
 
             Assert.Null(oldRecord.ActualReturnedAtUtc);
 
             var newRecord = await _context.BooksCopiesReadingHistory
+                .Where(x => x.TenantId == TENANT_ID)
                 .FirstOrDefaultAsync(x => x.ReaderEmployeeId == newEmployee.Id && x.BookCopyId == 3);
 
             Assert.Null(newRecord);

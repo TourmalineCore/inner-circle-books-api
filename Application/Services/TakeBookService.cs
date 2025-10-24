@@ -1,8 +1,6 @@
 using Application.Commands;
-using Application.Queries;
 using Core;
 using Core.Entities;
-using Microsoft.EntityFrameworkCore;
 
 namespace Application.Services
 {
@@ -21,7 +19,7 @@ namespace Application.Services
             _returnBookCommand = new ReturnBookCommand(_context);
         }
 
-        public async Task TakeAsync(TakeBookCommandParams takeBookCommandParams, ReturnBookCommandParams returnBookCommandParams, Employee employee, BookCopyReadingHistory? activeReading)
+        public async Task TakeAsync(TakeBookCommandParams takeBookCommandParams, ReturnBookCommandParams returnBookCommandParams, Employee employee, long tenantId, BookCopyReadingHistory? activeReading)
         {
             await using var transaction = await _context.Database.BeginTransactionAsync();
 
@@ -34,10 +32,10 @@ namespace Application.Services
                         Id = activeReading.ReaderEmployeeId,
                     };
 
-                    await _returnBookCommand.ReturnAsync(returnBookCommandParams, employeeReader);
+                    await _returnBookCommand.ReturnAsync(returnBookCommandParams, employeeReader, tenantId);
                 }
 
-                await _takeBookCommand.TakeAsync(takeBookCommandParams, employee);
+                await _takeBookCommand.TakeAsync(takeBookCommandParams, employee, tenantId);
 
                 await transaction.CommitAsync();
             }

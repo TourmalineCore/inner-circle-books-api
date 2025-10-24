@@ -20,9 +20,8 @@ public class TakeBookCommand
         _context = context;
     }
 
-    public async Task TakeAsync(TakeBookCommandParams takeBookCommandParams, Employee employee)
+    public async Task TakeAsync(TakeBookCommandParams takeBookCommandParams, Employee employee, long tenantId)
     {
-
         var bookCopyExists = await _context.BooksCopies
             .AnyAsync(x => x.Id == takeBookCommandParams.BookCopyId);
 
@@ -39,6 +38,7 @@ public class TakeBookCommand
             ReaderEmployeeId = employee.Id,
             TakenAtUtc = DateTime.UtcNow,
             ScheduledReturnDate = new DateOnly(result.Year, result.Month, result.Day),
+            TenantId = tenantId
         };
 
         await _context.BooksCopiesReadingHistory.AddAsync(bookCopyReadingHistory);

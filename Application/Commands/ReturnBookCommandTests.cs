@@ -7,6 +7,7 @@ using Xunit;
 
 public class ReturnBookCommandTests
 {
+    private const long TENANT_ID = 1;
     private readonly ReturnBookCommand _command;
     private readonly AppDbContext _context;
 
@@ -31,7 +32,8 @@ public class ReturnBookCommandTests
             BookCopyId = 1,
             ReaderEmployeeId = 1,
             TakenAtUtc = DateTime.UtcNow,
-            ScheduledReturnDate = DateOnly.FromDateTime(dateTimeUtcPlusTwoMonths)
+            ScheduledReturnDate = DateOnly.FromDateTime(dateTimeUtcPlusTwoMonths),
+            TenantId = TENANT_ID
         };
 
         _context.BooksCopiesReadingHistory.Add(bookCopyReadingHistory);
@@ -49,7 +51,7 @@ public class ReturnBookCommandTests
             Id = 1
         };
 
-        await _command.ReturnAsync(returnBookRequest, employee);
+        await _command.ReturnAsync(returnBookRequest, employee, TENANT_ID);
 
         var completedCopyReadingHistory = await _context.BooksCopiesReadingHistory.FindAsync(bookCopyReadingHistory.Id);
         Assert.NotNull(completedCopyReadingHistory);
