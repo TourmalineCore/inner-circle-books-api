@@ -178,7 +178,7 @@ public class BooksController : Controller
 
             var activeReading = await _getBookCopyReadingHistoryByCopyIdQuery.GetActiveReadingAsync(returnBookCommandParams.BookCopyId, User.GetTenantId());
 
-            await _takeBookService.TakeAsync(takeBookCommandParams, returnBookCommandParams, employee, activeReading);
+            await _takeBookService.TakeAsync(takeBookCommandParams, returnBookCommandParams, employee, User.GetTenantId(), activeReading);
 
             return Ok(new { success = true });
         }
