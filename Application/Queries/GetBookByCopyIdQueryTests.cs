@@ -6,6 +6,7 @@ using Xunit;
 
 public class GetBookByCopyIdQueryTests
 {
+    private const long TENANT_ID = 1;
     private readonly AppDbContext _context;
     private readonly GetBookByCopyIdQuery _query;
 
@@ -28,12 +29,13 @@ public class GetBookByCopyIdQueryTests
         {
             Id = 4,
             BookId = bookId,
+            TenantId = TENANT_ID
         };
 
         _context.BooksCopies.Add(bookCopy);
         await _context.SaveChangesAsync();
 
-        var result = await _query.GetBookIdByCopyIdAsync(bookCopy.Id);
+        var result = await _query.GetBookIdByCopyIdAsync(bookCopy.Id, TENANT_ID);
 
         Assert.Equal(bookId, result);
     }

@@ -22,10 +22,11 @@ public class ReturnBookCommand
         _context = context;
     }
 
-    public async Task ReturnAsync(ReturnBookCommandParams returnBookCommandParams, Employee employee)
+    public async Task ReturnAsync(ReturnBookCommandParams returnBookCommandParams, Employee employee, long tenantId)
     {
         var bookCopyReadingHistory = await _context
             .BooksCopiesReadingHistory
+            .Where(x => x.TenantId == tenantId)
             .FirstOrDefaultAsync(x => x.BookCopyId == returnBookCommandParams.BookCopyId
                 && x.ReaderEmployeeId == employee.Id
                 && x.ActualReturnedAtUtc == null);

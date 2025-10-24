@@ -20,11 +20,12 @@ public class TakeBookCommand
         _context = context;
     }
 
-    public async Task TakeAsync(TakeBookCommandParams takeBookCommandParams, Employee employee)
+    public async Task TakeAsync(TakeBookCommandParams takeBookCommandParams, Employee employee, long tenantId)
     {
         var result = DateTime.Parse(takeBookCommandParams.ScheduledReturnDate, null, System.Globalization.DateTimeStyles.RoundtripKind);
 
         var isAlreadyTaken = await _context.BooksCopiesReadingHistory
+                .Where(x => x.TenantId == tenantId)
                 .AnyAsync(x => x.BookCopyId == takeBookCommandParams.BookCopyId 
                             && x.ActualReturnedAtUtc == null);
 
@@ -39,6 +40,7 @@ public class TakeBookCommand
             ReaderEmployeeId = employee.Id,
             TakenAtUtc = DateTime.UtcNow,
             ScheduledReturnDate = new DateOnly(result.Year, result.Month, result.Day),
+            TenantId = tenantId
         };
 
         await _context.BooksCopiesReadingHistory.AddAsync(bookCopyReadingHistory);

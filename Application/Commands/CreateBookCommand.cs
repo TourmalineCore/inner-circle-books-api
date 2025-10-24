@@ -49,9 +49,12 @@ public class CreateBookCommand
             CoverUrl = createBookCommandParams.CoverUrl,
             CreatedAtUtc = DateTime.UtcNow,
             Copies = Enumerable
-                .Range(0, createBookCommandParams.CountOfCopies)
-                .Select(x => new BookCopy())
-                .ToList()
+            .Range(0, createBookCommandParams.CountOfCopies)
+            .Select(x => new BookCopy()
+            {
+                TenantId = tenantId,
+            })
+            .ToList()
         };
 
         await _context.Books.AddAsync(book);

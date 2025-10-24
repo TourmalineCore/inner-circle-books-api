@@ -35,10 +35,11 @@ public class TakeBookCommandTests
             FullName = "Ivanov Ivan",
         };
 
-        await _command.TakeAsync(takeBookRequest, employee);
+        await _command.TakeAsync(takeBookRequest, employee, TENANT_ID);
 
         var bookCopyReadingHistory = await _context
             .BooksCopiesReadingHistory
+            .Where(x => x.TenantId == TENANT_ID)
             .FirstOrDefaultAsync(x => x.BookCopyId == takeBookRequest.BookCopyId && x.ReaderEmployeeId == employee.Id);
 
         Assert.NotNull(bookCopyReadingHistory);
