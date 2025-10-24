@@ -25,6 +25,7 @@ public class TakeBookCommand
         var result = DateTime.Parse(takeBookCommandParams.ScheduledReturnDate, null, System.Globalization.DateTimeStyles.RoundtripKind);
 
         var isAlreadyTaken = await _context.BooksCopiesReadingHistory
+                .Where(x => x.TenantId == tenantId)
                 .AnyAsync(x => x.BookCopyId == takeBookCommandParams.BookCopyId 
                             && x.ActualReturnedAtUtc == null);
 
@@ -39,6 +40,7 @@ public class TakeBookCommand
             ReaderEmployeeId = employee.Id,
             TakenAtUtc = DateTime.UtcNow,
             ScheduledReturnDate = new DateOnly(result.Year, result.Month, result.Day),
+            TenantId = tenantId
         };
 
         await _context.BooksCopiesReadingHistory.AddAsync(bookCopyReadingHistory);

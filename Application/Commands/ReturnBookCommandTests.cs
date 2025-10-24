@@ -32,7 +32,8 @@ public class ReturnBookCommandTests
             BookCopyId = 1,
             ReaderEmployeeId = 1,
             TakenAtUtc = DateTime.UtcNow,
-            ScheduledReturnDate = DateOnly.FromDateTime(dateTimeUtcPlusTwoMonths)
+            ScheduledReturnDate = DateOnly.FromDateTime(dateTimeUtcPlusTwoMonths),
+            TenantId = TENANT_ID
         };
 
         _context.BooksCopiesReadingHistory.Add(bookCopyReadingHistory);

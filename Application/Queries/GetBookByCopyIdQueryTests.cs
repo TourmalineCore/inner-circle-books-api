@@ -29,6 +29,7 @@ public class GetBookByCopyIdQueryTests
         {
             Id = 4,
             BookId = bookId,
+            TenantId = TENANT_ID
         };
 
         _context.BooksCopies.Add(bookCopy);
