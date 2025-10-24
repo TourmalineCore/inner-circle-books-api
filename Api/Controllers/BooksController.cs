@@ -214,7 +214,7 @@ public class BooksController : Controller
         [FromQuery] int pageSize
     )
     {
-        var (bookHistory, totalCount) = await _getBookHistoryByIdQuery.GetByIdAsync(id, page, pageSize);
+        var (bookHistory, totalCount) = await _getBookHistoryByIdQuery.GetByIdAsync(id, page, pageSize, User.GetTenantId());
 
         var uniqueReaderEmployeeIds = bookHistory
             .Select(x => x.ReaderEmployeeId)

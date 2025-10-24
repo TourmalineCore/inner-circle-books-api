@@ -6,6 +6,7 @@ using Xunit;
 
 public class GetBookHistoryByIdQueryTests
 {
+    private const long TENANT_ID = 1;
     private readonly AppDbContext _context;
     private readonly GetBookHistoryByIdQuery _query;
 
@@ -27,7 +28,7 @@ public class GetBookHistoryByIdQueryTests
         var book = new Book
         {
             Id = 1,
-            TenantId = 1,
+            TenantId = TENANT_ID,
             Title = "Test Book 1",
             Annotation = "Test annotation 1",
             Authors = new List<Author>()
@@ -44,17 +45,20 @@ public class GetBookHistoryByIdQueryTests
         var bookCopy1 = new BookCopy
         {
             Id = 3L,
-            BookId = bookId
+            BookId = bookId,
+            TenantId = TENANT_ID
         };
         var bookCopy2 = new BookCopy
         {
             Id = 4L,
-            BookId = bookId
+            BookId = bookId,
+            TenantId = TENANT_ID
         };
         var bookCopy3 = new BookCopy
         {
             Id = 5L,
-            BookId = bookId
+            BookId = bookId,
+            TenantId = TENANT_ID
         };
 
         var readingHistory1 = new BookCopyReadingHistory
@@ -63,7 +67,8 @@ public class GetBookHistoryByIdQueryTests
             BookCopyId = bookCopy1.Id,
             ReaderEmployeeId = 1L,
             TakenAtUtc = new DateTime(2025, 1, 1),
-            ScheduledReturnDate = new DateOnly(2025, 2, 1)
+            ScheduledReturnDate = new DateOnly(2025, 2, 1),
+            TenantId = TENANT_ID
         };
         var readingHistory2 = new BookCopyReadingHistory
         {
@@ -71,7 +76,8 @@ public class GetBookHistoryByIdQueryTests
             BookCopyId = bookCopy2.Id,
             ReaderEmployeeId = 2L,
             TakenAtUtc = new DateTime(2025, 3, 1),
-            ScheduledReturnDate = new DateOnly(2025, 4, 1)
+            ScheduledReturnDate = new DateOnly(2025, 4, 1),
+            TenantId = TENANT_ID
         };
         var readingHistory3 = new BookCopyReadingHistory
         {
@@ -79,7 +85,8 @@ public class GetBookHistoryByIdQueryTests
             BookCopyId = bookCopy3.Id,
             ReaderEmployeeId = 3L,
             TakenAtUtc = new DateTime(2025, 5, 1),
-            ScheduledReturnDate = new DateOnly(2025, 6, 1)
+            ScheduledReturnDate = new DateOnly(2025, 6, 1),
+            TenantId = TENANT_ID
         };
 
         _context.Books.Add(book);
@@ -87,7 +94,7 @@ public class GetBookHistoryByIdQueryTests
         _context.BooksCopiesReadingHistory.AddRange(readingHistory1, readingHistory2, readingHistory3);
         await _context.SaveChangesAsync();
 
-        var (items, totalCount) = await _query.GetByIdAsync(bookId, page: 1, pageSize: 2);
+        var (items, totalCount) = await _query.GetByIdAsync(bookId, page: 1, pageSize: 2, TENANT_ID);
 
         Assert.NotEmpty(items);
         Assert.Equal(2, items.Count);

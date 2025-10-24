@@ -13,10 +13,11 @@ public class GetBookHistoryByIdQuery
         _context = context;
     }
 
-    public async Task<(List<BookCopyReadingHistory> List, long TotalCount)> GetByIdAsync(long id, int page, int pageSize)
+    public async Task<(List<BookCopyReadingHistory> List, long TotalCount)> GetByIdAsync(long id, int page, int pageSize, long tenantId)
     {
         var bookCopies = await _context
             .BooksCopies
+            .Where(x => x.TenantId == tenantId)
             .Where(x => x.BookId == id)
             .Select(x => x.Id)
             .ToListAsync();
