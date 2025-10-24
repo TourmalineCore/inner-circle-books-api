@@ -100,9 +100,9 @@ public class BooksController : Controller
     [HttpGet("copy/{id}")]
     public async Task<ActionResult<SingleBookResponse>> GetBookByCopyIdAsync([Required][FromRoute] long id)
     {
-        var bookId = await _getBookByCopyIdQuery.GetBookIdByCopyIdAsync(id);
+        var bookId = await _getBookByCopyIdQuery.GetBookIdByCopyIdAsync(id, User.GetTenantId());
 
-        if (bookId == null)
+        if (bookId == 0)
         {
             return NotFound(new
             {
@@ -165,7 +165,7 @@ public class BooksController : Controller
                 ScheduledReturnDate = takeBookRequest.ScheduledReturnDate,
             };
 
-            await _takeBookCommand.TakeAsync(takeBookCommandParams, employee);
+            await _takeBookCommand.TakeAsync(takeBookCommandParams, employee, User.GetTenantId());
 
             return Ok(new { success = true });
         }
@@ -197,7 +197,7 @@ public class BooksController : Controller
             ActualReturnedAtUtc = DateTime.UtcNow
         };
 
-        await _returnBookCommand.ReturnAsync(returnBookCommandParams, employee);
+        await _returnBookCommand.ReturnAsync(returnBookCommandParams, employee, User.GetTenantId());
     }
 
     /// <summary>
@@ -272,7 +272,7 @@ public class BooksController : Controller
                     .Select(x => x.Id)
                     .ToList();
 
-            var employeesWhoReadNowWithoutFullNames = await _getBookByIdQuery.GetEmployeesWhoReadNowAsync(bookCopiesIds);
+            var employeesWhoReadNowWithoutFullNames = await _getBookByIdQuery.GetEmployeesWhoReadNowAsync(bookCopiesIds, User.GetTenantId());
 
             var employeesByIds = (!employeesWhoReadNowWithoutFullNames.Any())
                 ? new List<EmployeeById>()

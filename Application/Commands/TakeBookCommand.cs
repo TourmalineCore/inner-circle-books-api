@@ -20,7 +20,7 @@ public class TakeBookCommand
         _context = context;
     }
 
-    public async Task TakeAsync(TakeBookCommandParams takeBookCommandParams, Employee employee)
+    public async Task TakeAsync(TakeBookCommandParams takeBookCommandParams, Employee employee, long tenantId)
     {
         var result = DateTime.Parse(takeBookCommandParams.ScheduledReturnDate, null, System.Globalization.DateTimeStyles.RoundtripKind);
 

@@ -11,10 +11,11 @@ public class GetBookByCopyIdQuery
         _context = context;
     }
 
-    public Task<long> GetBookIdByCopyIdAsync(long copyId)
+    public Task<long> GetBookIdByCopyIdAsync(long copyId, long tenantId)
     {
         return _context
             .BooksCopies
+            .Where(x => x.TenantId == tenantId)
             .Where(x => x.Id == copyId)
             .Select(x => x.BookId)
             .FirstOrDefaultAsync();

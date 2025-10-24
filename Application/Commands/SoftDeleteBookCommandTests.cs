@@ -45,7 +45,9 @@ public class SoftDeleteBookCommandTests
 
         await _command.SoftDeleteAsync(book.Id, book.TenantId);
 
-        var editdBook = await _context.Books.SingleAsync(x => x.Id == book.Id);
+        var editdBook = await _context.Books
+            .Where(x => x.TenantId == TENANT_ID)
+            .SingleAsync(x => x.Id == book.Id);
 
         Assert.NotNull(editdBook.DeletedAtUtc);
     }

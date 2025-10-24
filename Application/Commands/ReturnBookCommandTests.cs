@@ -7,6 +7,7 @@ using Xunit;
 
 public class ReturnBookCommandTests
 {
+    private const long TENANT_ID = 1;
     private readonly ReturnBookCommand _command;
     private readonly AppDbContext _context;
 
@@ -49,7 +50,7 @@ public class ReturnBookCommandTests
             Id = 1
         };
 
-        await _command.ReturnAsync(returnBookRequest, employee);
+        await _command.ReturnAsync(returnBookRequest, employee, TENANT_ID);
 
         var completedCopyReadingHistory = await _context.BooksCopiesReadingHistory.FindAsync(bookCopyReadingHistory.Id);
         Assert.NotNull(completedCopyReadingHistory);

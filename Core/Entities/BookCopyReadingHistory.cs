@@ -4,7 +4,10 @@ public class BookCopyReadingHistory
 {
     public long Id { get; set; }
 
+    public long TenantId { get; set; }
+
     public long BookCopyId { get; set; }
+
     public BookCopy BookCopy { get; set; }
 
     public long ReaderEmployeeId { get; set; }

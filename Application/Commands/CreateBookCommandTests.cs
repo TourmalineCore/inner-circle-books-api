@@ -49,6 +49,7 @@ public class CreateBookCommandTests
 
         // Verify the book copies are added correctly
         var copies = await _context.BooksCopies
+            .Where(copy => copy.TenantId == TENANT_ID)
             .Where(copy => copy.BookId == bookId)
             .ToListAsync();
 
