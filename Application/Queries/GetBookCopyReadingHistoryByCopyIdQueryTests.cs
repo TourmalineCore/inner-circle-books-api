@@ -30,6 +30,7 @@ public class GetBookCopyReadingHistoryByCopyIdQueryTests
             ReaderEmployeeId = 1,
             TakenAtUtc = new DateTime(2025, 11, 22),
             ScheduledReturnDate = new DateOnly(2025, 12, 22),
+            TenantId = TENANT_ID
         };
 
         await _context.BooksCopiesReadingHistory.AddAsync(bookCopyReadingHistory);
