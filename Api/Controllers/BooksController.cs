@@ -24,6 +24,7 @@ public class BooksController : Controller
     private readonly GetAllBooksQuery _getAllBooksQuery;
     private readonly GetBookByIdQuery _getBookByIdQuery;
     private readonly GetBookByCopyIdQuery _getBookByCopyIdQuery;
+    private readonly GetBookHistoryByIdQuery _getBookHistoryByIdQuery;
     private readonly SoftDeleteBookCommand _softDeleteBookCommand;
     private readonly EditBookCommand _editBookCommand;
     private readonly TakeBookCommand _takeBookCommand;
@@ -37,6 +38,7 @@ public class BooksController : Controller
         GetAllBooksQuery getAllBooksQuery,
         GetBookByIdQuery getBookByIdQuery,
         GetBookByCopyIdQuery getBookByCopyIdQuery,
+        GetBookHistoryByIdQuery getBookHistoryByIdQuery,
         CreateBookCommand createBookCommand,
         EditBookCommand editBookCommand,
         DeleteBookCommand deleteBookCommand,
@@ -49,6 +51,7 @@ public class BooksController : Controller
         _getAllBooksQuery = getAllBooksQuery;
         _getBookByIdQuery = getBookByIdQuery;
         _getBookByCopyIdQuery = getBookByCopyIdQuery;
+        _getBookHistoryByIdQuery = getBookHistoryByIdQuery;
         _createBookCommand = createBookCommand;
         _editBookCommand = editBookCommand;
         _deleteBookCommand = deleteBookCommand;
@@ -201,6 +204,48 @@ public class BooksController : Controller
     }
 
     /// <summary>
+    ///     Get book history by id
+    /// </summary>
+    [RequiresPermission(UserClaimsProvider.CanViewBooks)]
+    [HttpGet("history/{id}")]
+    public async Task<BookHistoryResponse> GetBookHistoryByIdAsync(
+        [Required][FromRoute] long id,
+        [FromQuery] int page,
+        [FromQuery] int pageSize
+    )
+    {
+        var (bookHistory, totalCount) = await _getBookHistoryByIdQuery.GetByIdAsync(id, page, pageSize, User.GetTenantId());
+
+        var uniqueReaderEmployeeIds = bookHistory
+            .Select(x => x.ReaderEmployeeId)
+            .Distinct()
+            .ToList();
+
+        var employeesByIds = (!uniqueReaderEmployeeIds.Any())
+            ? new List<EmployeeById>()
+            : await _client.GetEmployeesByIdsAsync(uniqueReaderEmployeeIds);
+
+        return new BookHistoryResponse
+        {
+            List = bookHistory
+                .Select(history =>
+                {
+                    return new BookHistoryItem
+                    {
+                        BookCopyId = history.BookCopyId,
+                        EmployeeFullName = employeesByIds.FirstOrDefault(x => x.EmployeeId == history.ReaderEmployeeId).FullName,
+                        TakenDate = history.TakenAtUtc.ToString("dd.MM.yyyy"),
+                        ScheduledReturnDate = history.ScheduledReturnDate.ToString("dd.MM.yyyy"),
+                        ActualReturnedDate = history.ActualReturnedAtUtc?.ToString("dd.MM.yyyy"),
+                        ProgressOfReading = history.ProgressOfReading?.ToString()
+                    };
+                })
+                .ToList(),
+            TotalCount = totalCount
+        };
+    }
+
+    /// <summary>
     ///     Edit book
     /// </summary>
     /// <param name="id"></param>
@@ -268,9 +313,9 @@ public class BooksController : Controller
             }
 
             var bookCopiesIds = book
-                    .Copies
-                    .Select(x => x.Id)
-                    .ToList();
+                   .Copies
+                   .Select(x => x.Id)
+                   .ToList();
 
             var employeesWhoReadNowWithoutFullNames = await _getBookByIdQuery.GetEmployeesWhoReadNowAsync(bookCopiesIds, User.GetTenantId());
 
