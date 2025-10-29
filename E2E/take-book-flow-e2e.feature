@@ -51,7 +51,7 @@ Scenario: Take and return book flow
             }
         ],
         coverUrl: 'http://example.com/artwork.jpg',
-        countOfCopies: 2
+        countOfCopies: 1
     }
     """
     When method POST
@@ -65,7 +65,7 @@ Scenario: Take and return book flow
     When method GET
     Then status 200
     And match response.title == randomName
-    And assert response.bookCopiesIds.length == 2
+    And assert response.bookCopiesIds.length == 1
     And assert response.employeesWhoReadNow.length == 0
 
     * def bookCopyId = response.bookCopiesIds[0]
@@ -148,8 +148,14 @@ Scenario: Take and return book flow
     And assert response.list[0].employeeFullName == readerFullName
     And assert response.list[0].bookCopyId == 1
 
-    # Delete the book (hard delete)
+    # Cleanup: Delete the book (hard delete)
     And path 'api/books', newBookId, 'hard-delete'
+    When method DELETE
+    Then status 200
+    And match response == { isDeleted: true }
+
+    # Cleanup: Delete the book copy (hard delete)
+    Given path 'api/books/copy', bookCopyId, 'hard-delete'
     When method DELETE
     Then status 200
     And match response == { isDeleted: true }

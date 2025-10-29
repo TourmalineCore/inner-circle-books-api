@@ -31,7 +31,7 @@ Scenario: Happy Path
     * def employeeId = jsUtils().getEmployeeIdFromToken(accessToken)
 
 
-    # Create a new book with 2 copies
+    # Create a new book with 1 copy
     * def randomName = 'Test-book-' + Math.random()
 
     Given url apiRootUrl
@@ -48,7 +48,7 @@ Scenario: Happy Path
             }
         ],
         coverUrl: 'http://example.com/artwork.jpg',
-        countOfCopies: 2
+        countOfCopies: 1
     }
     """
     When method POST
@@ -61,7 +61,7 @@ Scenario: Happy Path
     And path 'api/books/copies', bookId
     When method GET
     Then status 200
-    And assert response.bookCopies.length == 2
+    And assert response.bookCopies.length == 1
     And match response.bookTitle == randomName
     And match response.bookCopies[0].bookCopyId == "#notnull"
     And match response.bookCopies[0].secretKey == "#notnull" 
