@@ -59,6 +59,7 @@ public class CreateBookCommandTests
         foreach (var copy in copies)
         {
             Assert.Equal(bookId, copy.BookId);
+            Assert.NotNull(copy.SecretKey);
         }
     }
 

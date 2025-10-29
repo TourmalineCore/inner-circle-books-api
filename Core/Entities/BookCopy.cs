@@ -11,4 +11,6 @@ public class BookCopy
     public Book Book { get; set; }
 
     public List<BookCopyReadingHistory> ReadingHistoryList { get; set; }
+
+    public string SecretKey { get; set; }
 }
