@@ -22,6 +22,7 @@ public class BooksController : Controller
 {
     private readonly CreateBookCommand _createBookCommand;
     private readonly DeleteBookCommand _deleteBookCommand;
+    private readonly DeleteBookCopyCommand _deleteBookCopyCommand;
     private readonly GetAllBooksQuery _getAllBooksQuery;
     private readonly GetBookByIdQuery _getBookByIdQuery;
     private readonly GetBookByCopyIdQuery _getBookByCopyIdQuery;
@@ -47,6 +48,7 @@ public class BooksController : Controller
         CreateBookCommand createBookCommand,
         EditBookCommand editBookCommand,
         DeleteBookCommand deleteBookCommand,
+        DeleteBookCopyCommand deleteBookCopyCommand,
         SoftDeleteBookCommand softDeleteBookCommand,
         ReturnBookCommand returnBookCommand,
         TakeBookService takeBookService,
@@ -62,6 +64,7 @@ public class BooksController : Controller
         _createBookCommand = createBookCommand;
         _editBookCommand = editBookCommand;
         _deleteBookCommand = deleteBookCommand;
+        _deleteBookCopyCommand = deleteBookCopyCommand;
         _softDeleteBookCommand = softDeleteBookCommand;
         _returnBookCommand = returnBookCommand;
         _takeBookService = takeBookService;
@@ -343,6 +346,18 @@ public class BooksController : Controller
     public async Task<object> HardDeleteBook([Required][FromRoute] long id)
     {
         await _deleteBookCommand.DeleteAsync(id, User.GetTenantId());
+        return new { isDeleted = true };
+    }
+
+    /// <summary>
+    ///     Deletes specific book copy
+    /// </summary>
+    /// <param name="id"></param>
+    [RequiresPermission(UserClaimsProvider.IsBookCopiesHardDeleteAllowed)]
+    [HttpDelete("copy/{id}/hard-delete")]
+    public async Task<object> HardDeleteBookCopy([Required][FromRoute] long id)
+    {
+        await _deleteBookCopyCommand.DeleteAsync(id, User.GetTenantId());
         return new { isDeleted = true };
     }
 
