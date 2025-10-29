@@ -40,7 +40,12 @@ public class TakeBookCommandTests
 
         await _context.SaveChangesAsync();
 
-        var bookCopy = new BookCopy { Id = 1, BookId = book.Id };
+        var bookCopy = new BookCopy
+        {
+            Id = 1,
+            BookId = book.Id,
+            SecretKey = "abcd"
+        };
 
         _context.BooksCopies.Add(bookCopy);
 
