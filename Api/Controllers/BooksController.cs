@@ -120,6 +120,40 @@ public class BooksController : Controller
         return await GetBookResponseAsync(bookId);
     }
 
+
+    /// <summary>
+    ///     Get book with copies by id
+    /// </summary>
+    [RequiresPermission(UserClaimsProvider.CanManageBooks)]
+    [HttpGet("copies/{id}")]
+    public async Task<ActionResult<BookWithCopiesResponse>> GetBookCopiesByIdAsync([Required][FromRoute] long id)
+    {
+        var book = await _getBookByIdQuery.GetByIdAsync(id, User.GetTenantId());
+
+        if (book == null)
+        {
+            return NotFound(new
+            {
+                Message = $"Book with id {id} not found"
+            });
+        }
+
+        var bookCopies = book
+            .Copies
+            .Select(copy => new BookCopyResponse
+            {
+                BookCopyId = copy.Id,
+                SecretKey = copy.SecretKey
+            })
+            .ToList();
+
+        return new BookWithCopiesResponse()
+        {
+            BookTitle = book.Title,
+            BookCopies = bookCopies
+        };
+    }
+
     /// <summary>
     ///     Adds book
     /// </summary>
