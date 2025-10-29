@@ -92,36 +92,6 @@ Scenario: Take and return book flow
     And assert response.employeesWhoReadNow[0].employeeId == employeeId
     And assert response.employeesWhoReadNow[0].bookCopyId == bookCopyId
 
-    # Second user authentication
-    Given url authApiRootUrl
-    And path '/auth/login'
-    And request
-    """
-    {
-        "login": "#(firstUserAuthLogin)",
-        "password": "#(firstUserAuthPassword)"
-    }
-    """
-    And method POST
-    Then status 200
-
-    * def accessToken = karate.toMap(response.accessToken.value)
-
-    * configure headers = jsUtils().getAuthHeaders(accessToken)
-
-    # Try to take the same book copy by copy ID
-    Given url apiRootUrl
-    And path 'api/books/take'
-    And request
-    """
-    {
-        bookCopyId: '#(bookCopyId)',
-        scheduledReturnDate: '#(scheduledReturnDate)'
-    }
-    """
-    When method POST
-    Then status 500
-
     # First user authentication
     Given url authApiRootUrl
     And path '/auth/login'

@@ -22,17 +22,15 @@ public class TakeBookCommand
 
     public async Task TakeAsync(TakeBookCommandParams takeBookCommandParams, Employee employee, long tenantId)
     {
-        var result = DateTime.Parse(takeBookCommandParams.ScheduledReturnDate, null, System.Globalization.DateTimeStyles.RoundtripKind);
+        var bookCopyExists = await _context.BooksCopies
+            .AnyAsync(x => x.Id == takeBookCommandParams.BookCopyId);
 
-        var isAlreadyTaken = await _context.BooksCopiesReadingHistory
-                .Where(x => x.TenantId == tenantId)
-                .AnyAsync(x => x.BookCopyId == takeBookCommandParams.BookCopyId 
-                            && x.ActualReturnedAtUtc == null);
-
-        if (isAlreadyTaken)
+        if (!bookCopyExists)
         {
-            throw new InvalidOperationException("This copy of the book is already taken by another employee.");
+            throw new ArgumentException($"BookCopy with id {takeBookCommandParams.BookCopyId} does not exist");
         }
+
+        var result = DateTime.Parse(takeBookCommandParams.ScheduledReturnDate, null, System.Globalization.DateTimeStyles.RoundtripKind);
 
         var bookCopyReadingHistory = new BookCopyReadingHistory
         {

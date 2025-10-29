@@ -9,6 +9,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using TourmalineCore.AspNetCore.JwtAuthentication.Core.Filters;
 using Core;
+using Application.Services;
 
 namespace Api.Controllers;
 
@@ -24,11 +25,12 @@ public class BooksController : Controller
     private readonly GetAllBooksQuery _getAllBooksQuery;
     private readonly GetBookByIdQuery _getBookByIdQuery;
     private readonly GetBookByCopyIdQuery _getBookByCopyIdQuery;
+    private readonly GetBookCopyReadingHistoryByCopyIdQuery _getBookCopyReadingHistoryByCopyIdQuery;
     private readonly GetBookHistoryByIdQuery _getBookHistoryByIdQuery;
     private readonly SoftDeleteBookCommand _softDeleteBookCommand;
     private readonly EditBookCommand _editBookCommand;
-    private readonly TakeBookCommand _takeBookCommand;
     private readonly ReturnBookCommand _returnBookCommand;
+    private readonly TakeBookService _takeBookService;
     private readonly IInnerCircleHttpClient _client;
 
     /// <summary>
@@ -38,26 +40,28 @@ public class BooksController : Controller
         GetAllBooksQuery getAllBooksQuery,
         GetBookByIdQuery getBookByIdQuery,
         GetBookByCopyIdQuery getBookByCopyIdQuery,
+        GetBookCopyReadingHistoryByCopyIdQuery getBookCopyReadingHistoryByCopyIdQuery,
         GetBookHistoryByIdQuery getBookHistoryByIdQuery,
         CreateBookCommand createBookCommand,
         EditBookCommand editBookCommand,
         DeleteBookCommand deleteBookCommand,
         SoftDeleteBookCommand softDeleteBookCommand,
-        TakeBookCommand takeBookCommand,
         ReturnBookCommand returnBookCommand,
+        TakeBookService takeBookService,
         IInnerCircleHttpClient client
     )
     {
         _getAllBooksQuery = getAllBooksQuery;
         _getBookByIdQuery = getBookByIdQuery;
         _getBookByCopyIdQuery = getBookByCopyIdQuery;
+        _getBookCopyReadingHistoryByCopyIdQuery = getBookCopyReadingHistoryByCopyIdQuery;
         _getBookHistoryByIdQuery = getBookHistoryByIdQuery;
         _createBookCommand = createBookCommand;
         _editBookCommand = editBookCommand;
         _deleteBookCommand = deleteBookCommand;
         _softDeleteBookCommand = softDeleteBookCommand;
-        _takeBookCommand = takeBookCommand;
         _returnBookCommand = returnBookCommand;
+        _takeBookService = takeBookService;
         _client = client;
     }
 
@@ -168,7 +172,16 @@ public class BooksController : Controller
                 ScheduledReturnDate = takeBookRequest.ScheduledReturnDate,
             };
 
-            await _takeBookCommand.TakeAsync(takeBookCommandParams, employee, User.GetTenantId());
+            var returnBookCommandParams = new ReturnBookCommandParams
+            {
+                BookCopyId = takeBookRequest.BookCopyId,
+                ProgressOfReading = ProgressOfReading.Unknown,
+                ActualReturnedAtUtc = DateTime.UtcNow
+            };
+
+            var activeReading = await _getBookCopyReadingHistoryByCopyIdQuery.GetActiveReadingAsync(returnBookCommandParams.BookCopyId, User.GetTenantId());
+
+            await _takeBookService.TakeAsync(takeBookCommandParams, returnBookCommandParams, employee, User.GetTenantId(), activeReading);
 
             return Ok(new { success = true });
         }
