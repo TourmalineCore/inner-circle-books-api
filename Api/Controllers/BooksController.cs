@@ -27,6 +27,7 @@ public class BooksController : Controller
     private readonly GetBookByCopyIdQuery _getBookByCopyIdQuery;
     private readonly GetBookCopyReadingHistoryByCopyIdQuery _getBookCopyReadingHistoryByCopyIdQuery;
     private readonly GetBookHistoryByIdQuery _getBookHistoryByIdQuery;
+    private readonly BookCopyValidatorQuery _bookCopyValidatorQuery;
     private readonly SoftDeleteBookCommand _softDeleteBookCommand;
     private readonly EditBookCommand _editBookCommand;
     private readonly ReturnBookCommand _returnBookCommand;
@@ -42,6 +43,7 @@ public class BooksController : Controller
         GetBookByCopyIdQuery getBookByCopyIdQuery,
         GetBookCopyReadingHistoryByCopyIdQuery getBookCopyReadingHistoryByCopyIdQuery,
         GetBookHistoryByIdQuery getBookHistoryByIdQuery,
+        BookCopyValidatorQuery bookCopyValidatorQuery,
         CreateBookCommand createBookCommand,
         EditBookCommand editBookCommand,
         DeleteBookCommand deleteBookCommand,
@@ -56,6 +58,7 @@ public class BooksController : Controller
         _getBookByCopyIdQuery = getBookByCopyIdQuery;
         _getBookCopyReadingHistoryByCopyIdQuery = getBookCopyReadingHistoryByCopyIdQuery;
         _getBookHistoryByIdQuery = getBookHistoryByIdQuery;
+        _bookCopyValidatorQuery = bookCopyValidatorQuery;
         _createBookCommand = createBookCommand;
         _editBookCommand = editBookCommand;
         _deleteBookCommand = deleteBookCommand;
@@ -105,7 +108,7 @@ public class BooksController : Controller
     /// </summary>
     [RequiresPermission(UserClaimsProvider.CanViewBooks)]
     [HttpGet("copy/{id}")]
-    public async Task<ActionResult<SingleBookResponse>> GetBookByCopyIdAsync([Required][FromRoute] long id)
+    public async Task<ActionResult<SingleBookResponse>> GetBookByCopyIdAsync([Required][FromRoute] long id, [Required][FromQuery] string secretKey)
     {
         var bookId = await _getBookByCopyIdQuery.GetBookIdByCopyIdAsync(id, User.GetTenantId());
 
@@ -116,6 +119,16 @@ public class BooksController : Controller
                 Message = $"Book copy with id {id} not found"
             });
         }
+
+        var isSecretKeyValid = await _bookCopyValidatorQuery.IsValidSecretKeyAsync(id, secretKey, User.GetTenantId());
+
+        if (!isSecretKeyValid) {
+            return NotFound(new
+            {
+                Message = "Secret key is not valid"
+            });
+        }
+
 
         return await GetBookResponseAsync(bookId);
     }

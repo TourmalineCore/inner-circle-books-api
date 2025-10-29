@@ -27,6 +27,7 @@ public static class DependencyInjection
         services.AddTransient<GetBookHistoryByIdQuery>();
         services.AddTransient<GetAllBooksQuery>();
         services.AddTransient<GetBookCopyReadingHistoryByCopyIdQuery>();
+        services.AddTransient<BookCopyValidatorQuery>();
         services.AddTransient<TakeBookCommand>();
         services.AddTransient<ReturnBookCommand>();
         services.AddTransient<IInnerCircleHttpClient, InnerCircleHttpClient>();
