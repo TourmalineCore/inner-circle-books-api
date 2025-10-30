@@ -1,15 +1,15 @@
 using System.ComponentModel.DataAnnotations;
-using Api.Responses;
 using Api.Requests;
+using Api.Responses;
 using Application;
 using Application.Commands;
 using Application.Queries;
+using Application.Services;
+using Core;
 using Core.Entities;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using TourmalineCore.AspNetCore.JwtAuthentication.Core.Filters;
-using Core;
-using Application.Services;
 
 namespace Api.Controllers;
 
@@ -22,11 +22,14 @@ public class BooksController : Controller
 {
     private readonly CreateBookCommand _createBookCommand;
     private readonly DeleteBookCommand _deleteBookCommand;
+    private readonly DeleteBookCopyCommand _deleteBookCopyCommand;
+    private readonly DeleteBookCopyReadingHistoryCommand _deleteBookCopyReadingHistoryCommand;
     private readonly GetAllBooksQuery _getAllBooksQuery;
     private readonly GetBookByIdQuery _getBookByIdQuery;
     private readonly GetBookByCopyIdQuery _getBookByCopyIdQuery;
     private readonly GetBookCopyReadingHistoryByCopyIdQuery _getBookCopyReadingHistoryByCopyIdQuery;
     private readonly GetBookHistoryByIdQuery _getBookHistoryByIdQuery;
+    private readonly BookCopyValidatorQuery _bookCopyValidatorQuery;
     private readonly SoftDeleteBookCommand _softDeleteBookCommand;
     private readonly EditBookCommand _editBookCommand;
     private readonly ReturnBookCommand _returnBookCommand;
@@ -42,9 +45,12 @@ public class BooksController : Controller
         GetBookByCopyIdQuery getBookByCopyIdQuery,
         GetBookCopyReadingHistoryByCopyIdQuery getBookCopyReadingHistoryByCopyIdQuery,
         GetBookHistoryByIdQuery getBookHistoryByIdQuery,
+        BookCopyValidatorQuery bookCopyValidatorQuery,
         CreateBookCommand createBookCommand,
         EditBookCommand editBookCommand,
         DeleteBookCommand deleteBookCommand,
+        DeleteBookCopyCommand deleteBookCopyCommand,
+        DeleteBookCopyReadingHistoryCommand deleteBookCopyReadingHistoryCommand,
         SoftDeleteBookCommand softDeleteBookCommand,
         ReturnBookCommand returnBookCommand,
         TakeBookService takeBookService,
@@ -56,9 +62,12 @@ public class BooksController : Controller
         _getBookByCopyIdQuery = getBookByCopyIdQuery;
         _getBookCopyReadingHistoryByCopyIdQuery = getBookCopyReadingHistoryByCopyIdQuery;
         _getBookHistoryByIdQuery = getBookHistoryByIdQuery;
+        _bookCopyValidatorQuery = bookCopyValidatorQuery;
         _createBookCommand = createBookCommand;
         _editBookCommand = editBookCommand;
         _deleteBookCommand = deleteBookCommand;
+        _deleteBookCopyCommand = deleteBookCopyCommand;
+        _deleteBookCopyReadingHistoryCommand = deleteBookCopyReadingHistoryCommand;
         _softDeleteBookCommand = softDeleteBookCommand;
         _returnBookCommand = returnBookCommand;
         _takeBookService = takeBookService;
@@ -105,7 +114,7 @@ public class BooksController : Controller
     /// </summary>
     [RequiresPermission(UserClaimsProvider.CanViewBooks)]
     [HttpGet("copy/{id}")]
-    public async Task<ActionResult<SingleBookResponse>> GetBookByCopyIdAsync([Required][FromRoute] long id)
+    public async Task<ActionResult<SingleBookResponse>> GetBookByCopyIdAsync([Required][FromRoute] long id, [Required][FromQuery] string secretKey)
     {
         var bookId = await _getBookByCopyIdQuery.GetBookIdByCopyIdAsync(id, User.GetTenantId());
 
@@ -117,7 +126,51 @@ public class BooksController : Controller
             });
         }
 
+        var isSecretKeyValid = await _bookCopyValidatorQuery.IsValidSecretKeyAsync(id, secretKey, User.GetTenantId());
+
+        if (!isSecretKeyValid) {
+            return NotFound(new
+            {
+                Message = "Secret key is not valid"
+            });
+        }
+
+
         return await GetBookResponseAsync(bookId);
+    }
+
+
+    /// <summary>
+    ///     Get book with copies by id
+    /// </summary>
+    [RequiresPermission(UserClaimsProvider.CanManageBooks)]
+    [HttpGet("copies/{id}")]
+    public async Task<ActionResult<BookWithCopiesResponse>> GetBookCopiesByIdAsync([Required][FromRoute] long id)
+    {
+        var book = await _getBookByIdQuery.GetByIdAsync(id, User.GetTenantId());
+
+        if (book == null)
+        {
+            return NotFound(new
+            {
+                Message = $"Book with id {id} not found"
+            });
+        }
+
+        var bookCopies = book
+            .Copies
+            .Select(copy => new BookCopyResponse
+            {
+                BookCopyId = copy.Id,
+                SecretKey = copy.SecretKey
+            })
+            .ToList();
+
+        return new BookWithCopiesResponse()
+        {
+            BookTitle = book.Title,
+            BookCopies = bookCopies
+        };
     }
 
     /// <summary>
@@ -245,6 +298,7 @@ public class BooksController : Controller
                 {
                     return new BookHistoryItem
                     {
+                        Id = history.Id,
                         BookCopyId = history.BookCopyId,
                         EmployeeFullName = employeesByIds.FirstOrDefault(x => x.EmployeeId == history.ReaderEmployeeId).FullName,
                         TakenDate = history.TakenAtUtc.ToString("yyyy-MM-dd"),
@@ -295,8 +349,40 @@ public class BooksController : Controller
     [HttpDelete("{id}/hard-delete")]
     public async Task<object> HardDeleteBook([Required][FromRoute] long id)
     {
-        await _deleteBookCommand.DeleteAsync(id, User.GetTenantId());
-        return new { isDeleted = true };
+        return new
+        {
+            isDeleted = await _deleteBookCommand.DeleteAsync(id, User.GetTenantId())
+        };
+    }
+
+    /// <summary>
+    ///     Deletes specific book copy
+    /// </summary>
+    /// <param name="id"></param>
+    [RequiresPermission(UserClaimsProvider.IsBookCopiesHardDeleteAllowed)]
+    [HttpDelete("copy/{id}/hard-delete")]
+    public async Task<object> HardDeleteBookCopy([Required][FromRoute] long id)
+    {
+      
+        return new
+        {
+            isDeleted = await _deleteBookCopyCommand.DeleteAsync(id, User.GetTenantId())
+        };
+    }
+
+    /// <summary>
+    ///     Deletes specific book copy reading history
+    /// </summary>
+    /// <param name="id"></param>
+    [RequiresPermission(UserClaimsProvider.IsBookCopiesReadingHistoryHardDeleteAllowed)]
+    [HttpDelete("history/{id}/hard-delete")]
+    public async Task<object> HardDeleteBookCopyReadingHistory([Required][FromRoute] long id)
+    {
+        
+        return new
+        {
+            isDeleted = await _deleteBookCopyReadingHistoryCommand.DeleteAsync(id, User.GetTenantId())
+        };
     }
 
     /// <summary>
@@ -307,8 +393,10 @@ public class BooksController : Controller
     [HttpDelete("{id}/soft-delete")]
     public async Task<object> SoftDeleteBook([Required][FromRoute] long id)
     {
-        await _softDeleteBookCommand.SoftDeleteAsync(id, User.GetTenantId());
-        return new { isDeleted = true };
+        return new
+        {
+            isDeleted = await _softDeleteBookCommand.SoftDeleteAsync(id, User.GetTenantId())
+        };
     }
 
     private async Task<ActionResult<SingleBookResponse>> GetBookResponseAsync(long id)

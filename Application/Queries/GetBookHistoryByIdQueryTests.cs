@@ -46,19 +46,22 @@ public class GetBookHistoryByIdQueryTests
         {
             Id = 3L,
             BookId = bookId,
-            TenantId = TENANT_ID
+            TenantId = TENANT_ID,
+            SecretKey = "abcd"
         };
         var bookCopy2 = new BookCopy
         {
             Id = 4L,
             BookId = bookId,
-            TenantId = TENANT_ID
+            TenantId = TENANT_ID,
+            SecretKey = "abcd"
         };
         var bookCopy3 = new BookCopy
         {
             Id = 5L,
             BookId = bookId,
-            TenantId = TENANT_ID
+            TenantId = TENANT_ID,
+            SecretKey = "abcd"
         };
 
         var readingHistory1 = new BookCopyReadingHistory

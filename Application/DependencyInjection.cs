@@ -21,12 +21,15 @@ public static class DependencyInjection
         services.AddTransient<CreateBookCommand>();
         services.AddTransient<EditBookCommand>();
         services.AddTransient<DeleteBookCommand>();
+        services.AddTransient<DeleteBookCopyCommand>();
+        services.AddTransient<DeleteBookCopyReadingHistoryCommand>();
         services.AddTransient<SoftDeleteBookCommand>();
         services.AddTransient<GetBookByIdQuery>();
         services.AddTransient<GetBookByCopyIdQuery>();
         services.AddTransient<GetBookHistoryByIdQuery>();
         services.AddTransient<GetAllBooksQuery>();
         services.AddTransient<GetBookCopyReadingHistoryByCopyIdQuery>();
+        services.AddTransient<BookCopyValidatorQuery>();
         services.AddTransient<TakeBookCommand>();
         services.AddTransient<ReturnBookCommand>();
         services.AddTransient<IInnerCircleHttpClient, InnerCircleHttpClient>();

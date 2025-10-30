@@ -10,6 +10,9 @@ namespace Api
         public const string CanViewBooks = "CanViewBooks";
         public const string CanManageBooks = "CanManageBooks";
         public const string IsBooksHardDeleteAllowed = "IsBooksHardDeleteAllowed";
+        public const string IsBookCopiesHardDeleteAllowed = "IsBookCopiesHardDeleteAllowed";
+        public const string IsBookCopiesReadingHistoryHardDeleteAllowed = "IsBookCopiesReadingHistoryHardDeleteAllowed";
+
 
         public Task<List<Claim>> GetUserClaimsAsync(string login)
         {

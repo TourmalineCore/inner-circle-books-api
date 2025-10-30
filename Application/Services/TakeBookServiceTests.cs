@@ -64,7 +64,8 @@ namespace Application.Services
             {
                 Id = 2,
                 BookId = book.Id,
-                TenantId = TENANT_ID
+                TenantId = TENANT_ID,
+                SecretKey = "abcd"
             };
 
             _context.BooksCopies.Add(bookCopy);
@@ -141,7 +142,8 @@ namespace Application.Services
             { 
                 Id = 2,
                 TenantId = TENANT_ID,
-                BookId = book.Id
+                BookId = book.Id,
+                SecretKey = "abcd"
             };
 
             _context.BooksCopies.Add(bookCopy);
