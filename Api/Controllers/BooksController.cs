@@ -298,6 +298,7 @@ public class BooksController : Controller
                 {
                     return new BookHistoryItem
                     {
+                        Id = history.Id,
                         BookCopyId = history.BookCopyId,
                         EmployeeFullName = employeesByIds.FirstOrDefault(x => x.EmployeeId == history.ReaderEmployeeId).FullName,
                         TakenDate = history.TakenAtUtc.ToString("yyyy-MM-dd"),

@@ -74,14 +74,14 @@ Scenario: SecretKey is not valid
     When method GET
     Then status 404
 
-    # Cleanup: Delete the book (hard delete)
-    And path 'api/books', bookId, 'hard-delete'
+    # Cleanup: Delete the book copy (hard delete)
+    Given path 'api/books/copy', bookCopyId, 'hard-delete'
     When method DELETE
     Then status 200
     And match response == { isDeleted: true }
 
-    # Cleanup: Delete the book copy (hard delete)
-    Given path 'api/books/copy', bookCopyId, 'hard-delete'
+    # Cleanup: Delete the book (hard delete)
+    And path 'api/books', bookId, 'hard-delete'
     When method DELETE
     Then status 200
     And match response == { isDeleted: true }

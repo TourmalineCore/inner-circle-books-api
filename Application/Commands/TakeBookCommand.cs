@@ -43,7 +43,5 @@ public class TakeBookCommand
 
         await _context.BooksCopiesReadingHistory.AddAsync(bookCopyReadingHistory);
         await _context.SaveChangesAsync();
-
-        return bookCopyReadingHistory.Id;
     }
 }

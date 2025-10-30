@@ -9,6 +9,8 @@ public class BookHistoryResponse
 
 public class BookHistoryItem
 {
+    public long Id { get; set; }
+
     public long BookCopyId { get; set; }
 
     public string EmployeeFullName { get; set; }
