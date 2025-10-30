@@ -83,6 +83,8 @@ Scenario: Take and return book flow
     """
     When method POST
     Then status 200
+    
+    * def newBookCopyReadingHistoryId = response.newBookCopyReadingHistoryId
 
     # Check that book has one reader
     And path 'api/books', newBookId
@@ -150,6 +152,12 @@ Scenario: Take and return book flow
 
     # Cleanup: Delete the book (hard delete)
     And path 'api/books', newBookId, 'hard-delete'
+    When method DELETE
+    Then status 200
+    And match response == { isDeleted: true }
+    
+    # Cleanup: Delete the book copy reading history (hard delete)
+    And path 'api/books/history', newBookCopyReadingHistoryId, 'hard-delete'
     When method DELETE
     Then status 200
     And match response == { isDeleted: true }
