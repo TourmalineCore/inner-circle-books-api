@@ -20,7 +20,7 @@ public class TakeBookCommand
         _context = context;
     }
 
-    public async Task<long> TakeAsync(TakeBookCommandParams takeBookCommandParams, Employee employee, long tenantId)
+    public async Task TakeAsync(TakeBookCommandParams takeBookCommandParams, Employee employee, long tenantId)
     {
         var bookCopyExists = await _context.BooksCopies
             .AnyAsync(x => x.Id == takeBookCommandParams.BookCopyId);
