@@ -297,9 +297,9 @@ public class BooksController : Controller
                     {
                         BookCopyId = history.BookCopyId,
                         EmployeeFullName = employeesByIds.FirstOrDefault(x => x.EmployeeId == history.ReaderEmployeeId).FullName,
-                        TakenDate = history.TakenAtUtc.ToString("dd.MM.yyyy"),
-                        ScheduledReturnDate = history.ScheduledReturnDate.ToString("dd.MM.yyyy"),
-                        ActualReturnedDate = history.ActualReturnedAtUtc?.ToString("dd.MM.yyyy"),
+                        TakenDate = history.TakenAtUtc.ToString("yyyy-MM-dd"),
+                        ScheduledReturnDate = history.ScheduledReturnDate.ToString("yyyy-MM-dd"),
+                        ActualReturnedDate = history.ActualReturnedAtUtc?.ToString("yyyy-MM-dd"),
                         ProgressOfReading = history.ProgressOfReading?.ToString()
                     };
                 })
