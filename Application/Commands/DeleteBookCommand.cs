@@ -11,17 +11,21 @@ public class DeleteBookCommand
         _context = context;
     }
 
-    public async Task DeleteAsync(long id, long tenantId)
+    public async Task<bool> DeleteAsync(long id, long tenantId)
     {
         var book = await _context.Books
             .Where(x => x.TenantId == tenantId)
             .Where(x => x.Id == id)
             .SingleOrDefaultAsync();
 
-        if (book != null)
+        if (book == null)
         {
-            _context.Books.Remove(book);
-            await _context.SaveChangesAsync();
+            return false;
         }
+
+        _context.Books.Remove(book);
+        await _context.SaveChangesAsync();
+
+        return true;
     }
 }

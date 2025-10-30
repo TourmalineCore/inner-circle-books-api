@@ -11,17 +11,24 @@ public class DeleteBookCopyCommand
         _context = context;
     }
 
-    public async Task DeleteAsync(long id, long tenantId)
+    public async Task<bool> DeleteAsync(long id, long tenantId)
     {
         var bookCopy = await _context.BooksCopies
             .Where(x => x.TenantId == tenantId)
             .Where(x => x.Id == id)
             .SingleOrDefaultAsync();
 
-        if (bookCopy != null)
+        if (bookCopy == null)
         {
-            _context.BooksCopies.Remove(bookCopy);
-            await _context.SaveChangesAsync();
+            return false;
         }
+
+        _context
+            .BooksCopies
+            .Remove(bookCopy);
+
+        await _context.SaveChangesAsync();
+
+        return true;
     }
 }

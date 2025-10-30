@@ -348,8 +348,10 @@ public class BooksController : Controller
     [HttpDelete("{id}/hard-delete")]
     public async Task<object> HardDeleteBook([Required][FromRoute] long id)
     {
-        await _deleteBookCommand.DeleteAsync(id, User.GetTenantId());
-        return new { isDeleted = true };
+        return new
+        {
+            isDeleted = await _deleteBookCommand.DeleteAsync(id, User.GetTenantId())
+        };
     }
 
     /// <summary>
@@ -360,8 +362,11 @@ public class BooksController : Controller
     [HttpDelete("copy/{id}/hard-delete")]
     public async Task<object> HardDeleteBookCopy([Required][FromRoute] long id)
     {
-        await _deleteBookCopyCommand.DeleteAsync(id, User.GetTenantId());
-        return new { isDeleted = true };
+      
+        return new
+        {
+            isDeleted = await _deleteBookCopyCommand.DeleteAsync(id, User.GetTenantId())
+        };
     }
 
     /// <summary>
@@ -372,8 +377,11 @@ public class BooksController : Controller
     [HttpDelete("history/{id}/hard-delete")]
     public async Task<object> HardDeleteBookCopyReadingHistory([Required][FromRoute] long id)
     {
-        await _deleteBookCopyReadingHistoryCommand.DeleteAsync(id, User.GetTenantId());
-        return new { isDeleted = true };
+        
+        return new
+        {
+            isDeleted = await _deleteBookCopyReadingHistoryCommand.DeleteAsync(id, User.GetTenantId())
+        };
     }
 
     /// <summary>
@@ -384,8 +392,10 @@ public class BooksController : Controller
     [HttpDelete("{id}/soft-delete")]
     public async Task<object> SoftDeleteBook([Required][FromRoute] long id)
     {
-        await _softDeleteBookCommand.SoftDeleteAsync(id, User.GetTenantId());
-        return new { isDeleted = true };
+        return new
+        {
+            isDeleted = await _softDeleteBookCommand.SoftDeleteAsync(id, User.GetTenantId())
+        };
     }
 
     private async Task<ActionResult<SingleBookResponse>> GetBookResponseAsync(long id)
