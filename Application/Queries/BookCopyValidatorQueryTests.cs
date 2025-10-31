@@ -42,7 +42,7 @@ public class BookCopyValidatorQueryTests
     }
 
     [Fact]
-    public async Task IsValidSecretKeyAsync_ShouldReturnFlaseIfSecretKeyIsNotValid()
+    public async Task IsValidSecretKeyAsync_ShouldReturnFalseIfSecretKeyIsNotValid()
     {
         var notValidSecretKey = "eewf";
 
