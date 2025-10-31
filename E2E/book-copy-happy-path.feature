@@ -69,6 +69,15 @@ Scenario: Happy Path
     * def bookCopyId = response.bookCopies[0].bookCopyId
     * def secretKey = response.bookCopies[0].secretKey
 
+    # Get book copy by bookCopyId
+    And path 'api/books/copy', bookCopyId
+    And param secretKey = secretKey
+    When method GET
+    Then status 200
+    And match response.title == randomName
+    And match response.annotation == 'Test annotation'
+    And match response.language == 'en'
+
     # Cleanup: Delete the book (hard delete)
     And path 'api/books', bookId, 'hard-delete'
     When method DELETE
