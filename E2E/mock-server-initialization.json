@@ -1,0 +1,69 @@
+[
+  {
+    "httpRequest": {
+      "method": "POST",
+      "path": "/auth/login"
+    },
+    "httpResponse": {
+      "statusCode": 200,
+      "body": "{\"accessToken\": { \"value\": \"ew0KICAibmFtZUlkZW50aWZpZXIiOiAibWFpbEBtYWlsLnJ1IiwNCiAgImNvcnBvcmF0ZUVtYWlsIjogIm1haWxAbWFpbC5ydSIsDQogICJ0ZW5hbnRJZCI6ICIxIiwNCiAgImFjY291bnRJZCI6ICIzIiwNCiAgImVtcGxveWVlSWQiOiAiMiIsDQogICJwZXJtaXNzaW9ucyI6IFsNCiAgICAiQ2FuVmlld0Jvb2tzIiwNCiAgICAiQ2FuTWFuYWdlQm9va3MiLA0KICAgICJJc0Jvb2tzSGFyZERlbGV0ZUFsbG93ZWQiDQogIF19\" }}",
+      "headers": {
+        "Content-Type": [ "application/json" ]
+      }
+    }
+  },
+  {
+    "httpRequest": {
+      "method": "POST",
+      "path": "/internal/get-employees-by-ids",
+      "body": {
+        "type": "JSON",
+        "json": {
+          "employeesIds": [2]
+        }
+      }
+    },
+    "httpResponse": {
+      "statusCode": 200,
+      "body": "{ \"employees\": [ { \"employeeId\": 2, \"fullName\": \"Name Name Name\" } ] }",
+      "headers": {
+        "Content-Type": ["application/json"]
+      }
+    }
+  },
+  {
+    "httpRequest": {
+      "method": "POST",
+      "path": "/internal/get-employees-by-ids",
+      "body": {
+        "type": "JSON",
+        "json": {
+          "employeesIds": []
+        }
+      }
+    },
+    "httpResponse": {
+      "statusCode": 200,
+      "body": "{ \"employees\": [] }",
+      "headers": {
+        "Content-Type": ["application/json"]
+      }
+    }
+  },
+  {
+    "httpRequest": {
+      "method": "GET",
+      "path" : "/internal/get-employee",
+      "queryStringParameters" : {
+        "corporateEmail" : [ "mail@mail.ru" ]
+      }
+    },
+    "httpResponse": {
+      "statusCode": 200,
+      "body": "{ \"id\": 2, \"fullName\": \"Name Name Name\", \"corporateEmail\": \"mail@mail.ru\", \"tenantId\": 1 }",
+      "headers": {
+        "Content-Type": ["application/json"]
+      }
+    }
+  }
+]

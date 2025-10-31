@@ -1,3 +1,5 @@
+using Core;
+
 namespace Api.Responses;
 
 public class SingleBookResponse
@@ -14,5 +16,7 @@ public class SingleBookResponse
 
     public string CoverUrl { get; set; }
 
-    public List<long> CopiesIds { get; set; }
+    public List<long> BookCopiesIds { get; set; }
+
+    public List<EmployeeWhoReadsNow> EmployeesWhoReadNow { get; set; }
 }

@@ -1,94 +1,101 @@
 services:
 
-  books-db:
+  inner-circle-books-api-db:
     image: postgres:14
-    container_name: books-db
-    profiles: ['MockForDevelopment', 'MockForPullRequest', 'db-only']
+    container_name: inner-circle-books-api-db
+    profiles:
+      - DbOnly
+      - MockForDevelopment
+      - MockForTests
+      - MockForPullRequest
     environment:
-      POSTGRES_DB: books-db
+      POSTGRES_DB: inner-circle-books-api-db
       POSTGRES_USER: postgres
       POSTGRES_PASSWORD: postgres
     ports:
-      - 10011:5432
+      - 7505:5432
     healthcheck:
       test: ["CMD-SHELL", "pg_isready -U postgres"]
       interval: 10s
       timeout: 5s
       retries: 5
     networks:
-      - books-network
+      - inner-circle-books-api-network
 
-  books-api:
-    container_name: books-api
-    profiles: ['default']
+  inner-circle-books-api:
+    container_name: inner-circle-books-api
+    profiles:
+      - MockForTests
+      - MockForPullRequest
     depends_on:
-      books-db:
+      inner-circle-books-api-db:
         condition: service_healthy
+      inner-circle-books-api-mock-server:
+        condition: service_started
     build:
-      dockerfile: Dockerfile
+      dockerfile: ./Dockerfile
       context: .
-    ports:
-      - 10012:8080
-    networks:
-      - books-network
-
-  books-api-for-e2e:
-    container_name: 'books-api-for-e2e'
-    profiles: ['MockForPullRequest']
-    extends:
-      service: books-api
+      args:
+        EXCLUDE_UNIT_TESTS_FROM_BUILD: "true"
     environment:
       - ASPNETCORE_ENVIRONMENT=MockForPullRequest
-      - ASPNETCORE_HTTP_PORTS=80
+    ports:
+      - 6505:80
+    networks:
+      - inner-circle-books-api-network
   
-  books-api-for-docker-run:
-    container_name: 'books-api-for-docker-run'
-    profiles: ['MockForDevelopment']
-    extends:
-      service: books-api
-    environment:
-      - ASPNETCORE_ENVIRONMENT=MockForDevelopment
-      - ConnectionStrings__DefaultConnection=User ID=postgres;Password=postgres;Host=books-db;port=5432;Database=books-db
-
-  booksMockServer:
-    container_name: 'booksMockServer'
-    profiles: ['MockForPullRequest']
+  inner-circle-books-api-mock-server:
+    container_name: 'inner-circle-books-api-mock-server'
+    profiles:
+      - MockForDevelopment
+      - MockForTests
+      - MockForPullRequest
     image: mockserver/mockserver:5.15.0
     command: -logLevel INFO
     ports:
-      - 1080:1080
+      - 8505:1080
     volumes:
-      - ./initializer.json:/config/initializer.json
+      - ./e2e/mock-server-initialization.json:/config/mock-server-initialization.json
     environment:
-      MOCKSERVER_INITIALIZATION_JSON_PATH: /config/initializer.json
+      SERVER_PORT: 1080
+      MOCKSERVER_INITIALIZATION_JSON_PATH: /config/mock-server-initialization.json
     networks:
-      - books-network
-
-  books-karate-tests:
-    container_name: 'books-karate-tests'
-    profiles: ['MockForPullRequest']
+      - inner-circle-books-api-network
+      
+  inner-circle-books-api-karate-tests:
+    container_name: 'inner-circle-books-api-karate-tests'
+    profiles:
+      - MockForPullRequest
     build:
-      dockerfile: KarateDockerfile
+      dockerfile: ./e2e/KarateDockerfile
       context: .
+    # service_started is not what we need, we need deps to be healthy and ready, this needs to be implemented in api and mock-server first 
     depends_on:
-      - books-api-for-e2e
-      - booksMockServer
+      inner-circle-books-api:
+        condition: service_started
+      inner-circle-books-api-mock-server:
+        condition: service_started
+    # restart twice in case of not ready db or network failures
+    restart: on-failure:2
     command: ["karate", "/karate"]
     volumes:
       - .:/karate
     environment:
-      AUTH_API_ROOT_URL: "http://booksMockServer:1080"
-      API_ROOT_URL: "http://books-api-for-e2e"
+      # here the port is 1080 because it needs to be an internal port, not an external which is 8505 in this case
+      AUTH_API_ROOT_URL: "http://inner-circle-books-api-mock-server:1080"
+      API_ROOT_URL: "http://inner-circle-books-api"
       SHOULD_USE_FAKE_EXTERNAL_DEPENDENCIES: "true"
     networks:
-      - books-network
+      - inner-circle-books-api-network
 
   production-karate-tests:
     container_name: 'production-karate-tests'
     profiles: ['production-e2e-tests']
     build:
-      dockerfile: KarateDockerfile
+      dockerfile: ./e2e/KarateDockerfile
       context: .
+    # restart twice in case of not ready db or network failures
+    restart: on-failure:2
     command: ["karate", "/karate"]
     volumes:
       - .:/karate
@@ -100,5 +107,4 @@ services:
       AUTH_PASSWORD: ${AUTH_PASSWORD}
 
 networks:
-  books-network:
-  
+  inner-circle-books-api-network:

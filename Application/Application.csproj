@@ -1,4 +1,4 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
     <TargetFramework>net8.0</TargetFramework>
@@ -6,30 +6,35 @@
     <Nullable>enable</Nullable>
   </PropertyGroup>
 
+  <!-- Condition to exclude tests related packages -->
+  <ItemGroup Condition="'$(EXCLUDE_UNIT_TESTS_FROM_BUILD)' != 'false'">
+    <PackageReference Include="xunit" Version="2.9.0" />
+	<PackageReference Include="xunit.runner.visualstudio" Version="2.8.2">
+	  <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+	  <PrivateAssets>all</PrivateAssets>
+	</PackageReference>
+	<PackageReference Include="Testcontainers.PostgreSql" Version="4.8.0" />
+    <PackageReference Include="Moq" Version="4.20.70" />
+	<PackageReference Include="Moq.EntityFrameworkCore" Version="8.0.1.2" />
+	<PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.11.0" />
+	<PackageReference Include="Microsoft.EntityFrameworkCore.InMemory" Version="8.0.8" />
+  </ItemGroup>
+
   <ItemGroup>
-	  <PackageReference Include="Microsoft.EntityFrameworkCore.InMemory" Version="8.0.8" />
-	  <PackageReference Include="Microsoft.EntityFrameworkCore.Tools" Version="8.0.4">
-	    <PrivateAssets>all</PrivateAssets>
-	    <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
-	  </PackageReference>
-	  <PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.11.0" />
-	  <PackageReference Include="Moq" Version="4.20.70" />
-	  <PackageReference Include="Moq.EntityFrameworkCore" Version="8.0.1.2" />
-	  <PackageReference Include="Serilog" Version="3.1.1" />
-	  <PackageReference Include="Serilog.Extensions.Hosting" Version="8.0.0" />
-	  <PackageReference Include="xunit" Version="2.9.0" />
-	  <PackageReference Include="xunit.runner.visualstudio" Version="2.8.2">
-		  <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
-		  <PrivateAssets>all</PrivateAssets>
-	  </PackageReference>
-	  <PackageReference Include="coverlet.collector" Version="6.0.2">
-		  <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
-		  <PrivateAssets>all</PrivateAssets>
-	  </PackageReference>
-	  <PackageReference Include="Serilog" Version="4.0.1" />
-      <PackageReference Include="Serilog.Extensions.Hosting" Version="8.0.0" />
-	  <PackageReference Include="Microsoft.Extensions.Configuration" Version="8.0.0" />
-	  <PackageReference Include="Npgsql.EntityFrameworkCore.PostgreSQL" Version="8.0.4" />
+	<PackageReference Include="Microsoft.EntityFrameworkCore.Tools" Version="8.0.4">
+	  <PrivateAssets>all</PrivateAssets>
+	  <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+	</PackageReference>
+	<PackageReference Include="coverlet.collector" Version="6.0.2">
+		<IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+		<PrivateAssets>all</PrivateAssets>
+	</PackageReference>
+	<PackageReference Include="Serilog" Version="4.0.1" />
+	<PackageReference Include="Serilog.Extensions.Hosting" Version="8.0.0" />
+	<PackageReference Include="Microsoft.Extensions.Configuration" Version="8.0.0" />
+	<PackageReference Include="Npgsql.EntityFrameworkCore.PostgreSQL" Version="8.0.4" />
+	<PackageReference Include="Microsoft.AspNetCore.Http" Version="2.3.0" />
+	<PackageReference Include="TourmalineCore.AspNetCore.JwtAuthentication.Core" Version="0.3.4" />
   </ItemGroup>
 
   <ItemGroup>

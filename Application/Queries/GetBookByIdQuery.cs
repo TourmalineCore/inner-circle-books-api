@@ -1,3 +1,4 @@
+using Core;
 using Core.Entities;
 using Microsoft.EntityFrameworkCore;
 
@@ -19,5 +20,21 @@ public class GetBookByIdQuery
             .Where(x => x.TenantId == tenantId)
             .Include(x => x.Copies)
             .SingleAsync(x => x.Id == id);
+    }
+
+    public Task<List<EmployeeWhoReadsNow>> GetEmployeesWhoReadNowAsync(List<long> copiesIds, long tenantId)
+    {
+        return _context
+            .BooksCopiesReadingHistory
+            .Where(x => x.TenantId == tenantId)
+            .Where(x => copiesIds.Contains(x.BookCopyId))
+            .Where(x => x.ActualReturnedAtUtc == null)
+            .Select(x => new EmployeeWhoReadsNow
+                {
+                    EmployeeId = x.ReaderEmployeeId,
+                    BookCopyId = x.BookCopyId,
+                }
+            )
+            .ToListAsync();
     }
 }

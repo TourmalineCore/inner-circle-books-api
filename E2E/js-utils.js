@@ -1,4 +1,11 @@
 function fn() {
+    function decodeString(string) {
+        var Bytes = Java.type('java.util.Base64');
+        var decodedBytes = Bytes.getDecoder().decode(string);
+        
+        return new java.lang.String(decodedBytes);
+    }
+
     return {
         getAuthHeaders: function (tokenValue) {
             return {
@@ -27,5 +34,28 @@ function fn() {
 
             return System.getenv(variable);
         },
+
+        getDateTwoMonthsLaterThanCurrent: function () {
+            const date = new Date();
+            date.setMonth(date.getMonth() + 3);
+
+            return date.toISOString().split('T')[0];
+        },
+
+        getEmployeeIdFromToken: function (tokenValue) {
+            var decodedString;
+
+            if (tokenValue.includes('.')) {
+                var payload = tokenValue.split('.')[1];
+
+                decodedString = decodeString(payload);
+            } else {
+                decodedString = decodeString(tokenValue);
+            }
+
+            var tokenData = JSON.parse(decodedString);
+
+            return tokenData.employeeId;
+        }
     }
 }

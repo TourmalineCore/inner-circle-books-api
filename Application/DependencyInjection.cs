@@ -1,5 +1,6 @@
 using Application.Commands;
 using Application.Queries;
+using Application.Services;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -22,6 +23,14 @@ public static class DependencyInjection
         services.AddTransient<DeleteBookCommand>();
         services.AddTransient<SoftDeleteBookCommand>();
         services.AddTransient<GetBookByIdQuery>();
+        services.AddTransient<GetBookByCopyIdQuery>();
+        services.AddTransient<GetBookHistoryByIdQuery>();
         services.AddTransient<GetAllBooksQuery>();
+        services.AddTransient<GetBookCopyReadingHistoryByCopyIdQuery>();
+        services.AddTransient<BookCopyValidatorQuery>();
+        services.AddTransient<TakeBookCommand>();
+        services.AddTransient<ReturnBookCommand>();
+        services.AddTransient<IInnerCircleHttpClient, InnerCircleHttpClient>();
+        services.AddTransient<TakeBookService>();
     }
 }

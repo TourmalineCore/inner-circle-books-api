@@ -45,7 +45,9 @@ public class DeleteBookCommandTests
 
         await _command.DeleteAsync(book.Id, book.TenantId);
 
-        var isBookExistInDbSet = await _context.Books.AnyAsync(x => x.Id == book.Id);
+        var isBookExistInDbSet = await _context.Books
+            .Where(x => x.TenantId == TENANT_ID)
+            .AnyAsync(x => x.Id == book.Id);
         Assert.False(isBookExistInDbSet);
     }
 }

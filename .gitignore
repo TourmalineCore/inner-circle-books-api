@@ -9,3 +9,5 @@ karate.jar
 target/
 s3-data/
 connect-plugins/
+
+target/

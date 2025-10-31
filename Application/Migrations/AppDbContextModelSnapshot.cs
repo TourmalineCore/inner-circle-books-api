@@ -74,11 +74,54 @@ namespace Application.Migrations
                     b.Property<long>("BookId")
                         .HasColumnType("bigint");
 
+                    b.Property<string>("SecretKey")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<long>("TenantId")
+                        .HasColumnType("bigint");
+
                     b.HasKey("Id");
 
                     b.HasIndex("BookId");
 
                     b.ToTable("BooksCopies");
+                });
+
+            modelBuilder.Entity("Core.Entities.BookCopyReadingHistory", b =>
+                {
+                    b.Property<long>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("bigint");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<long>("Id"));
+
+                    b.Property<DateTime?>("ActualReturnedAtUtc")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<long>("BookCopyId")
+                        .HasColumnType("bigint");
+
+                    b.Property<string>("ProgressOfReading")
+                        .HasColumnType("text");
+
+                    b.Property<long>("ReaderEmployeeId")
+                        .HasColumnType("bigint");
+
+                    b.Property<DateOnly>("ScheduledReturnDate")
+                        .HasColumnType("date");
+
+                    b.Property<DateTime>("TakenAtUtc")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<long>("TenantId")
+                        .HasColumnType("bigint");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("BookCopyId");
+
+                    b.ToTable("BooksCopiesReadingHistory");
                 });
 
             modelBuilder.Entity("Core.Entities.BookCopy", b =>
@@ -92,9 +135,25 @@ namespace Application.Migrations
                     b.Navigation("Book");
                 });
 
+            modelBuilder.Entity("Core.Entities.BookCopyReadingHistory", b =>
+                {
+                    b.HasOne("Core.Entities.BookCopy", "BookCopy")
+                        .WithMany("ReadingHistoryList")
+                        .HasForeignKey("BookCopyId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("BookCopy");
+                });
+
             modelBuilder.Entity("Core.Entities.Book", b =>
                 {
                     b.Navigation("Copies");
+                });
+
+            modelBuilder.Entity("Core.Entities.BookCopy", b =>
+                {
+                    b.Navigation("ReadingHistoryList");
                 });
 #pragma warning restore 612, 618
         }

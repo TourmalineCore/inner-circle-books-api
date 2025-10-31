@@ -65,6 +65,8 @@ builder.Services.AddSwaggerGen(c =>
 );
 var authenticationOptions = configuration.GetSection(nameof(AuthenticationOptions)).Get<AuthenticationOptions>();
 builder.Services.AddJwtAuthentication(authenticationOptions).WithUserClaimsProvider<UserClaimsProvider>(UserClaimsProvider.PermissionClaimType);
+builder.Services.Configure<InnerCircleServiceUrls>(configuration.GetSection(nameof(InnerCircleServiceUrls)));
+builder.Services.AddHttpContextAccessor();
 
 var app = builder.Build();
 

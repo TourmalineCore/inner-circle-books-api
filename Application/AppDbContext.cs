@@ -20,6 +20,8 @@ public class AppDbContext : DbContext
 
     public virtual DbSet<BookCopy> BooksCopies { get; set; }
 
+    public virtual DbSet<BookCopyReadingHistory> BooksCopiesReadingHistory { get; set; }
+
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         modelBuilder.ApplyConfigurationsFromAssembly(GetType().Assembly);
