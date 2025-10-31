@@ -147,21 +147,7 @@ Scenario: Take and return book flow
     And assert response.list.length == 1
     And assert response.list[0].employeeFullName == readerFullName
     And assert response.list[0].bookCopyId == 1
-
-    * def bookCopyReadingHistoryId = response.list[0].id
     
-    # Cleanup: Delete the book copy reading history (hard delete)
-    And path 'api/books/history', bookCopyReadingHistoryId, 'hard-delete'
-    When method DELETE
-    Then status 200
-    And match response == { isDeleted: true }
-
-    # Cleanup: Delete the book copy (hard delete)
-    Given path 'api/books/copy', bookCopyId, 'hard-delete'
-    When method DELETE
-    Then status 200
-    And match response == { isDeleted: true }
-
     # Cleanup: Delete the book (hard delete)
     And path 'api/books', newBookId, 'hard-delete'
     When method DELETE
