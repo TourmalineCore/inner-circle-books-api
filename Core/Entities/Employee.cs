@@ -2,11 +2,11 @@ namespace Core;
 
 public class Employee
 {
-    public long Id { get; set; }
+  public long Id { get; set; }
 
-    public string FullName { get; set; }
+  public string FullName { get; set; }
 
-    public string CorporateEmail { get; set; }
+  public string CorporateEmail { get; set; }
 
-    public long TenantId { get; set; }
+  public long TenantId { get; set; }
 }

@@ -7,72 +7,71 @@ namespace Application.Commands;
 
 public class TakeBookCommandTests
 {
-    private const long TENANT_ID = 1;
-    private readonly TakeBookCommand _command;
-    private readonly AppDbContext _context;
+  private const long TENANT_ID = 1;
+  private readonly TakeBookCommand _command;
+  private readonly AppDbContext _context;
 
-    public TakeBookCommandTests()
+  public TakeBookCommandTests()
+  {
+    var options = new DbContextOptionsBuilder<AppDbContext>()
+      .UseInMemoryDatabase("TakeBookCommandBooksDatabase")
+      .Options;
+
+    _context = new AppDbContext(options);
+    _command = new TakeBookCommand(_context);
+  }
+
+  [Fact]
+  public async Task TakeAsync_ShouldAddNewBookCopyReadingHistoryToDbSet()
+  {
+    var book = new Book
     {
-        var options = new DbContextOptionsBuilder<AppDbContext>()
-            .UseInMemoryDatabase("TakeBookCommandBooksDatabase")
-            .Options;
+      Id = 1,
+      Title = "Some test book",
+      Annotation = "Test annotation",
+      TenantId = TENANT_ID,
+      CreatedAtUtc = DateTime.UtcNow,
+      Language = Language.en,
+      Authors = new List<Author>()
+    };
 
-        _context = new AppDbContext(options);
+    _context.Books.Add(book);
 
-        _command = new TakeBookCommand(_context);
-    }
+    await _context.SaveChangesAsync();
 
-    [Fact]
-    public async Task TakeAsync_ShouldAddNewBookCopyReadingHistoryToDbSet()
+    var bookCopy = new BookCopy
     {
-        var book = new Book
-        {
-            Id = 1,
-            Title = "Some test book",
-            Annotation = "Test annotation",
-            TenantId = TENANT_ID,
-            CreatedAtUtc = DateTime.UtcNow,
-            Language = Language.en,
-            Authors = new List<Author>()
-        };
+      Id = 1,
+      BookId = book.Id,
+      SecretKey = "abcd"
+    };
 
-        _context.Books.Add(book);
+    _context.BooksCopies.Add(bookCopy);
 
-        await _context.SaveChangesAsync();
+    await _context.SaveChangesAsync();
 
-        var bookCopy = new BookCopy
-        {
-            Id = 1,
-            BookId = book.Id,
-            SecretKey = "abcd"
-        };
+    var takeBookRequest = new TakeBookCommandParams
+    {
+      BookCopyId = 1,
+      ScheduledReturnDate = "2025-11-22"
+    };
 
-        _context.BooksCopies.Add(bookCopy);
+    var employee = new Employee
+    {
+      Id = 1,
+      FullName = "Ivanov Ivan",
+    };
 
-        await _context.SaveChangesAsync();
+    await _command.TakeAsync(takeBookRequest, employee, TENANT_ID);
 
-        var takeBookRequest = new TakeBookCommandParams
-        {
-            BookCopyId = 1,
-            ScheduledReturnDate = "2025-11-22"
-        };
+    var bookCopyReadingHistory = await _context
+      .BooksCopiesReadingHistory
+      .Where(x => x.TenantId == TENANT_ID)
+      .FirstOrDefaultAsync(x => x.BookCopyId == takeBookRequest.BookCopyId && x.ReaderEmployeeId == employee.Id);
 
-        var employee = new Employee
-        {
-            Id = 1,
-            FullName = "Ivanov Ivan",
-        };
-
-        await _command.TakeAsync(takeBookRequest, employee, TENANT_ID);
-
-        var bookCopyReadingHistory = await _context
-            .BooksCopiesReadingHistory
-            .Where(x => x.TenantId == TENANT_ID)
-            .FirstOrDefaultAsync(x => x.BookCopyId == takeBookRequest.BookCopyId && x.ReaderEmployeeId == employee.Id);
-
-        Assert.NotNull(bookCopyReadingHistory);
-        Assert.Equal(takeBookRequest.BookCopyId, bookCopyReadingHistory.BookCopyId);
-        Assert.Equal(employee.Id, bookCopyReadingHistory.ReaderEmployeeId);
-        Assert.Equal(new DateOnly(2025, 11, 22), bookCopyReadingHistory.ScheduledReturnDate);
-    }
+    Assert.NotNull(bookCopyReadingHistory);
+    Assert.Equal(takeBookRequest.BookCopyId, bookCopyReadingHistory.BookCopyId);
+    Assert.Equal(employee.Id, bookCopyReadingHistory.ReaderEmployeeId);
+    Assert.Equal(new DateOnly(2025, 11, 22), bookCopyReadingHistory.ScheduledReturnDate);
+  }
 }

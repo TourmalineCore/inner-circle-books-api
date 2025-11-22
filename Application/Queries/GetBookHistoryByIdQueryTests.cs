@@ -6,104 +6,108 @@ using Xunit;
 
 public class GetBookHistoryByIdQueryTests
 {
-    private const long TENANT_ID = 1;
-    private readonly AppDbContext _context;
-    private readonly GetBookHistoryByIdQuery _query;
+  private const long TENANT_ID = 1;
+  private readonly AppDbContext _context;
+  private readonly GetBookHistoryByIdQuery _query;
 
-    public GetBookHistoryByIdQueryTests()
+  public GetBookHistoryByIdQueryTests()
+  {
+    var options = new DbContextOptionsBuilder<AppDbContext>()
+      .UseInMemoryDatabase("GetBookHistoryByIdQueryBooksDatabase")
+      .Options;
+
+    _context = new AppDbContext(options);
+    _query = new GetBookHistoryByIdQuery(_context);
+  }
+
+  [Fact]
+  public async Task GetByIdAsync_ShouldReturnReadingHistory()
+  {
+    var bookId = 1L;
+
+    var book = new Book
     {
-        var options = new DbContextOptionsBuilder<AppDbContext>()
-            .UseInMemoryDatabase("GetBookHistoryByIdQueryBooksDatabase")
-            .Options;
+      Id = 1,
+      TenantId = TENANT_ID,
+      Title = "Test Book 1",
+      Annotation = "Test annotation 1",
+      Authors = new List<Author>()
+      {
+        new Author()
+        {
+          FullName = "Test Author"
+        }
+      },
+      Language = Language.en,
+      CoverUrl = ""
+    };
 
-        _context = new AppDbContext(options);
-        _query = new GetBookHistoryByIdQuery(_context);
-    }
-
-    [Fact]
-    public async Task GetByIdAsync_ShouldReturnReadingHistory()
+    var bookCopy1 = new BookCopy
     {
-        var bookId = 1L;
+      Id = 3L,
+      BookId = bookId,
+      TenantId = TENANT_ID,
+      SecretKey = "abcd"
+    };
 
-        var book = new Book
-        {
-            Id = 1,
-            TenantId = TENANT_ID,
-            Title = "Test Book 1",
-            Annotation = "Test annotation 1",
-            Authors = new List<Author>()
-            {
-                new Author()
-                {
-                    FullName = "Test Author"
-                }
-            },
-            Language = Language.en,
-            CoverUrl = ""
-        };
+    var bookCopy2 = new BookCopy
+    {
+      Id = 4L,
+      BookId = bookId,
+      TenantId = TENANT_ID,
+      SecretKey = "abcd"
+    };
 
-        var bookCopy1 = new BookCopy
-        {
-            Id = 3L,
-            BookId = bookId,
-            TenantId = TENANT_ID,
-            SecretKey = "abcd"
-        };
-        var bookCopy2 = new BookCopy
-        {
-            Id = 4L,
-            BookId = bookId,
-            TenantId = TENANT_ID,
-            SecretKey = "abcd"
-        };
-        var bookCopy3 = new BookCopy
-        {
-            Id = 5L,
-            BookId = bookId,
-            TenantId = TENANT_ID,
-            SecretKey = "abcd"
-        };
+    var bookCopy3 = new BookCopy
+    {
+      Id = 5L,
+      BookId = bookId,
+      TenantId = TENANT_ID,
+      SecretKey = "abcd"
+    };
 
-        var readingHistory1 = new BookCopyReadingHistory
-        {
-            Id = 1L,
-            BookCopyId = bookCopy1.Id,
-            ReaderEmployeeId = 1L,
-            TakenAtUtc = new DateTime(2025, 1, 1),
-            ScheduledReturnDate = new DateOnly(2025, 2, 1),
-            TenantId = TENANT_ID
-        };
-        var readingHistory2 = new BookCopyReadingHistory
-        {
-            Id = 2L,
-            BookCopyId = bookCopy2.Id,
-            ReaderEmployeeId = 2L,
-            TakenAtUtc = new DateTime(2025, 3, 1),
-            ScheduledReturnDate = new DateOnly(2025, 4, 1),
-            TenantId = TENANT_ID
-        };
-        var readingHistory3 = new BookCopyReadingHistory
-        {
-            Id = 3L,
-            BookCopyId = bookCopy3.Id,
-            ReaderEmployeeId = 3L,
-            TakenAtUtc = new DateTime(2025, 5, 1),
-            ScheduledReturnDate = new DateOnly(2025, 6, 1),
-            TenantId = TENANT_ID
-        };
+    var readingHistory1 = new BookCopyReadingHistory
+    {
+      Id = 1L,
+      BookCopyId = bookCopy1.Id,
+      ReaderEmployeeId = 1L,
+      TakenAtUtc = new DateTime(2025, 1, 1),
+      ScheduledReturnDate = new DateOnly(2025, 2, 1),
+      TenantId = TENANT_ID
+    };
 
-        _context.Books.Add(book);
-        _context.BooksCopies.AddRange(bookCopy1, bookCopy2, bookCopy3);
-        _context.BooksCopiesReadingHistory.AddRange(readingHistory1, readingHistory2, readingHistory3);
-        await _context.SaveChangesAsync();
+    var readingHistory2 = new BookCopyReadingHistory
+    {
+      Id = 2L,
+      BookCopyId = bookCopy2.Id,
+      ReaderEmployeeId = 2L,
+      TakenAtUtc = new DateTime(2025, 3, 1),
+      ScheduledReturnDate = new DateOnly(2025, 4, 1),
+      TenantId = TENANT_ID
+    };
 
-        var (items, totalCount) = await _query.GetByIdAsync(bookId, page: 1, pageSize: 2, TENANT_ID);
+    var readingHistory3 = new BookCopyReadingHistory
+    {
+      Id = 3L,
+      BookCopyId = bookCopy3.Id,
+      ReaderEmployeeId = 3L,
+      TakenAtUtc = new DateTime(2025, 5, 1),
+      ScheduledReturnDate = new DateOnly(2025, 6, 1),
+      TenantId = TENANT_ID
+    };
 
-        Assert.NotEmpty(items);
-        Assert.Equal(2, items.Count);
-        Assert.Equal(3, totalCount);
-        Assert.Contains(items, x => x.BookCopyId == bookCopy3.Id);
-        Assert.Contains(items, x => x.BookCopyId == bookCopy2.Id);
-        Assert.True(items[0].TakenAtUtc > items[1].TakenAtUtc);
-    }
+    _context.Books.Add(book);
+    _context.BooksCopies.AddRange(bookCopy1, bookCopy2, bookCopy3);
+    _context.BooksCopiesReadingHistory.AddRange(readingHistory1, readingHistory2, readingHistory3);
+    await _context.SaveChangesAsync();
+
+    var (items, totalCount) = await _query.GetByIdAsync(bookId, page: 1, pageSize: 2, TENANT_ID);
+
+    Assert.NotEmpty(items);
+    Assert.Equal(2, items.Count);
+    Assert.Equal(3, totalCount);
+    Assert.Contains(items, x => x.BookCopyId == bookCopy3.Id);
+    Assert.Contains(items, x => x.BookCopyId == bookCopy2.Id);
+    Assert.True(items[0].TakenAtUtc > items[1].TakenAtUtc);
+  }
 }

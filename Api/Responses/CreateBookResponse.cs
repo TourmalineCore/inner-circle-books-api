@@ -1,7 +1,6 @@
-namespace Api.Responses
+namespace Api.Responses;
+
+public class CreateBookResponse
 {
-    public class CreateBookResponse
-    {
-        public long NewBookId { get; set; }
-    }
+  public long NewBookId { get; set; }
 }
