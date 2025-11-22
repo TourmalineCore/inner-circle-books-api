@@ -2,5 +2,5 @@ namespace Application;
 
 public class InnerCircleServiceUrls
 {
-    public string EmployeesServiceUrl { get; set; }
+  public string EmployeesServiceUrl { get; set; }
 }

@@ -5,200 +5,217 @@ using Microsoft.EntityFrameworkCore;
 using Testcontainers.PostgreSql;
 using Xunit;
 
-namespace Application.Services
+namespace Application.Services;
+
+public class TakeBookServiceTests : IAsyncLifetime
 {
-    public class TakeBookServiceTests : IAsyncLifetime
+  private const long TENANT_ID = 1;
+  private TakeBookService _service;
+  private AppDbContext _context;
+  private readonly PostgreSqlContainer _postgreSqlContainer;
+
+  public TakeBookServiceTests()
+  {
+    _postgreSqlContainer = new PostgreSqlBuilder().Build();
+  }
+
+  public async Task InitializeAsync()
+  {
+    await _postgreSqlContainer.StartAsync();
+
+    var options = new DbContextOptionsBuilder<AppDbContext>()
+      .UseNpgsql(_postgreSqlContainer.GetConnectionString())
+      .Options;
+
+    _context = new AppDbContext(options);
+    _service = new TakeBookService(_context);
+
+    await _context.Database.MigrateAsync();
+  }
+
+  public async Task DisposeAsync()
+  {
+    await _postgreSqlContainer.DisposeAsync();
+    await _context.DisposeAsync();
+  }
+
+  // Todo: move to karate test?
+  [Fact]
+  public async Task TakeAsync_WhenBookIsAlreadyTaken_ShouldReturnPreviousAndAddNew()
+  {
+    var book = new Book
     {
-        private const long TENANT_ID = 1;
-        private TakeBookService _service;
-        private AppDbContext _context;
-        private readonly PostgreSqlContainer _postgreSqlContainer;
+      Id = 1,
+      Title = "Some test book",
+      Annotation = "Test annotation",
+      TenantId = TENANT_ID,
+      CreatedAtUtc = DateTime.UtcNow,
+      Language = Language.en,
+      Authors = new List<Author>()
+    };
 
-        public TakeBookServiceTests()
-        {
-            _postgreSqlContainer = new PostgreSqlBuilder()
-                .Build();
-        }
+    _context.Books.Add(book);
 
-        public async Task InitializeAsync()
-        {
-            await _postgreSqlContainer.StartAsync();
+    await _context.SaveChangesAsync();
 
-            var options = new DbContextOptionsBuilder<AppDbContext>()
-                .UseNpgsql(_postgreSqlContainer.GetConnectionString())
-                .Options;
+    var bookCopy = new BookCopy
+    {
+      Id = 2,
+      BookId = book.Id,
+      TenantId = TENANT_ID,
+      SecretKey = "abcd"
+    };
 
-            _context = new AppDbContext(options);
+    _context.BooksCopies.Add(bookCopy);
 
-            _service = new TakeBookService(_context);
+    await _context.SaveChangesAsync();
 
-            await _context.Database.MigrateAsync();
-        }
+    var existingReader = new Employee
+    {
+      Id = 2,
+      FullName = "Previous Reader"
+    };
 
-        public async Task DisposeAsync()
-        {
-            await _postgreSqlContainer.DisposeAsync();
-            await _context.DisposeAsync();
-        }
+    var bookCopyReadingHistory = new BookCopyReadingHistory
+    {
+      BookCopyId = 2,
+      ReaderEmployeeId = existingReader.Id,
+      TakenAtUtc = DateTime.UtcNow.AddDays(-10),
+      ScheduledReturnDate = DateOnly.FromDateTime(DateTime.UtcNow.AddDays(5)),
+      ActualReturnedAtUtc = null,
+      TenantId = TENANT_ID
+    };
 
-        // Todo: move to karate test?
-        [Fact]
-        public async Task TakeAsync_WhenBookIsAlreadyTaken_ShouldReturnPreviousAndAddNew()
-        {
-            var book = new Book
-            {
-                Id = 1,
-                Title = "Some test book",
-                Annotation = "Test annotation",
-                TenantId = TENANT_ID,
-                CreatedAtUtc = DateTime.UtcNow,
-                Language = Language.en,
-                Authors = new List<Author>()
-            };
+    _context.BooksCopiesReadingHistory.Add(bookCopyReadingHistory);
 
-            _context.Books.Add(book);
+    await _context.SaveChangesAsync();
 
-            await _context.SaveChangesAsync();
+    var newEmployee = new Employee
+    {
+      Id = 3,
+      FullName = "New Reader"
+    };
 
-            var bookCopy = new BookCopy 
-            {
-                Id = 2,
-                BookId = book.Id,
-                TenantId = TENANT_ID,
-                SecretKey = "abcd"
-            };
+    var takeBookCommandParams = new TakeBookCommandParams
+    {
+      BookCopyId = 2,
+      ScheduledReturnDate = "2025-12-10"
+    };
 
-            _context.BooksCopies.Add(bookCopy);
+    var returnBookCommandParams = new ReturnBookCommandParams
+    {
+      BookCopyId = 2,
+      ProgressOfReading = ProgressOfReading.Unknown,
+      ActualReturnedAtUtc = DateTime.UtcNow
+    };
 
-            await _context.SaveChangesAsync();
+    await _service.TakeAsync(takeBookCommandParams, returnBookCommandParams, newEmployee, TENANT_ID, bookCopyReadingHistory);
 
-            var existingReader = new Employee { Id = 2, FullName = "Previous Reader" };
+    var oldRecord = await _context
+      .BooksCopiesReadingHistory
+      .Where(x => x.TenantId == TENANT_ID)
+      .FirstAsync(x => x.ReaderEmployeeId == existingReader.Id && x.BookCopyId == 2);
 
-            var bookCopyReadingHistory = new BookCopyReadingHistory
-            {
-                BookCopyId = 2,
-                ReaderEmployeeId = existingReader.Id,
-                TakenAtUtc = DateTime.UtcNow.AddDays(-10),
-                ScheduledReturnDate = DateOnly.FromDateTime(DateTime.UtcNow.AddDays(5)),
-                ActualReturnedAtUtc = null,
-                TenantId = TENANT_ID
-            };
+    Assert.NotNull(oldRecord.ActualReturnedAtUtc);
 
-            _context.BooksCopiesReadingHistory.Add(bookCopyReadingHistory);
+    var newRecord = await _context
+      .BooksCopiesReadingHistory
+      .Where(x => x.TenantId == TENANT_ID)
+      .FirstOrDefaultAsync(x => x.ReaderEmployeeId == newEmployee.Id && x.BookCopyId == 2);
 
-            await _context.SaveChangesAsync();
+    Assert.NotNull(newRecord);
+    Assert.Equal(new DateOnly(2025, 12, 10), newRecord.ScheduledReturnDate);
+    Assert.Null(newRecord.ActualReturnedAtUtc);
+  }
 
-            var newEmployee = new Employee { Id = 3, FullName = "New Reader" };
+  [Fact]
+  public async Task TakeAsync_WhenTakeCommandThrowsException_ShouldRollbackAndCallReturn()
+  {
+    var book = new Book
+    {
+      Id = 1,
+      Title = "Some test book",
+      Annotation = "Test annotation",
+      TenantId = TENANT_ID,
+      CreatedAtUtc = DateTime.UtcNow,
+      Language = Language.en,
+      Authors = new List<Author>()
+    };
 
-            var takeBookCommandParams = new TakeBookCommandParams
-            {
-                BookCopyId = 2,
-                ScheduledReturnDate = "2025-12-10"
-            };
+    _context.Books.Add(book);
 
-            var returnBookCommandParams = new ReturnBookCommandParams
-            {
-                BookCopyId = 2,
-                ProgressOfReading = ProgressOfReading.Unknown,
-                ActualReturnedAtUtc = DateTime.UtcNow
-            };
+    await _context.SaveChangesAsync();
 
-            await _service.TakeAsync(takeBookCommandParams, returnBookCommandParams, newEmployee, TENANT_ID, bookCopyReadingHistory);
+    var bookCopy = new BookCopy
+    {
+      Id = 2,
+      TenantId = TENANT_ID,
+      BookId = book.Id,
+      SecretKey = "abcd"
+    };
 
-            var oldRecord = await _context.BooksCopiesReadingHistory
-                .Where(x => x.TenantId == TENANT_ID)
-                .FirstAsync(x => x.ReaderEmployeeId == existingReader.Id && x.BookCopyId == 2);
+    _context.BooksCopies.Add(bookCopy);
 
-            Assert.NotNull(oldRecord.ActualReturnedAtUtc);
+    await _context.SaveChangesAsync();
 
-            var newRecord = await _context.BooksCopiesReadingHistory
-                .Where(x => x.TenantId == TENANT_ID)
-                .FirstOrDefaultAsync(x => x.ReaderEmployeeId == newEmployee.Id && x.BookCopyId == 2);
+    var existingReader = new Employee
+    {
+      Id = 2,
+      FullName = "Previous Reader"
+    };
 
-            Assert.NotNull(newRecord);
-            Assert.Equal(new DateOnly(2025, 12, 10), newRecord.ScheduledReturnDate);
-            Assert.Null(newRecord.ActualReturnedAtUtc);
-        }
+    var bookCopyReadingHistory = new BookCopyReadingHistory
+    {
+      BookCopyId = 2,
+      ReaderEmployeeId = existingReader.Id,
+      TakenAtUtc = DateTime.UtcNow.AddDays(-10),
+      ScheduledReturnDate = DateOnly.FromDateTime(DateTime.UtcNow.AddDays(5)),
+      ActualReturnedAtUtc = null,
+      TenantId = TENANT_ID
+    };
 
-        [Fact]
-        public async Task TakeAsync_WhenTakeCommandThrowsException_ShouldRollbackAndCallReturn()
-        {
-            var book = new Book
-            {
-                Id = 1,
-                Title = "Some test book",
-                Annotation = "Test annotation",
-                TenantId = TENANT_ID,
-                CreatedAtUtc = DateTime.UtcNow,
-                Language = Language.en,
-                Authors = new List<Author>()
-            };
+    _context.BooksCopiesReadingHistory.Add(bookCopyReadingHistory);
 
-            _context.Books.Add(book);
+    await _context.SaveChangesAsync();
 
-            await _context.SaveChangesAsync();
+    var newEmployee = new Employee
+    {
+      Id = 3,
+      FullName = "New Reader"
+    };
 
-            var bookCopy = new BookCopy
-            { 
-                Id = 2,
-                TenantId = TENANT_ID,
-                BookId = book.Id,
-                SecretKey = "abcd"
-            };
+    var takeBookCommandParams = new TakeBookCommandParams
+    {
+      // Sending a non-existent BookCopyId so that takeBookCommand throws an exception and we can verify that the transaction has been rolled back.
+      BookCopyId = 3,
+      ScheduledReturnDate = "2025-12-10"
+    };
 
-            _context.BooksCopies.Add(bookCopy);
+    var returnBookCommandParams = new ReturnBookCommandParams
+    {
+      BookCopyId = 2,
+      ProgressOfReading = ProgressOfReading.Unknown,
+      ActualReturnedAtUtc = DateTime.UtcNow
+    };
 
-            await _context.SaveChangesAsync();
+    await _service.TakeAsync(takeBookCommandParams, returnBookCommandParams, newEmployee, TENANT_ID, bookCopyReadingHistory);
 
-            var existingReader = new Employee { Id = 2, FullName = "Previous Reader" };
+    // Without this, EF returns data from the cache of tracked entities, rather than from the database.
+    // This method clears it, after which fresh data is returned from the database.
+    _context.ChangeTracker.Clear();
 
-            var bookCopyReadingHistory = new BookCopyReadingHistory
-            {
-                BookCopyId = 2,
-                ReaderEmployeeId = existingReader.Id,
-                TakenAtUtc = DateTime.UtcNow.AddDays(-10),
-                ScheduledReturnDate = DateOnly.FromDateTime(DateTime.UtcNow.AddDays(5)),
-                ActualReturnedAtUtc = null,
-                TenantId = TENANT_ID
-            };
+    var oldRecord = await _context
+      .BooksCopiesReadingHistory
+      .Where(x => x.TenantId == TENANT_ID)
+      .FirstAsync(x => x.ReaderEmployeeId == existingReader.Id && x.BookCopyId == 2);
 
-            _context.BooksCopiesReadingHistory.Add(bookCopyReadingHistory);
+    Assert.Null(oldRecord.ActualReturnedAtUtc);
 
-            await _context.SaveChangesAsync();
+    var newRecord = await _context
+      .BooksCopiesReadingHistory
+      .Where(x => x.TenantId == TENANT_ID)
+      .FirstOrDefaultAsync(x => x.ReaderEmployeeId == newEmployee.Id && x.BookCopyId == 3);
 
-            var newEmployee = new Employee { Id = 3, FullName = "New Reader" };
-
-            var takeBookCommandParams = new TakeBookCommandParams
-            {
-                // Sending a non-existent BookCopyId so that takeBookCommand throws an exception and we can verify that the transaction has been rolled back.
-                BookCopyId = 3,
-                ScheduledReturnDate = "2025-12-10"
-            };
-
-            var returnBookCommandParams = new ReturnBookCommandParams
-            {
-                BookCopyId = 2,
-                ProgressOfReading = ProgressOfReading.Unknown,
-                ActualReturnedAtUtc = DateTime.UtcNow
-            };
-
-            await _service.TakeAsync(takeBookCommandParams, returnBookCommandParams, newEmployee, TENANT_ID, bookCopyReadingHistory);
-
-            // Without this, EF returns data from the cache of tracked entities, rather than from the database.
-            // This method clears it, after which fresh data is returned from the database.
-            _context.ChangeTracker.Clear();
-
-            var oldRecord = await _context.BooksCopiesReadingHistory
-                .Where(x => x.TenantId == TENANT_ID)
-                .FirstAsync(x => x.ReaderEmployeeId == existingReader.Id && x.BookCopyId == 2);
-
-            Assert.Null(oldRecord.ActualReturnedAtUtc);
-
-            var newRecord = await _context.BooksCopiesReadingHistory
-                .Where(x => x.TenantId == TENANT_ID)
-                .FirstOrDefaultAsync(x => x.ReaderEmployeeId == newEmployee.Id && x.BookCopyId == 3);
-
-            Assert.Null(newRecord);
-        }
-    }
+    Assert.Null(newRecord);
+  }
 }

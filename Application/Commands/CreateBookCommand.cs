@@ -4,74 +4,74 @@ namespace Application.Commands;
 
 public class CreateBookCommandParams
 {
-    public string Title { get; set; }
+  public string Title { get; set; }
 
-    public string Annotation { get; set; }
+  public string Annotation { get; set; }
 
-    public List<Author> Authors { get; set; }
+  public List<Author> Authors { get; set; }
 
-    public Language Language { get; set; }
+  public Language Language { get; set; }
 
-    public string CoverUrl { get; set; }
+  public string CoverUrl { get; set; }
 
-    public int CountOfCopies { get; set; }
+  public int CountOfCopies { get; set; }
 }
 
 public class CreateBookCommand
 {
-    private readonly AppDbContext _context;
+  private readonly AppDbContext _context;
 
-    private static readonly Random _random = new Random();
+  private static readonly Random _random = new Random();
 
-    private const string CHARS = "abcdefghijklmnopqrstuvwxyz0123456789";
+  private const string CHARS = "abcdefghijklmnopqrstuvwxyz0123456789";
 
-    public CreateBookCommand(AppDbContext context)
+  public CreateBookCommand(AppDbContext context)
+  {
+    _context = context;
+  }
+
+  private string GenerateSecretKey()
+  {
+    return new string(Enumerable
+      .Repeat(CHARS, 4)
+      .Select(s => s[_random.Next(s.Length)]).ToArray());
+  }
+
+  public async Task<long> CreateAsync(CreateBookCommandParams createBookCommandParams, long tenantId)
+  {
+    if (createBookCommandParams.Authors == null || createBookCommandParams.Authors.Count == 0)
     {
-        _context = context;
+      throw new ArgumentException("List of authors cannot be empty or null.");
     }
 
-    private string GenerateSecretKey()
+    var book = new Book
     {
-        return new string(Enumerable.Repeat(CHARS, 4)
-            .Select(s => s[_random.Next(s.Length)]).ToArray());
-    }
-
-    public async Task<long> CreateAsync(CreateBookCommandParams createBookCommandParams, long tenantId)
-    {
-        if (createBookCommandParams.Authors == null || createBookCommandParams.Authors.Count == 0)
+      TenantId = tenantId,
+      Title = createBookCommandParams.Title,
+      Annotation = createBookCommandParams.Annotation,
+      Authors = createBookCommandParams
+        .Authors
+        .Select(x => new Author()
         {
-            throw new ArgumentException("List of authors cannot be empty or null.");
-        }
-
-
-        var book = new Book
+          FullName = x.FullName
+        })
+        .ToList(),
+      Language = createBookCommandParams.Language,
+      CoverUrl = createBookCommandParams.CoverUrl,
+      CreatedAtUtc = DateTime.UtcNow,
+      Copies = Enumerable
+        .Range(0, createBookCommandParams.CountOfCopies)
+        .Select(x => new BookCopy()
         {
-            TenantId = tenantId,
-            Title = createBookCommandParams.Title,
-            Annotation = createBookCommandParams.Annotation,
-            Authors = createBookCommandParams
-                .Authors
-                .Select(x => new Author()
-                {
-                    FullName = x.FullName
-                })
-                .ToList(),
-            Language = createBookCommandParams.Language,
-            CoverUrl = createBookCommandParams.CoverUrl,
-            CreatedAtUtc = DateTime.UtcNow,
-            Copies = Enumerable
-            .Range(0, createBookCommandParams.CountOfCopies)
-            .Select(x => new BookCopy()
-            {
-                TenantId = tenantId,
-                SecretKey = GenerateSecretKey()
-            })
-            .ToList()
-        };
+          TenantId = tenantId,
+          SecretKey = GenerateSecretKey()
+        })
+        .ToList()
+    };
 
-        await _context.Books.AddAsync(book);
-        await _context.SaveChangesAsync();
+    await _context.Books.AddAsync(book);
+    await _context.SaveChangesAsync();
 
-        return book.Id;
-    }
+    return book.Id;
+  }
 }

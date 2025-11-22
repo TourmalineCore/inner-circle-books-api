@@ -6,38 +6,38 @@ using Xunit;
 
 public class GetBookByCopyIdQueryTests
 {
-    private const long TENANT_ID = 1;
-    private readonly AppDbContext _context;
-    private readonly GetBookByCopyIdQuery _query;
+  private const long TENANT_ID = 1;
+  private readonly AppDbContext _context;
+  private readonly GetBookByCopyIdQuery _query;
 
-    public GetBookByCopyIdQueryTests()
+  public GetBookByCopyIdQueryTests()
+  {
+    var options = new DbContextOptionsBuilder<AppDbContext>()
+      .UseInMemoryDatabase("GetBookByCopyIdQueryBooksDatabase")
+      .Options;
+
+    _context = new AppDbContext(options);
+    _query = new GetBookByCopyIdQuery(_context);
+  }
+
+  [Fact]
+  public async Task GetBookIdByCopyIdAsync_ShouldReturnBookId_WhenCopyExists()
+  {
+    var bookId = 1;
+
+    var bookCopy = new BookCopy
     {
-        var options = new DbContextOptionsBuilder<AppDbContext>()
-            .UseInMemoryDatabase("GetBookByCopyIdQueryBooksDatabase")
-            .Options;
+      Id = 4,
+      BookId = bookId,
+      TenantId = TENANT_ID,
+      SecretKey = "abcd"
+    };
 
-        _context = new AppDbContext(options);
-        _query = new GetBookByCopyIdQuery(_context);
-    }
+    _context.BooksCopies.Add(bookCopy);
+    await _context.SaveChangesAsync();
 
-    [Fact]
-    public async Task GetBookIdByCopyIdAsync_ShouldReturnBookId_WhenCopyExists()
-    {
-        var bookId = 1;
+    var result = await _query.GetBookIdByCopyIdAsync(bookCopy.Id, TENANT_ID);
 
-        var bookCopy = new BookCopy
-        {
-            Id = 4,
-            BookId = bookId,
-            TenantId = TENANT_ID,
-            SecretKey = "abcd"
-        };
-
-        _context.BooksCopies.Add(bookCopy);
-        await _context.SaveChangesAsync();
-
-        var result = await _query.GetBookIdByCopyIdAsync(bookCopy.Id, TENANT_ID);
-
-        Assert.Equal(bookId, result);
-    }
+    Assert.Equal(bookId, result);
+  }
 }

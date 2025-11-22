@@ -2,5 +2,5 @@ namespace Api.Requests;
 
 public class AuthorModel
 {
-    public string FullName { get; set; }
+  public string FullName { get; set; }
 }
