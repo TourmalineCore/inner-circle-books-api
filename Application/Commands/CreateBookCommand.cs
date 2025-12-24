@@ -46,6 +46,16 @@ public class CreateBookCommand
       throw new ArgumentException("List of authors cannot be empty or null.");
     }
 
+    if (createBookCommandParams.Specializations == null || createBookCommandParams.Specializations.Count == 0)
+    {
+      throw new ArgumentException("Specializations list cannot be empty or null.");
+    }
+
+    if (!createBookCommandParams.Specializations.All(Enum.IsDefined))
+    {
+      throw new ArgumentException("One or more specializations are invalid.");
+    }
+
     var book = new Book
     {
       TenantId = tenantId,
