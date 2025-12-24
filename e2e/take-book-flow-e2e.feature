@@ -45,12 +45,12 @@ Scenario: Take and return book flow
         title: '#(randomName)',
         annotation: 'Test annotation',
         language: 'en',
+        specializations: [1, 2],
         authors: [
             {
                 fullName: 'Author Name'
             }
         ],
-        specializations: [1, 2],
         coverUrl: 'http://example.com/artwork.jpg',
         countOfCopies: 1
     }

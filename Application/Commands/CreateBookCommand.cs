@@ -51,7 +51,6 @@ public class CreateBookCommand
       TenantId = tenantId,
       Title = createBookCommandParams.Title,
       Annotation = createBookCommandParams.Annotation,
-      Specializations = createBookCommandParams.Specializations,
       Authors = createBookCommandParams
         .Authors
         .Select(x => new Author()
@@ -60,6 +59,7 @@ public class CreateBookCommand
         })
         .ToList(),
       Language = createBookCommandParams.Language,
+      Specializations = createBookCommandParams.Specializations,
       CoverUrl = createBookCommandParams.CoverUrl,
       CreatedAtUtc = DateTime.UtcNow,
       Copies = Enumerable

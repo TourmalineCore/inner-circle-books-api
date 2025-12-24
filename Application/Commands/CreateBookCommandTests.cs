@@ -28,6 +28,7 @@ public class CreateBookCommandTests
       Title = "Test Book",
       Annotation = "Test annotation",
       Language = 0,
+      Specializations = new List<Specialization>{ Specialization.Backend },
       CoverUrl = "http://test-images.com/img404.png",
       Authors = new List<Author>
       {
@@ -36,7 +37,6 @@ public class CreateBookCommandTests
           FullName = "Test Author"
         }
       },
-      Specializations = new List<Specialization>{ Specialization.Backend },
       CountOfCopies = 2
     };
 

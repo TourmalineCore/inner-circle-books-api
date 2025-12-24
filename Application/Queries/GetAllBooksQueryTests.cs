@@ -36,8 +36,8 @@ public class GetAllBooksQueryTests
           FullName = "Test Author"
         }
       },
-      Specializations = new List<Specialization>{ Specialization.Backend },
       Language = Language.en,
+      Specializations = new List<Specialization>{ Specialization.Backend },
       CoverUrl = "http://test1-images.com/img404.png"
     };
 
@@ -54,8 +54,8 @@ public class GetAllBooksQueryTests
           FullName = "Test Author 2"
         }
       },
-      Specializations = new List<Specialization>{ Specialization.Backend },
       Language = Language.en,
+      Specializations = new List<Specialization>{ Specialization.Backend },
       CoverUrl = "http://test2-images.com/img405.png"
     };
 
@@ -72,8 +72,8 @@ public class GetAllBooksQueryTests
           FullName = "Test Author 3"
         }
       },
-      Specializations = new List<Specialization>{ Specialization.Backend },
       Language = Language.en,
+      Specializations = new List<Specialization>{ Specialization.Backend },
       CoverUrl = "http://test3-images.com/img406.png"
     };
 

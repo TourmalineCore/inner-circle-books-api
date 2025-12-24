@@ -32,8 +32,8 @@ public class TakeBookCommandTests
       TenantId = TENANT_ID,
       CreatedAtUtc = DateTime.UtcNow,
       Language = Language.en,
-      Authors = new List<Author>(),
       Specializations = new List<Specialization>{ Specialization.Backend },
+      Authors = new List<Author>(),
     };
 
     _context.Books.Add(book);

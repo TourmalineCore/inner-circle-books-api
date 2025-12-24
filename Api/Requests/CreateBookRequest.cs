@@ -17,10 +17,10 @@ public class CreateBookRequest
   public List<AuthorModel> Authors { get; set; }
 
   [Required]
-  public List<Specialization> Specializations { get; set; }
+  public string Language { get; set; }
 
   [Required]
-  public string Language { get; set; }
+  public List<Specialization> Specializations { get; set; }
 
   public string CoverUrl { get; set; }
 

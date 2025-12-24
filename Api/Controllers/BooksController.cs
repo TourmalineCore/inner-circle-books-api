@@ -191,9 +191,9 @@ public class BooksController : Controller
         Annotation = createBookRequest.Annotation,
         Authors = authors,
         Language = (Language)Enum.Parse(typeof(Language), createBookRequest.Language),
+        Specializations = createBookRequest.Specializations,
         CoverUrl = createBookRequest.CoverUrl,
         CountOfCopies = createBookRequest.CountOfCopies,
-        Specializations = createBookRequest.Specializations,
     };
 
     var newBookId = await _createBookCommand.CreateAsync(createBookCommandParams, User.GetTenantId());
