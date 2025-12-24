@@ -72,6 +72,7 @@ public class GetAllBooksQueryTests
           FullName = "Test Author 3"
         }
       },
+      Specializations = new List<Specialization>{ Specialization.Backend },
       Language = Language.en,
       CoverUrl = "http://test3-images.com/img406.png"
     };
