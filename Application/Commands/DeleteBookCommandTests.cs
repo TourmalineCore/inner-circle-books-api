@@ -36,6 +36,7 @@ public class DeleteBookCommandTests
           FullName = "Test Author"
         }
       },
+      Specializations = new List<Specialization>{ Specialization.Backend },
       Language = Language.en,
       CoverUrl = "http://test-images.com/img404.png"
     };
