@@ -46,6 +46,7 @@ Scenario: CRUD operations test flow
                 fullName: 'Author Name'
             }
         ],
+        specializations: [1, 2],
         coverUrl: 'http://example.com/artwork.jpg',
         countOfCopies: 2
     }

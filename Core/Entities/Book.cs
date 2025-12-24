@@ -10,6 +10,8 @@ public class Book
 
   public string Annotation { get; set; }
 
+  public List<Specialization> Specializations { get; set; }
+  
   public List<Author> Authors { get; set; }
 
   public Language Language { get; set; }

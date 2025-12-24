@@ -47,6 +47,7 @@ Scenario: Happy Path
                 fullName: 'Author Name'
             }
         ],
+        specializations: [1, 2],
         coverUrl: 'http://example.com/artwork.jpg',
         countOfCopies: 1
     }

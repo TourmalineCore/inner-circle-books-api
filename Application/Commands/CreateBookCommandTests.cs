@@ -36,6 +36,7 @@ public class CreateBookCommandTests
           FullName = "Test Author"
         }
       },
+      Specializations = new List<Specialization>{ Specialization.Backend },
       CountOfCopies = 2
     };
 
@@ -49,6 +50,7 @@ public class CreateBookCommandTests
     Assert.NotNull(book);
     Assert.Equal("Test Book", book.Title);
     Assert.Equal(bookId, book.Id);
+    Assert.Equal(createBookRequest.Specializations, book.Specializations);
 
     // Verify the book copies are added correctly
     var copies = await _context

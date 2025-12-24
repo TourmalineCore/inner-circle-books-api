@@ -12,6 +12,8 @@ public class CreateBookCommandParams
 
   public Language Language { get; set; }
 
+  public List<Specialization> Specializations { get; set; }
+
   public string CoverUrl { get; set; }
 
   public int CountOfCopies { get; set; }
@@ -49,6 +51,7 @@ public class CreateBookCommand
       TenantId = tenantId,
       Title = createBookCommandParams.Title,
       Annotation = createBookCommandParams.Annotation,
+      Specializations = createBookCommandParams.Specializations,
       Authors = createBookCommandParams
         .Authors
         .Select(x => new Author()
