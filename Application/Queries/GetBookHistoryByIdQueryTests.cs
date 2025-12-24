@@ -38,6 +38,7 @@ public class GetBookHistoryByIdQueryTests
           FullName = "Test Author"
         }
       },
+      Specializations = new List<Specialization>{ Specialization.Backend },
       Language = Language.en,
       CoverUrl = ""
     };
