@@ -37,6 +37,7 @@ public class GetAllBooksQueryTests
         }
       },
       Language = Language.en,
+      Specializations = new List<Specialization>{ Specialization.Backend },
       CoverUrl = "http://test1-images.com/img404.png"
     };
 
@@ -54,6 +55,7 @@ public class GetAllBooksQueryTests
         }
       },
       Language = Language.en,
+      Specializations = new List<Specialization>{ Specialization.Backend },
       CoverUrl = "http://test2-images.com/img405.png"
     };
 
@@ -71,6 +73,7 @@ public class GetAllBooksQueryTests
         }
       },
       Language = Language.en,
+      Specializations = new List<Specialization>{ Specialization.Backend },
       CoverUrl = "http://test3-images.com/img406.png"
     };
 

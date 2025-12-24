@@ -39,6 +39,7 @@ public class GetBookHistoryByIdQueryTests
         }
       },
       Language = Language.en,
+      Specializations = new List<Specialization>{ Specialization.Backend },
       CoverUrl = ""
     };
 

@@ -187,12 +187,13 @@ public class BooksController : Controller
 
     var createBookCommandParams = new CreateBookCommandParams
     {
-      Title = createBookRequest.Title,
-      Annotation = createBookRequest.Annotation,
-      Authors = authors,
-      Language = (Language)Enum.Parse(typeof(Language), createBookRequest.Language),
-      CoverUrl = createBookRequest.CoverUrl,
-      CountOfCopies = createBookRequest.CountOfCopies,
+        Title = createBookRequest.Title,
+        Annotation = createBookRequest.Annotation,
+        Authors = authors,
+        Language = (Language)Enum.Parse(typeof(Language), createBookRequest.Language),
+        Specializations = createBookRequest.Specializations,
+        CoverUrl = createBookRequest.CoverUrl,
+        CountOfCopies = createBookRequest.CountOfCopies,
     };
 
     var newBookId = await _createBookCommand.CreateAsync(createBookCommandParams, User.GetTenantId());

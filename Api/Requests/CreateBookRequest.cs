@@ -1,4 +1,5 @@
 using System.ComponentModel.DataAnnotations;
+using Core.Entities;
 
 namespace Api.Requests;
 
@@ -17,6 +18,9 @@ public class CreateBookRequest
 
   [Required]
   public string Language { get; set; }
+
+  [Required]
+  public List<Specialization> Specializations { get; set; }
 
   public string CoverUrl { get; set; }
 

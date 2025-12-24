@@ -12,6 +12,8 @@ public class CreateBookCommandParams
 
   public Language Language { get; set; }
 
+  public List<Specialization> Specializations { get; set; }
+
   public string CoverUrl { get; set; }
 
   public int CountOfCopies { get; set; }
@@ -44,6 +46,16 @@ public class CreateBookCommand
       throw new ArgumentException("List of authors cannot be empty or null.");
     }
 
+    if (createBookCommandParams.Specializations == null || createBookCommandParams.Specializations.Count == 0)
+    {
+      throw new ArgumentException("Specializations list cannot be empty or null.");
+    }
+
+    if (!createBookCommandParams.Specializations.All(Enum.IsDefined))
+    {
+      throw new ArgumentException("One or more specializations are invalid.");
+    }
+
     var book = new Book
     {
       TenantId = tenantId,
@@ -57,6 +69,7 @@ public class CreateBookCommand
         })
         .ToList(),
       Language = createBookCommandParams.Language,
+      Specializations = createBookCommandParams.Specializations,
       CoverUrl = createBookCommandParams.CoverUrl,
       CreatedAtUtc = DateTime.UtcNow,
       Copies = Enumerable

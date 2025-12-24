@@ -42,6 +42,7 @@ Scenario: Happy Path
         title: '#(randomName)',
         annotation: 'Test annotation',
         language: 'en',
+        specializations: [1, 2],
         authors: [
             {
                 fullName: 'Author Name'

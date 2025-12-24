@@ -28,6 +28,7 @@ public class CreateBookCommandTests
       Title = "Test Book",
       Annotation = "Test annotation",
       Language = 0,
+      Specializations = new List<Specialization>{ Specialization.Backend },
       CoverUrl = "http://test-images.com/img404.png",
       Authors = new List<Author>
       {
@@ -49,6 +50,7 @@ public class CreateBookCommandTests
     Assert.NotNull(book);
     Assert.Equal("Test Book", book.Title);
     Assert.Equal(bookId, book.Id);
+    Assert.Equal(createBookRequest.Specializations, book.Specializations);
 
     // Verify the book copies are added correctly
     var copies = await _context
@@ -68,7 +70,7 @@ public class CreateBookCommandTests
   }
 
   [Fact]
-  public async Task CreateWithouAuthorsAsync_ShouldThrowException()
+  public async Task CreateWithoutAuthorsAsync_ShouldThrowException()
   {
     var createBookRequest = new CreateBookCommandParams
     {
@@ -80,5 +82,52 @@ public class CreateBookCommandTests
     };
 
     await Assert.ThrowsAsync<ArgumentException>(async () => await _command.CreateAsync(createBookRequest, TENANT_ID));
+  }
+
+  [Fact]
+  public async Task CreateWithoutSpecializationAsync_ShouldThrowException()
+  {
+    var createBookRequest = new CreateBookCommandParams
+    {
+      Title = "Test Book",
+      Annotation = "Test annotation",
+      Language = 0,
+      CoverUrl = "http://test-images.com/img404.png",
+      Authors = new List<Author>
+      {
+        new Author { FullName = "Test Author" }
+      },
+      Specializations = new List<Specialization>{ },
+      CountOfCopies = 1
+    };
+
+    await Assert.ThrowsAsync<ArgumentException>(async () => await _command.CreateAsync(createBookRequest, TENANT_ID));
+  }
+
+  [Fact]
+  public async Task CreateWithInvalidSpecializationAsync_ShouldThrowException()
+  {
+    var createBookRequest = new CreateBookCommandParams
+    {
+      Title = "Test Book",
+      Annotation = "Test annotation",
+      Language = 0,
+      CoverUrl = "http://test-images.com/img404.png",
+      Authors = new List<Author>
+      {
+        new Author { FullName = "Test Author" }
+      },
+      Specializations = new List<Specialization>
+      {
+        (Specialization)999
+      },
+      CountOfCopies = 1
+    };
+
+    var exception = await Assert.ThrowsAsync<ArgumentException>(
+      async () => await _command.CreateAsync(createBookRequest, TENANT_ID)
+    );
+
+    Assert.Contains("One or more specializations are invalid.", exception.Message);
   }
 }
