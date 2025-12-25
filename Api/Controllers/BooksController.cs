@@ -28,6 +28,7 @@ public class BooksController : Controller
   private readonly GetBookCopyReadingHistoryByCopyIdQuery _getBookCopyReadingHistoryByCopyIdQuery;
   private readonly GetBookHistoryByIdQuery _getBookHistoryByIdQuery;
   private readonly BookCopyValidatorQuery _bookCopyValidatorQuery;
+  private readonly GetKnowledgeAreasQuery _getKnowledgeAreasQuery;
   private readonly SoftDeleteBookCommand _softDeleteBookCommand;
   private readonly EditBookCommand _editBookCommand;
   private readonly ReturnBookCommand _returnBookCommand;
@@ -44,6 +45,7 @@ public class BooksController : Controller
     GetBookCopyReadingHistoryByCopyIdQuery getBookCopyReadingHistoryByCopyIdQuery,
     GetBookHistoryByIdQuery getBookHistoryByIdQuery,
     BookCopyValidatorQuery bookCopyValidatorQuery,
+    GetKnowledgeAreasQuery getKnowledgeAreasQuery,
     CreateBookCommand createBookCommand,
     EditBookCommand editBookCommand,
     DeleteBookCommand deleteBookCommand,
@@ -59,6 +61,7 @@ public class BooksController : Controller
     _getBookCopyReadingHistoryByCopyIdQuery = getBookCopyReadingHistoryByCopyIdQuery;
     _getBookHistoryByIdQuery = getBookHistoryByIdQuery;
     _bookCopyValidatorQuery = bookCopyValidatorQuery;
+    _getKnowledgeAreasQuery = getKnowledgeAreasQuery;
     _createBookCommand = createBookCommand;
     _editBookCommand = editBookCommand;
     _deleteBookCommand = deleteBookCommand;
@@ -177,6 +180,8 @@ public class BooksController : Controller
   [HttpPost]
   public async Task<CreateBookResponse> CreateBookAsync([Required][FromBody] CreateBookRequest createBookRequest)
   {
+    var knowledgeareas = await _getKnowledgeAreasQuery.GetByIdsAsync(createBookRequest.KnowledgeAreas);
+
     var authors = createBookRequest
       .Authors
       .Select(author => new Author
@@ -191,6 +196,7 @@ public class BooksController : Controller
       Annotation = createBookRequest.Annotation,
       Authors = authors,
       Language = (Language)Enum.Parse(typeof(Language), createBookRequest.Language),
+      KnowledgeAreas = knowledgeareas,
       CoverUrl = createBookRequest.CoverUrl,
       CountOfCopies = createBookRequest.CountOfCopies,
     };

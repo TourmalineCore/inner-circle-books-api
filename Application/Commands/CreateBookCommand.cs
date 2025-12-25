@@ -12,6 +12,8 @@ public class CreateBookCommandParams
 
   public Language Language { get; set; }
 
+  public List<KnowledgeArea> KnowledgeAreas { get; set; }
+
   public string CoverUrl { get; set; }
 
   public int CountOfCopies { get; set; }
@@ -44,6 +46,12 @@ public class CreateBookCommand
       throw new ArgumentException("List of authors cannot be empty or null.");
     }
 
+    if (createBookCommandParams.KnowledgeAreas == null || createBookCommandParams.KnowledgeAreas.Count == 0)
+    {
+
+        throw new ArgumentException("Knowledge areas list cannot be empty or null.");
+    }
+
     var book = new Book
     {
       TenantId = tenantId,
@@ -57,6 +65,7 @@ public class CreateBookCommand
         })
         .ToList(),
       Language = createBookCommandParams.Language,
+      KnowledgeAreas = createBookCommandParams.KnowledgeAreas,
       CoverUrl = createBookCommandParams.CoverUrl,
       CreatedAtUtc = DateTime.UtcNow,
       Copies = Enumerable

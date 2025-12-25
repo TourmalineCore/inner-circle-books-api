@@ -18,6 +18,9 @@ public class CreateBookRequest
   [Required]
   public string Language { get; set; }
 
+  [Required]
+  public List<int> KnowledgeAreas { get; set; } 
+
   public string CoverUrl { get; set; }
 
   public int CountOfCopies { get; set; }

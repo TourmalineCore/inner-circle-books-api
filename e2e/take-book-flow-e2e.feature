@@ -45,6 +45,7 @@ Scenario: Take and return book flow
         title: '#(randomName)',
         annotation: 'Test annotation',
         language: 'en',
+        knowledgeareas: [1],
         authors: [
             {
                 fullName: 'Author Name'

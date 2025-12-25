@@ -14,6 +14,8 @@ public class Book
 
   public Language Language { get; set; }
 
+  public List<KnowledgeArea> KnowledgeAreas { get; set; } = new();
+
   public DateTime CreatedAtUtc { get; set; }
 
   public DateTime? DeletedAtUtc { get; set; } = null;
