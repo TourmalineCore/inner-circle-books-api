@@ -180,7 +180,7 @@ public class BooksController : Controller
   [HttpPost]
   public async Task<CreateBookResponse> CreateBookAsync([Required][FromBody] CreateBookRequest createBookRequest)
   {
-    var knowledgeareas = await _getKnowledgeAreasQuery.GetByIdsAsync(createBookRequest.KnowledgeAreas);
+    var knowledgeAreas = await _getKnowledgeAreasQuery.GetByIdsAsync(createBookRequest.KnowledgeAreas);
 
     var authors = createBookRequest
       .Authors
@@ -196,7 +196,7 @@ public class BooksController : Controller
       Annotation = createBookRequest.Annotation,
       Authors = authors,
       Language = (Language)Enum.Parse(typeof(Language), createBookRequest.Language),
-      KnowledgeAreas = knowledgeareas,
+      KnowledgeAreas = knowledgeAreas,
       CoverUrl = createBookRequest.CoverUrl,
       CountOfCopies = createBookRequest.CountOfCopies,
     };

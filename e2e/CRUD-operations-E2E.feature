@@ -41,7 +41,7 @@ Scenario: CRUD operations test flow
         title: '#(randomName)',
         annotation: 'Test annotation',
         language: 'en',
-        knowledgeareas: [1],
+        knowledgeAreas: [1],
         authors: [
             {
                 fullName: 'Author Name'

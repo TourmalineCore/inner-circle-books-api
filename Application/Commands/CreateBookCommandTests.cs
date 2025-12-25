@@ -28,7 +28,8 @@ public class CreateBookCommandTests
       Title = "Test Book",
       Annotation = "Test annotation",
       Language = 0,
-      KnowledgeAreas = new List<KnowledgeArea>{
+      KnowledgeAreas = new List<KnowledgeArea> 
+      {
         new KnowledgeArea { 
           Id = 1, 
           Name = "Frontend" 
@@ -81,7 +82,8 @@ public class CreateBookCommandTests
       Title = "Test Book",
       Annotation = "Test annotation",
       Language = 0,
-      KnowledgeAreas = new List<KnowledgeArea>{
+      KnowledgeAreas = new List<KnowledgeArea>
+      {
         new KnowledgeArea { 
           Id = 2, 
           Name = "Backend"
