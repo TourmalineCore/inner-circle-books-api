@@ -17,7 +17,7 @@ namespace Application.Migrations
                 name: "KnowledgeAreas",
                 columns: table => new
                 {
-                    Id = table.Column<int>(type: "integer", nullable: false)
+                    Id = table.Column<long>(type: "bigint", nullable: false)
                         .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
                     Name = table.Column<string>(type: "text", nullable: false)
                 },
@@ -31,7 +31,7 @@ namespace Application.Migrations
                 columns: table => new
                 {
                     BooksId = table.Column<long>(type: "bigint", nullable: false),
-                    KnowledgeAreasId = table.Column<int>(type: "integer", nullable: false)
+                    KnowledgeAreasId = table.Column<long>(type: "bigint", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -55,20 +55,20 @@ namespace Application.Migrations
                 columns: new[] { "Id", "Name" },
                 values: new object[,]
                 {
-                    { 1, "Frontend" },
-                    { 2, "Backend" },
-                    { 3, "ML" },
-                    { 4, "DevOps" },
-                    { 5, "QA" },
-                    { 6, "Design" },
-                    { 7, "Business and Management" },
-                    { 8, "Embedded" },
-                    { 9, "GameDev" },
-                    { 10, "Marketing" },
-                    { 11, "Information Security" },
-                    { 12, "Psychology" },
-                    { 13, "Copywriting and Editing" },
-                    { 14, "Languages" }
+                    { 1L, "Frontend" },
+                    { 2L, "Backend" },
+                    { 3L, "ML" },
+                    { 4L, "DevOps" },
+                    { 5L, "QA" },
+                    { 6L, "Design" },
+                    { 7L, "Business and Management" },
+                    { 8L, "Embedded" },
+                    { 9L, "GameDev" },
+                    { 10L, "Marketing" },
+                    { 11L, "Information Security" },
+                    { 12L, "Psychology" },
+                    { 13L, "Copywriting and Editing" },
+                    { 14L, "Languages" }
                 });
 
             migrationBuilder.CreateIndex(

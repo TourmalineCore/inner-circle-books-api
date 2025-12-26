@@ -12,8 +12,8 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace Application.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20251226062843_ChangeKnowledgeAreasIdType")]
-    partial class ChangeKnowledgeAreasIdType
+    [Migration("20251226084647_AddKnowledgeAreasToBook")]
+    partial class AddKnowledgeAreasToBook
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
