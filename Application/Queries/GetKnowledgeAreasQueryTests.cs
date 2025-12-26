@@ -28,7 +28,7 @@ public class GetKnowledgeAreasQueryTests
   [Fact]
   public async Task GetByIdsAsync_ShouldReturnOnlyRequestedKnowledgeAreas()
   {
-    var result = await _query.GetByIdsAsync(new List<int> { 1, 3 });
+    var result = await _query.GetByIdsAsync(new List<long> { 1, 3 });
 
     Assert.Equal(2, result.Count);
     Assert.Contains(result, s => s.Id == 1 && s.Name == "Frontend");
@@ -38,7 +38,7 @@ public class GetKnowledgeAreasQueryTests
   [Fact]
   public async Task GetByIdsAsync_ShouldReturnEmpty_WhenNoIdsMatch()
   {
-    var result = await _query.GetByIdsAsync(new List<int> { 4, 5 });
+    var result = await _query.GetByIdsAsync(new List<long> { 4, 5 });
 
     Assert.Empty(result);
   }
@@ -46,7 +46,7 @@ public class GetKnowledgeAreasQueryTests
   [Fact]
   public async Task GetByIdsAsync_ShouldReturnEmpty_WhenInputListIsEmpty()
   {
-    var result = await _query.GetByIdsAsync(new List<int>());
+    var result = await _query.GetByIdsAsync(new List<long>());
 
     Assert.Empty(result);
   }

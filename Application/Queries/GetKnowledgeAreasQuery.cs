@@ -12,7 +12,7 @@ namespace Application.Queries
       _context = context;
     }
 
-    public async Task<List<KnowledgeArea>> GetByIdsAsync(List<int> ids)
+    public async Task<List<KnowledgeArea>> GetByIdsAsync(List<long> ids)
     {
       return await _context.KnowledgeAreas
         .Where(s => ids.Contains(s.Id))
