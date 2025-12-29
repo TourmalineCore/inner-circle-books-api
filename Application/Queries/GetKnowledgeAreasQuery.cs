@@ -1,9 +1,14 @@
 using Core.Entities;
 using Microsoft.EntityFrameworkCore;
 
-namespace Application.Queries
+namespace Application.Queries;
+
+public interface IGetKnowledgeAreasQuery
 {
-  public class GetKnowledgeAreasQuery
+    Task<List<KnowledgeArea>> GetByIdsAsync(List<long> ids);
+}
+
+public class GetKnowledgeAreasQuery: IGetKnowledgeAreasQuery
 {
     private readonly AppDbContext _context;
 
@@ -19,5 +24,4 @@ namespace Application.Queries
         .Where(s => ids.Contains(s.Id))
         .ToListAsync();
     }
-  }
 }
