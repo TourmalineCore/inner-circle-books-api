@@ -19,7 +19,7 @@ public class CreateBookRequest
   public string Language { get; set; }
 
   [Required]
-  public List<long> KnowledgeAreas { get; set; } 
+  public List<long> KnowledgeAreasIds { get; set; } 
 
   public string CoverUrl { get; set; }
 

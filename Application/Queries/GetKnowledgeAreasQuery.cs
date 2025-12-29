@@ -14,7 +14,8 @@ namespace Application.Queries
 
     public async Task<List<KnowledgeArea>> GetByIdsAsync(List<long> ids)
     {
-      return await _context.KnowledgeAreas
+      return await _context
+        .KnowledgeAreas
         .Where(s => ids.Contains(s.Id))
         .ToListAsync();
     }
