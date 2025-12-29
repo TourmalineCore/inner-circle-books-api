@@ -176,11 +176,11 @@ public class BooksController : Controller
   [RequiresPermission(UserClaimsProvider.CanManageBooks)]
   [HttpPost]
   public Task<CreateBookResponse> CreateBookAsync(
-      [Required][FromBody] CreateBookRequest request,
+      [Required][FromBody] CreateBookRequest createBookRequest,
       [FromServices] CreateBookHandler createBookHandler
   )
   {
-      return createBookHandler.HandleAsync(request, User.GetTenantId());
+      return createBookHandler.HandleAsync(createBookRequest, User.GetTenantId());
   }
 
   /// <summary>
