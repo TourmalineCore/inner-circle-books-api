@@ -1,4 +1,5 @@
 using System.ComponentModel.DataAnnotations;
+using Api.Controllers.Handlers;
 using Api.Requests;
 using Api.Responses;
 using Application;
@@ -28,7 +29,6 @@ public class BooksController : Controller
   private readonly GetBookCopyReadingHistoryByCopyIdQuery _getBookCopyReadingHistoryByCopyIdQuery;
   private readonly GetBookHistoryByIdQuery _getBookHistoryByIdQuery;
   private readonly BookCopyValidatorQuery _bookCopyValidatorQuery;
-  private readonly GetKnowledgeAreasQuery _getKnowledgeAreasQuery;
   private readonly SoftDeleteBookCommand _softDeleteBookCommand;
   private readonly EditBookCommand _editBookCommand;
   private readonly ReturnBookCommand _returnBookCommand;
@@ -45,7 +45,6 @@ public class BooksController : Controller
     GetBookCopyReadingHistoryByCopyIdQuery getBookCopyReadingHistoryByCopyIdQuery,
     GetBookHistoryByIdQuery getBookHistoryByIdQuery,
     BookCopyValidatorQuery bookCopyValidatorQuery,
-    GetKnowledgeAreasQuery getKnowledgeAreasQuery,
     CreateBookCommand createBookCommand,
     EditBookCommand editBookCommand,
     DeleteBookCommand deleteBookCommand,
@@ -61,7 +60,6 @@ public class BooksController : Controller
     _getBookCopyReadingHistoryByCopyIdQuery = getBookCopyReadingHistoryByCopyIdQuery;
     _getBookHistoryByIdQuery = getBookHistoryByIdQuery;
     _bookCopyValidatorQuery = bookCopyValidatorQuery;
-    _getKnowledgeAreasQuery = getKnowledgeAreasQuery;
     _createBookCommand = createBookCommand;
     _editBookCommand = editBookCommand;
     _deleteBookCommand = deleteBookCommand;
@@ -175,38 +173,14 @@ public class BooksController : Controller
   /// <summary>
   ///     Adds book
   /// </summary>
-  /// <param name="createBookRequest"></param>
   [RequiresPermission(UserClaimsProvider.CanManageBooks)]
   [HttpPost]
-  public async Task<CreateBookResponse> CreateBookAsync([Required][FromBody] CreateBookRequest createBookRequest)
+  public Task<CreateBookResponse> CreateBookAsync(
+      [Required][FromBody] CreateBookRequest request,
+      [FromServices] CreateBookHandler createBookHandler
+  )
   {
-    var knowledgeAreas = await _getKnowledgeAreasQuery.GetByIdsAsync(createBookRequest.KnowledgeAreas);
-
-    var authors = createBookRequest
-      .Authors
-      .Select(author => new Author
-      {
-        FullName = author.FullName,
-      })
-      .ToList();
-
-    var createBookCommandParams = new CreateBookCommandParams
-    {
-      Title = createBookRequest.Title,
-      Annotation = createBookRequest.Annotation,
-      Authors = authors,
-      Language = (Language)Enum.Parse(typeof(Language), createBookRequest.Language),
-      KnowledgeAreas = knowledgeAreas,
-      CoverUrl = createBookRequest.CoverUrl,
-      CountOfCopies = createBookRequest.CountOfCopies,
-    };
-
-    var newBookId = await _createBookCommand.CreateAsync(createBookCommandParams, User.GetTenantId());
-
-    return new CreateBookResponse()
-    {
-      NewBookId = newBookId
-    };
+      return createBookHandler.HandleAsync(request, User.GetTenantId());
   }
 
   /// <summary>
