@@ -19,13 +19,19 @@ public class GetKnowledgeAreasQuery: IGetKnowledgeAreasQuery
   }
   public async Task<List<KnowledgeArea>> GetAllKnowledgeAreasAsync()
   {
-    return await _context.KnowledgeAreas.ToListAsync();
+    return await _context
+      .KnowledgeAreas
+      .AsNoTracking()
+      .ToListAsync();
   }
 
   public async Task<List<KnowledgeArea>> GetByIdsAsync(List<long> ids)
   {
     return await _context
       .KnowledgeAreas
+      // TODO: investigate why adding AsNoTracking() here breaks E2E tests
+      //https://github.com/TourmalineCore/inner-circle-books-api/issues/29
+      // .AsNoTracking()
       .Where(s => ids.Contains(s.Id))
       .ToListAsync();
   }
