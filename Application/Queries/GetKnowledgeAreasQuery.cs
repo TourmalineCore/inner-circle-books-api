@@ -18,6 +18,7 @@ public class GetKnowledgeAreasQuery: IGetKnowledgeAreasQuery
   {
     _context = context;
   }
+  
   public async Task<List<KnowledgeArea>> GetAllKnowledgeAreasAsync()
   {
     return await _context
