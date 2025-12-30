@@ -27,7 +27,7 @@ public class  CreateBookHandler
 
     var nonExistentKnowledgeAreasIds = createBookRequest
       .KnowledgeAreasIds
-      .Except(knowledgeAreas.Select(k => k.Id));
+      .Except(knowledgeAreas.Select(x => x.Id));
 
     if (nonExistentKnowledgeAreasIds.Any())
     {

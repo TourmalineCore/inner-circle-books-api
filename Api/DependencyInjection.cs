@@ -2,8 +2,7 @@ using Application.Commands;
 using Application.Queries;
 using Application.Services;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.DependencyInjection;
+using Api.Controllers.Handlers;
 
 namespace Application;
 
@@ -28,6 +27,7 @@ public static class DependencyInjection
     services.AddTransient<GetBookHistoryByIdQuery>();
     services.AddTransient<IGetKnowledgeAreasQuery, GetKnowledgeAreasQuery>();
     services.AddTransient<GetAllBooksQuery>();
+    services.AddTransient<CreateBookHandler>();
     services.AddTransient<GetBookCopyReadingHistoryByCopyIdQuery>();
     services.AddTransient<BookCopyValidatorQuery>();
     services.AddTransient<TakeBookCommand>();
