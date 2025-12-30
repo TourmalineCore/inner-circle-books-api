@@ -45,6 +45,6 @@ public class CreateBookHandlerTests
       async () => await _handler.HandleAsync(createBookRequest, TENANT_ID)
     );
 
-    Assert.Contains("These knowledge areas IDs were not found: 998, 999", exception.Message);
+    Assert.Equal("These knowledge areas IDs were not found: 998, 999", exception.Message);
   }
 }

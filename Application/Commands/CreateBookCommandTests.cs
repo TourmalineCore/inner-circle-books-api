@@ -113,6 +113,9 @@ public class CreateBookCommandTests
       CountOfCopies = 1
     };
 
-    await Assert.ThrowsAsync<ArgumentException>(async () => await _command.CreateAsync(createBookRequest, TENANT_ID));
+    var exception = await Assert.ThrowsAsync<ArgumentException>(
+      async () => await _command.CreateAsync(createBookRequest, TENANT_ID));
+
+    Assert.Equal("Knowledge areas list cannot be empty or null.", exception.Message);
   }
 }
