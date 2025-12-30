@@ -6,5 +6,6 @@ public class KnowledgeAreasListResponse
 public class KnowledgeAreaItem
 {
   public long Id { get; set; }
+  
   public string Name { get; set; }
 }
