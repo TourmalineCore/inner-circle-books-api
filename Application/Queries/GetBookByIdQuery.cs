@@ -19,6 +19,7 @@ public class GetBookByIdQuery
       .Books
       .Where(x => x.TenantId == tenantId)
       .Include(x => x.Copies)
+      .Include(x => x.KnowledgeAreas) 
       .SingleAsync(x => x.Id == id);
   }
 

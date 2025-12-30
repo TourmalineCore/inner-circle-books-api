@@ -15,6 +15,8 @@ public class BookListItem
 
   public string Language { get; set; }
 
+  public List<KnowledgeAreaResponse> KnowledgeAreas { get; set; }
+
   public List<AuthorResponse> Authors { get; set; }
 
   public string CoverUrl { get; set; }

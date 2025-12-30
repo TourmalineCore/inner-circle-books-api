@@ -30,6 +30,15 @@ Scenario: CRUD operations test flow
 
     * configure headers = jsUtils().getAuthHeaders(accessToken)
 
+    Given url apiRootUrl
+    And path 'api/books/knowledge-areas'
+    When method GET
+    Then status 200
+
+    * def  firstKnowledgeAreaId = response.knowledgeAreas[0].id
+    * def  firstKnowledgeAreaName = response.knowledgeAreas[0].name
+    * def  secondKnowledgeAreaId = response.knowledgeAreas[1].id
+
     # Create a new book
     * def randomName = 'Test-book-' + Math.random()
 
@@ -41,7 +50,7 @@ Scenario: CRUD operations test flow
         title: '#(randomName)',
         annotation: 'Test annotation',
         language: 'en',
-        knowledgeAreas: [1],
+        knowledgeAreasIds: [#(firstKnowledgeAreaId), #(secondKnowledgeAreaId)],
         authors: [
             {
                 fullName: 'Author Name'
@@ -63,6 +72,9 @@ Scenario: CRUD operations test flow
     Then status 200
     And match response.title == randomName
     And assert response.bookCopiesIds.length == 2
+    # let's check that name matches only for one knowledge area, we don't need to check for all
+    And match response.knowledgeAreas contains { id: #(firstKnowledgeAreaId), name: '#(firstKnowledgeAreaName)' }
+    And match response.knowledgeAreas[*].id contains secondKnowledgeAreaId
 
     # Edit the book's details
     * def editedName = 'Test-edited-book' + Math.random()

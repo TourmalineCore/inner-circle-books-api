@@ -34,6 +34,13 @@ Scenario: Take and return book flow
 
     * def employeeId = jsUtils().getEmployeeIdFromToken(accessToken)
 
+    Given url apiRootUrl
+    And path 'api/books/knowledge-areas'
+    When method GET
+    Then status 200
+
+    * def  firstKnowledgeAreaId = response.knowledgeAreas[0].id
+
     # Create a new book
     * def randomName = 'Test-book-' + Math.random()
 
@@ -45,7 +52,7 @@ Scenario: Take and return book flow
         title: '#(randomName)',
         annotation: 'Test annotation',
         language: 'en',
-        knowledgeAreas: [1],
+        knowledgeAreasIds: [#(firstKnowledgeAreaId)],
         authors: [
             {
                 fullName: 'Author Name'
