@@ -48,7 +48,6 @@ public class CreateBookCommand
 
     if (createBookCommandParams.KnowledgeAreas == null || createBookCommandParams.KnowledgeAreas.Count == 0)
     {
-
         throw new ArgumentException("Knowledge areas list cannot be empty or null.");
     }
 

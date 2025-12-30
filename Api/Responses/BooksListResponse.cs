@@ -15,7 +15,7 @@ public class BookListItem
 
   public string Language { get; set; }
 
-  public List<KnowledgeAreaResponse> KnowledgeAreas { get; set; }
+  public List<KnowledgeAreaItem> KnowledgeAreas { get; set; }
 
   public List<AuthorResponse> Authors { get; set; }
 

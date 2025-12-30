@@ -77,14 +77,14 @@ public class BooksController : Controller
   /// </summary>
   [RequiresPermission(UserClaimsProvider.CanViewBooks)]
   [HttpGet("knowledge-areas")]
-  public async Task<ActionResult<KnowledgeAreasListResponse>> GetAllKnowledgeAreasAsync()
+  public async Task<KnowledgeAreasListResponse> GetAllKnowledgeAreasAsync()
   {
     var knowledgeAreas = await _getKnowledgeAreasQuery.GetAllKnowledgeAreasAsync();
 
     return new KnowledgeAreasListResponse
     {
       KnowledgeAreas = knowledgeAreas
-        .Select(x => new KnowledgeAreaResponse
+        .Select(x => new KnowledgeAreaItem
         {
           Id = x.Id,
           Name = x.Name
@@ -118,7 +118,7 @@ public class BooksController : Controller
           .ToList(),
         Language = x.Language.ToString(),
         KnowledgeAreas = x.KnowledgeAreas
-          .Select(k => new KnowledgeAreaResponse()
+          .Select(k => new KnowledgeAreaItem()
           {
               Id = k.Id,
               Name = k.Name
@@ -437,7 +437,7 @@ public class BooksController : Controller
         Language = book.Language.ToString(),
         KnowledgeAreas = book
           .KnowledgeAreas
-          .Select(k => new KnowledgeAreaResponse
+          .Select(k => new KnowledgeAreaItem
           {
               Id = k.Id,
               Name = k.Name
