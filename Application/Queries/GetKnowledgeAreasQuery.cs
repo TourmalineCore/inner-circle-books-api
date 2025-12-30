@@ -6,6 +6,7 @@ namespace Application.Queries;
 public interface IGetKnowledgeAreasQuery
 {
   Task<List<KnowledgeArea>> GetByIdsAsync(List<long> ids);
+  
   Task<List<KnowledgeArea>> GetAllKnowledgeAreasAsync();
 }
 
