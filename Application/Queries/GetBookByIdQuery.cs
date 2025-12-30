@@ -17,8 +17,10 @@ public class GetBookByIdQuery
   {
     return _context
       .Books
+      .AsNoTracking()
       .Where(x => x.TenantId == tenantId)
       .Include(x => x.Copies)
+      .Include(x => x.KnowledgeAreas) 
       .SingleAsync(x => x.Id == id);
   }
 
@@ -26,6 +28,7 @@ public class GetBookByIdQuery
   {
     return _context
       .BooksCopiesReadingHistory
+      .AsNoTracking()
       .Where(x => x.TenantId == tenantId)
       .Where(x => copiesIds.Contains(x.BookCopyId))
       .Where(x => x.ActualReturnedAtUtc == null)

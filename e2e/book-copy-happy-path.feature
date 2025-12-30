@@ -30,6 +30,12 @@ Scenario: Happy Path
 
     * def employeeId = jsUtils().getEmployeeIdFromToken(accessToken)
 
+    Given url apiRootUrl
+    And path 'api/books/knowledge-areas'
+    When method GET
+    Then status 200
+
+    * def  firstKnowledgeAreaId = response.knowledgeAreas[0].id
 
     # Create a new book with 1 copy
     * def randomName = 'Test-book-' + Math.random()
@@ -42,6 +48,7 @@ Scenario: Happy Path
         title: '#(randomName)',
         annotation: 'Test annotation',
         language: 'en',
+        knowledgeAreasIds: [#(firstKnowledgeAreaId)],
         authors: [
             {
                 fullName: 'Author Name'

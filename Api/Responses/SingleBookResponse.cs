@@ -11,6 +11,8 @@ public class SingleBookResponse
   public string Annotation { get; set; }
 
   public string Language { get; set; }
+  
+  public List<KnowledgeAreaItem> KnowledgeAreas { get; set; }
 
   public List<AuthorResponse> Authors { get; set; }
 

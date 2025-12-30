@@ -28,6 +28,13 @@ public class CreateBookCommandTests
       Title = "Test Book",
       Annotation = "Test annotation",
       Language = 0,
+      KnowledgeAreas = new List<KnowledgeArea> 
+      {
+        new KnowledgeArea { 
+          Id = 1, 
+          Name = "Frontend" 
+        }
+      },
       CoverUrl = "http://test-images.com/img404.png",
       Authors = new List<Author>
       {
@@ -68,17 +75,47 @@ public class CreateBookCommandTests
   }
 
   [Fact]
-  public async Task CreateWithouAuthorsAsync_ShouldThrowException()
+  public async Task CreateWithoutAuthorsAsync_ShouldThrowException()
   {
     var createBookRequest = new CreateBookCommandParams
     {
       Title = "Test Book",
       Annotation = "Test annotation",
       Language = 0,
+      KnowledgeAreas = new List<KnowledgeArea>
+      {
+        new KnowledgeArea { 
+          Id = 2, 
+          Name = "Backend"
+        }
+      },
       CoverUrl = "http://test-images.com/img404.png",
       Authors = new List<Author> { }
     };
-
+    
     await Assert.ThrowsAsync<ArgumentException>(async () => await _command.CreateAsync(createBookRequest, TENANT_ID));
+  }
+
+  [Fact]
+  public async Task CreateWithoutKnowledgeAreaAsync_ShouldThrowException()
+  {
+    var createBookRequest = new CreateBookCommandParams
+    {
+      Title = "Test Book",
+      Annotation = "Test annotation",
+      Language = 0,
+      KnowledgeAreas = new List<KnowledgeArea>(),
+      CoverUrl = "http://test-images.com/img404.png",
+      Authors = new List<Author>
+      {
+        new Author { FullName = "Test Author" }
+      },
+      CountOfCopies = 1
+    };
+
+    var exception = await Assert.ThrowsAsync<ArgumentException>(
+      async () => await _command.CreateAsync(createBookRequest, TENANT_ID));
+
+    Assert.Equal("Knowledge areas list cannot be empty or null.", exception.Message);
   }
 }

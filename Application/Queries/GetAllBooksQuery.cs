@@ -16,8 +16,10 @@ public class GetAllBooksQuery
   {
     var booksList = await _context
       .Books
+      .AsNoTracking()
       .Where(x => x.TenantId == tenantId)
       .Where(x => x.DeletedAtUtc == null)
+      .Include(x => x.KnowledgeAreas)
       .ToListAsync();
 
     return booksList;
