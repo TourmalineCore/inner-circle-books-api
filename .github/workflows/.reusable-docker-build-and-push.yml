@@ -109,7 +109,7 @@ jobs:
         with:
           platforms: linux/arm64
           context: .
-          file: ./Api/Dockerfile
+          file: ./Dockerfile
           build-args: |
             EXCLUDE_UNIT_TESTS_FROM_BUILD=true
           labels: ${{ steps.meta.outputs.labels }}
