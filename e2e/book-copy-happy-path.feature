@@ -85,7 +85,7 @@ Scenario: Happy Path
     And match response.language == 'en'
 
     # Cleanup: Delete the book (hard delete)
-    And path '', bookId, 'hard-delete'
+    And path bookId, 'hard-delete'
     When method DELETE
     Then status 200
     And match response == { isDeleted: true }

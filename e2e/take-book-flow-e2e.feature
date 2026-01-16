@@ -66,7 +66,7 @@ Scenario: Take and return book flow
     * def newBookId = response.newBookId
 
     # Get book data to get book copy ID
-    And path '', newBookId
+    And path newBookId
     When method GET
     Then status 200
     And match response.title == randomName
@@ -90,7 +90,7 @@ Scenario: Take and return book flow
     Then status 200
 
     # Check that book has one reader
-    And path '', newBookId
+    And path newBookId
     When method GET
     Then status 200
     And assert response.employeesWhoReadNow.length == 1
@@ -99,7 +99,7 @@ Scenario: Take and return book flow
 
     # Check that book still has the same reader
     Given url apiRootUrl
-    And path '', newBookId
+    And path newBookId
     When method GET
     Then status 200
     And assert response.employeesWhoReadNow.length == 1
@@ -120,7 +120,7 @@ Scenario: Take and return book flow
     Then status 200
 
     # Check that book has zero employeesWhoReadNow
-    And path '', newBookId
+    And path newBookId
     When method GET
     Then status 200
     And assert response.employeesWhoReadNow.length == 0
@@ -137,7 +137,7 @@ Scenario: Take and return book flow
     And assert response.list[0].bookCopyId == bookCopyId
     
     # Cleanup: Delete the book (hard delete)
-    And path '', newBookId, 'hard-delete'
+    And path newBookId, 'hard-delete'
     When method DELETE
     Then status 200
     And match response == { isDeleted: true }
