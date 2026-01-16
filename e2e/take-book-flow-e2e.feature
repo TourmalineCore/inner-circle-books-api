@@ -97,14 +97,6 @@ Scenario: Take and return book flow
     And assert response.employeesWhoReadNow[0].employeeId == employeeId
     And assert response.employeesWhoReadNow[0].bookCopyId == bookCopyId
 
-    # Check that book still has the same reader
-    Given url apiRootUrl
-    And path newBookId
-    When method GET
-    Then status 200
-    And assert response.employeesWhoReadNow.length == 1
-    And assert response.employeesWhoReadNow[0].employeeId == employeeId
-
     * def readerFullName = response.employeesWhoReadNow[0].fullName
 
     # Return book copy
