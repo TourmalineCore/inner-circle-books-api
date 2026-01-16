@@ -10,12 +10,12 @@ Scenario: CRUD operations test flow
     * def jsUtils = read('./js-utils.js')
     * def authApiRootUrl = jsUtils().getEnvVariable('AUTH_API_ROOT_URL')
     * def apiRootUrl = jsUtils().getEnvVariable('API_ROOT_URL')
-    * def authLogin = jsUtils().getEnvVariable('AUTH_LOGIN')
-    * def authPassword = jsUtils().getEnvVariable('AUTH_PASSWORD')
+    * def authLogin = jsUtils().getEnvVariable('AUTH_FIRST_TENANT_LOGIN_WITH_ALL_PERMISSIONS')
+    * def authPassword = jsUtils().getEnvVariable('AUTH_FIRST_TENANT_PASSWORD_WITH_ALL_PERMISSIONS')
 
     # Authentication
     Given url authApiRootUrl
-    And path '/auth/login'
+    And path '/login'
     And request
     """
     {
@@ -31,7 +31,7 @@ Scenario: CRUD operations test flow
     * configure headers = jsUtils().getAuthHeaders(accessToken)
 
     Given url apiRootUrl
-    And path 'api/books/knowledge-areas'
+    And path '/knowledge-areas'
     When method GET
     Then status 200
 
@@ -43,7 +43,6 @@ Scenario: CRUD operations test flow
     * def randomName = 'Test-book-' + Math.random()
 
     Given url apiRootUrl
-    And path 'api/books'
     And request
     """
     {
@@ -67,7 +66,7 @@ Scenario: CRUD operations test flow
     * def newBookId = response.newBookId
 
     # Check that the book is created and there are 2 book copies
-    And path 'api/books', newBookId
+    And path '', newBookId
     When method GET
     Then status 200
     And match response.title == randomName
@@ -79,7 +78,7 @@ Scenario: CRUD operations test flow
     # Edit the book's details
     * def editedName = 'Test-edited-book' + Math.random()
 
-    And path 'api/books', newBookId, 'edit'
+    And path '', newBookId, 'edit'
     And request
     """
     {
@@ -98,25 +97,25 @@ Scenario: CRUD operations test flow
     Then status 200
 
     # Get the edited book by ID and verify the details have changed
-    And path 'api/books', newBookId
+    And path '', newBookId
     When method GET
     Then status 200
     And match response.title == editedName
 
     # Delete the book (soft delete)
-    And path 'api/books', newBookId, 'soft-delete'
+    And path '', newBookId, 'soft-delete'
     When method DELETE
     Then status 200
     And match response == { isDeleted: true }
 
     # Verify the book is no longer in the list
-    And path 'api/books'
+    And path ''
     When method GET
     Then status 200
     And match response.books !contains { id: '#(newBookId)' }
 
     # Delete the book (hard delete)
-    And path 'api/books', newBookId, 'hard-delete'
+    And path '', newBookId, 'hard-delete'
     When method DELETE
     Then status 200
     And match response == { isDeleted: true }

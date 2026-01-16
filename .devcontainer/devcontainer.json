@@ -20,8 +20,8 @@
 		}
 	},
 	"containerEnv": {
-		"AUTH_API_ROOT_URL": "http://localhost:8505",
-		"API_ROOT_URL": "http://localhost:6505",
+		"AUTH_API_ROOT_URL": "http://localhost:8505/api/auth",
+		"API_ROOT_URL": "http://localhost:6505/api/books",
 		"SHOULD_USE_FAKE_EXTERNAL_DEPENDENCIES": "true"
 	}
 }
