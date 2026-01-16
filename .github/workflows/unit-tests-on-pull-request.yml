@@ -1,13 +1,13 @@
-name: Run Unit Tests in PR
+name: Unit Tests
 
 on:
-  push:
-    branches: [ feature/* ]
+  pull_request:
+    types: [opened, synchronize, reopened]
 
 jobs:
   run-unit-tests:
     name: Run unit tests
-    runs-on: ubuntu-22.04
+    runs-on: ubuntu-24.04
     steps:
         - name: Check out the repo
           uses: actions/checkout@v4 
