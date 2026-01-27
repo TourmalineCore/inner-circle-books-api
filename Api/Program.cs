@@ -68,6 +68,7 @@ builder.Services.AddSwaggerGen(c =>
 });
 
 var authenticationOptions = configuration.GetSection(nameof(AuthenticationOptions)).Get<AuthenticationOptions>();
+builder.Services.Configure<AuthenticationOptions>(configuration.GetSection(nameof(AuthenticationOptions)));
 builder.Services
   .AddJwtAuthentication(authenticationOptions)
   .WithUserClaimsProvider<UserClaimsProvider>(UserClaimsProvider.PermissionClaimType);

@@ -10,19 +10,17 @@ Scenario: Take and return book flow
     * def jsUtils = read('./js-utils.js')
     * def authApiRootUrl = jsUtils().getEnvVariable('AUTH_API_ROOT_URL')
     * def apiRootUrl = jsUtils().getEnvVariable('API_ROOT_URL')
-    * def firstUserAuthLogin = jsUtils().getEnvVariable('AUTH_LOGIN')
-    * def firstUserAuthPassword = jsUtils().getEnvVariable('AUTH_PASSWORD')
-    * def secondUserAuthLogin = jsUtils().getEnvVariable('SECOND_USER_AUTH_LOGIN')
-    * def secondUserAuthPassword = jsUtils().getEnvVariable('SECOND_USER_AUTH_PASSWORD')
+    * def authLogin = jsUtils().getEnvVariable('AUTH_FIRST_TENANT_LOGIN_WITH_ALL_PERMISSIONS')
+    * def authPassword = jsUtils().getEnvVariable('AUTH_FIRST_TENANT_PASSWORD_WITH_ALL_PERMISSIONS')
 
-    # First user authentication 
+    # Authentication 
     Given url authApiRootUrl
-    And path '/auth/login'
+    And path '/login'
     And request
     """
     {
-        "login": "#(firstUserAuthLogin)",
-        "password": "#(firstUserAuthPassword)"
+        "login": "#(authLogin)",
+        "password": "#(authPassword)"
     }
     """
     And method POST
@@ -35,7 +33,7 @@ Scenario: Take and return book flow
     * def employeeId = jsUtils().getEmployeeIdFromToken(accessToken)
 
     Given url apiRootUrl
-    And path 'api/books/knowledge-areas'
+    And path '/knowledge-areas'
     When method GET
     Then status 200
 
@@ -45,7 +43,6 @@ Scenario: Take and return book flow
     * def randomName = 'Test-book-' + Math.random()
 
     Given url apiRootUrl
-    And path 'api/books'
     And request
     """
     {
@@ -69,7 +66,7 @@ Scenario: Take and return book flow
     * def newBookId = response.newBookId
 
     # Get book data to get book copy ID
-    And path 'api/books', newBookId
+    And path newBookId
     When method GET
     Then status 200
     And match response.title == randomName
@@ -81,7 +78,7 @@ Scenario: Take and return book flow
     # Take book copy by copy ID
     * def scheduledReturnDate = jsUtils().getDateTwoMonthsLaterThanCurrent()
 
-    And path 'api/books/take'
+    And path '/take'
     And request
     """
     {
@@ -93,42 +90,17 @@ Scenario: Take and return book flow
     Then status 200
 
     # Check that book has one reader
-    And path 'api/books', newBookId
+    And path newBookId
     When method GET
     Then status 200
     And assert response.employeesWhoReadNow.length == 1
     And assert response.employeesWhoReadNow[0].employeeId == employeeId
     And assert response.employeesWhoReadNow[0].bookCopyId == bookCopyId
 
-    # First user authentication
-    Given url authApiRootUrl
-    And path '/auth/login'
-    And request
-    """
-    {
-        "login": '#(firstUserAuthLogin)',
-        "password": '#(firstUserAuthPassword)'
-    }
-    """
-    And method POST
-    Then status 200
-
-    * def accessToken = karate.toMap(response.accessToken.value)
-
-    * configure headers = jsUtils().getAuthHeaders(accessToken)
-
-    # Check that book still has the same reader
-    Given url apiRootUrl
-    And path 'api/books', newBookId
-    When method GET
-    Then status 200
-    And assert response.employeesWhoReadNow.length == 1
-    And assert response.employeesWhoReadNow[0].employeeId == employeeId
-
     * def readerFullName = response.employeesWhoReadNow[0].fullName
 
     # Return book copy
-    And path 'api/books/return'
+    And path '/return'
     And request
     """
     {
@@ -140,13 +112,13 @@ Scenario: Take and return book flow
     Then status 200
 
     # Check that book has zero employeesWhoReadNow
-    And path 'api/books', newBookId
+    And path newBookId
     When method GET
     Then status 200
     And assert response.employeesWhoReadNow.length == 0
 
     # Check book history
-    And path 'api/books/history', newBookId
+    And path '/history', newBookId
     And param page = 1
     And param pageSize = 10
     When method GET
@@ -157,7 +129,7 @@ Scenario: Take and return book flow
     And assert response.list[0].bookCopyId == bookCopyId
     
     # Cleanup: Delete the book (hard delete)
-    And path 'api/books', newBookId, 'hard-delete'
+    And path newBookId, 'hard-delete'
     When method DELETE
     Then status 200
     And match response == { isDeleted: true }
