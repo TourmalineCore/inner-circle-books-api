@@ -40,7 +40,8 @@ public class AppDbContext : DbContext
         new KnowledgeArea { Id = 11, Name = "Information Security" },
         new KnowledgeArea { Id = 12, Name = "Psychology" },
         new KnowledgeArea { Id = 13, Name = "Copywriting and Editing" },
-        new KnowledgeArea { Id = 14, Name = "Languages" }
+        new KnowledgeArea { Id = 14, Name = "Languages" },
+        new KnowledgeArea { Id = 15, Name = "Computer Science" }
     );
   }
 }
