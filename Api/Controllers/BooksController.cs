@@ -235,7 +235,7 @@ public class BooksController : Controller
       {
         BookCopyId = takeBookRequest.BookCopyId,
         ProgressOfReading = ProgressOfReading.Unknown,
-        ActualReturnedAtUtc = DateTime.UtcNow,
+        ActualReturnedAtUtc = DateTime.UtcNow
       };
 
       var activeReading = await _getBookCopyReadingHistoryByCopyIdQuery.GetActiveReadingAsync(returnBookCommandParams.BookCopyId, User.GetTenantId());
