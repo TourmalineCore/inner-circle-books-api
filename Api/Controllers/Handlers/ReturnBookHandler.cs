@@ -29,7 +29,6 @@ public class ReturnBookHandler
     {
       BookCopyId = returnBookRequest.BookCopyId,
       BookId = bookId,
-      EmployeeId = employee.Id,
       ProgressOfReading = (ProgressOfReading)Enum.Parse(typeof(ProgressOfReading), returnBookRequest.ProgressOfReading),
       ActualReturnedAtUtc = DateTime.UtcNow,
       Rating = returnBookRequest.Rating,
@@ -37,6 +36,6 @@ public class ReturnBookHandler
       Disadvantages = returnBookRequest.Disadvantages,
     };
 
-     await _returnBookCommand.ReturnAsync(returnBookCommandParams, tenantId);
+     await _returnBookCommand.ReturnAsync(returnBookCommandParams, employee, tenantId);
   }
 }

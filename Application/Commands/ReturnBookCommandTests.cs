@@ -1,5 +1,6 @@
 using Application;
 using Application.Commands;
+using Core;
 using Core.Entities;
 using Microsoft.EntityFrameworkCore;
 using Xunit;
@@ -42,11 +43,15 @@ public class ReturnBookCommandTests
     {
       BookCopyId = 1,
       ProgressOfReading = 0,
-      ActualReturnedAtUtc = DateTime.UtcNow,
-      EmployeeId = 1
+      ActualReturnedAtUtc = DateTime.UtcNow
     };
 
-    await _command.ReturnAsync(returnBookRequest, TENANT_ID);
+    var employee = new Employee
+    {
+      Id = 1
+    };
+
+    await _command.ReturnAsync(returnBookRequest, employee, TENANT_ID);
 
     var completedCopyReadingHistory = await _context
       .BooksCopiesReadingHistory

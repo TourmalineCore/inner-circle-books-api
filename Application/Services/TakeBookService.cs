@@ -22,7 +22,8 @@ public class TakeBookService
   public async Task TakeAsync(
     TakeBookCommandParams takeBookCommandParams,
     ReturnBookCommandParams returnBookCommandParams,
-    Employee employee, long tenantId,
+    Employee employee,
+    long tenantId,
     BookCopyReadingHistory? activeReading
   )
   {
@@ -37,7 +38,7 @@ public class TakeBookService
           Id = activeReading.ReaderEmployeeId,
         };
 
-        await _returnBookCommand.ReturnAsync(returnBookCommandParams, tenantId);
+        await _returnBookCommand.ReturnAsync(returnBookCommandParams, employeeReader, tenantId);
       }
 
       await _takeBookCommand.TakeAsync(takeBookCommandParams, employee, tenantId);

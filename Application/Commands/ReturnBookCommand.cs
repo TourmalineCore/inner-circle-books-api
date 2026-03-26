@@ -1,3 +1,4 @@
+using Core;
 using Core.Entities;
 using Microsoft.EntityFrameworkCore;
 
@@ -8,8 +9,6 @@ public class ReturnBookCommandParams
   public long BookCopyId { get; set; }
 
   public long BookId { get; set; }
-
-  public long EmployeeId { get; set; }
 
   public ProgressOfReading ProgressOfReading { get; set; }
 
@@ -33,6 +32,7 @@ public class ReturnBookCommand
 
   public async Task ReturnAsync(
     ReturnBookCommandParams returnBookCommandParams,
+    Employee employee,
     long tenantId
   )
   {
@@ -40,7 +40,7 @@ public class ReturnBookCommand
       .BooksCopiesReadingHistory
       .Where(x => x.TenantId == tenantId)
       .FirstOrDefaultAsync(x => x.BookCopyId == returnBookCommandParams.BookCopyId
-        && x.ReaderEmployeeId == returnBookCommandParams.EmployeeId
+        && x.ReaderEmployeeId == employee.Id
         && x.ActualReturnedAtUtc == null);
 
     bookCopyReadingHistory.ActualReturnedAtUtc = returnBookCommandParams.ActualReturnedAtUtc;
@@ -51,7 +51,7 @@ public class ReturnBookCommand
     var bookFeedback = new BookFeedback
     {
       BookId = returnBookCommandParams.BookId,
-      EmployeeId = returnBookCommandParams.EmployeeId,
+      EmployeeId = employee.Id,
       LeftFeedbackAtUtc = DateTime.UtcNow,
       ProgressOfReading = returnBookCommandParams.ProgressOfReading,
       Rating = returnBookCommandParams.Rating,
