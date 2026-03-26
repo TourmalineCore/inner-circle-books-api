@@ -37,7 +37,7 @@ public class TakeBookService
           Id = activeReading.ReaderEmployeeId,
         };
 
-        await _returnBookCommand.ReturnAsync(returnBookCommandParams, employeeReader, tenantId);
+        await _returnBookCommand.ReturnAsync(returnBookCommandParams, tenantId);
       }
 
       await _takeBookCommand.TakeAsync(takeBookCommandParams, employee, tenantId);

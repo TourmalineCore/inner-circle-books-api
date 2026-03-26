@@ -21,6 +21,8 @@ public class AppDbContext : DbContext
 
   public virtual DbSet<KnowledgeArea> KnowledgeAreas { get; set; }
 
+   public virtual DbSet<BookFeedback> BookFeedback { get; set; }
+
   protected override void OnModelCreating(ModelBuilder modelBuilder)
   {
     modelBuilder.ApplyConfigurationsFromAssembly(GetType().Assembly);

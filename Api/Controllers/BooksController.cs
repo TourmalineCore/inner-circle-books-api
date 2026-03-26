@@ -32,7 +32,6 @@ public class BooksController : Controller
   private readonly BookCopyValidatorQuery _bookCopyValidatorQuery;
   private readonly SoftDeleteBookCommand _softDeleteBookCommand;
   private readonly EditBookCommand _editBookCommand;
-  private readonly ReturnBookCommand _returnBookCommand;
   private readonly TakeBookService _takeBookService;
   private readonly IInnerCircleHttpClient _client;
 
@@ -67,7 +66,6 @@ public class BooksController : Controller
     _editBookCommand = editBookCommand;
     _deleteBookCommand = deleteBookCommand;
     _softDeleteBookCommand = softDeleteBookCommand;
-    _returnBookCommand = returnBookCommand;
     _takeBookService = takeBookService;
     _client = client;
   }
@@ -237,7 +235,8 @@ public class BooksController : Controller
       {
         BookCopyId = takeBookRequest.BookCopyId,
         ProgressOfReading = ProgressOfReading.Unknown,
-        ActualReturnedAtUtc = DateTime.UtcNow
+        ActualReturnedAtUtc = DateTime.UtcNow,
+        EmployeeId = employee.Id
       };
 
       var activeReading = await _getBookCopyReadingHistoryByCopyIdQuery.GetActiveReadingAsync(returnBookCommandParams.BookCopyId, User.GetTenantId());
@@ -262,18 +261,14 @@ public class BooksController : Controller
   /// <param name="returnBookRequest"></param>
   [RequiresPermission(UserClaimsProvider.CanViewBooks)]
   [HttpPost("return")]
-  public async Task ReturnBookAsync([Required][FromBody] ReturnBookRequest returnBookRequest)
+  public async Task ReturnBookAsync(
+    [Required][FromBody] ReturnBookRequest returnBookRequest,
+    [FromServices] ReturnBookHandler returnBookHandler
+  )
   {
     var employee = await _client.GetEmployeeAsync(User.GetCorporateEmail());
 
-    var returnBookCommandParams = new ReturnBookCommandParams
-    {
-      BookCopyId = returnBookRequest.BookCopyId,
-      ProgressOfReading = (ProgressOfReading)Enum.Parse(typeof(ProgressOfReading), returnBookRequest.ProgressOfReading),
-      ActualReturnedAtUtc = DateTime.UtcNow
-    };
-
-    await _returnBookCommand.ReturnAsync(returnBookCommandParams, employee, User.GetTenantId());
+    await returnBookHandler.HandleAsync(returnBookRequest, employee, User.GetTenantId());
   }
 
   /// <summary>

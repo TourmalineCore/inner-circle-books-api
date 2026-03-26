@@ -106,7 +106,8 @@ public class TakeBookServiceTests : IAsyncLifetime
     {
       BookCopyId = 2,
       ProgressOfReading = ProgressOfReading.Unknown,
-      ActualReturnedAtUtc = DateTime.UtcNow
+      ActualReturnedAtUtc = DateTime.UtcNow,
+      EmployeeId = 3
     };
 
     await _service.TakeAsync(takeBookCommandParams, returnBookCommandParams, newEmployee, TENANT_ID, bookCopyReadingHistory);
@@ -195,7 +196,8 @@ public class TakeBookServiceTests : IAsyncLifetime
     {
       BookCopyId = 2,
       ProgressOfReading = ProgressOfReading.Unknown,
-      ActualReturnedAtUtc = DateTime.UtcNow
+      ActualReturnedAtUtc = DateTime.UtcNow,
+      EmployeeId = 3
     };
 
     await _service.TakeAsync(takeBookCommandParams, returnBookCommandParams, newEmployee, TENANT_ID, bookCopyReadingHistory);

@@ -105,7 +105,8 @@ Scenario: Take and return book flow
     """
     {
         "bookCopyId": '#(bookCopyId)',
-        "progressOfReading": 'ReadEntirely'
+        "progressOfReading": 'ReadEntirely',
+        "rating": 5,
     }
     """
     When method POST
