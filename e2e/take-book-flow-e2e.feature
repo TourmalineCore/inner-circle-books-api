@@ -37,7 +37,7 @@ Scenario: Take and return book flow
     When method GET
     Then status 200
 
-    * def  firstKnowledgeAreaId = response.knowledgeAreas[0].id
+    * def firstKnowledgeAreaId = response.knowledgeAreas[0].id
 
     # Create a new book
     * def randomName = 'Test-book-' + Math.random()

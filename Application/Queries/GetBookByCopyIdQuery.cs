@@ -3,7 +3,6 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Application.Queries;
 
-
 public interface IGetBookByCopyIdQuery
 {
   Task<Book?> GetByCopyIdAsync(long copyId, long tenantId);
@@ -22,6 +21,7 @@ public class GetBookByCopyIdQuery : IGetBookByCopyIdQuery
   {
     return _context
       .BooksCopies
+      .AsNoTracking()
       .Where(x => x.TenantId == tenantId)
       .Where(x => x.Id == copyId)
       .Select(x => x.Book)

@@ -24,7 +24,7 @@ public class BooksController : Controller
   private readonly DeleteBookCommand _deleteBookCommand;
   private readonly GetAllBooksQuery _getAllBooksQuery;
   private readonly GetBookByIdQuery _getBookByIdQuery;
-  private readonly GetBookByCopyIdQuery _getBookByCopyIdQuery;
+  private readonly IGetBookByCopyIdQuery _getBookByCopyIdQuery;
   private readonly GetBookCopyReadingHistoryByCopyIdQuery _getBookCopyReadingHistoryByCopyIdQuery;
   private readonly GetBookHistoryByIdQuery _getBookHistoryByIdQuery;
   private readonly IGetKnowledgeAreasQuery _getKnowledgeAreasQuery;
@@ -40,7 +40,7 @@ public class BooksController : Controller
   public BooksController(
     GetAllBooksQuery getAllBooksQuery,
     GetBookByIdQuery getBookByIdQuery,
-    GetBookByCopyIdQuery getBookByCopyIdQuery,
+    IGetBookByCopyIdQuery getBookByCopyIdQuery,
     GetBookCopyReadingHistoryByCopyIdQuery getBookCopyReadingHistoryByCopyIdQuery,
     GetBookHistoryByIdQuery getBookHistoryByIdQuery,
     BookCopyValidatorQuery bookCopyValidatorQuery,
