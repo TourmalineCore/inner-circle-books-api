@@ -21,7 +21,6 @@ public class GetBookByCopyIdQuery : IGetBookByCopyIdQuery
   {
     return _context
       .BooksCopies
-      .AsNoTracking()
       .Where(x => x.TenantId == tenantId)
       .Where(x => x.Id == copyId)
       .Select(x => x.Book)
