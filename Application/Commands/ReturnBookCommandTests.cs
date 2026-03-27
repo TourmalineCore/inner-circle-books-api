@@ -67,7 +67,7 @@ public class ReturnBookCommandTests
   {
     var employee = new Employee
     {
-      Id = 1
+      Id = 2
     };
 
     var bookCopyReadingHistory = new BookCopyReadingHistory
