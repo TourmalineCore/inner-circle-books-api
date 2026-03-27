@@ -30,7 +30,18 @@ namespace Application.Migrations
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_BookFeedback", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_BookFeedback_Books_BookId",
+                        column: x => x.BookId,
+                        principalTable: "Books",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
                 });
+
+            migrationBuilder.CreateIndex(
+                name: "IX_BookFeedback_BookId",
+                table: "BookFeedback",
+                column: "BookId");
         }
 
         /// <inheritdoc />

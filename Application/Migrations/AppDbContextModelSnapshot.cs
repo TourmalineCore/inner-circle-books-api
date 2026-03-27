@@ -173,6 +173,8 @@ namespace Application.Migrations
 
                     b.HasKey("Id");
 
+                    b.HasIndex("BookId");
+
                     b.ToTable("BookFeedback");
                 });
 
@@ -310,6 +312,17 @@ namespace Application.Migrations
                         .IsRequired();
 
                     b.Navigation("BookCopy");
+                });
+
+            modelBuilder.Entity("Core.Entities.BookFeedback", b =>
+                {
+                    b.HasOne("Core.Entities.Book", "Book")
+                        .WithMany()
+                        .HasForeignKey("BookId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Book");
                 });
 
             modelBuilder.Entity("Core.Entities.Book", b =>
