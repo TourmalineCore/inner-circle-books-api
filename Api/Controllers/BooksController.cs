@@ -21,7 +21,6 @@ namespace Api.Controllers;
 [Route("api/books")]
 public class BooksController : Controller
 {
-  private readonly CreateBookCommand _createBookCommand;
   private readonly DeleteBookCommand _deleteBookCommand;
   private readonly GetAllBooksQuery _getAllBooksQuery;
   private readonly GetBookByIdQuery _getBookByIdQuery;
@@ -62,7 +61,6 @@ public class BooksController : Controller
     _getBookHistoryByIdQuery = getBookHistoryByIdQuery;
     _bookCopyValidatorQuery = bookCopyValidatorQuery;
     _getKnowledgeAreasQuery = getKnowledgeAreasQuery;
-    _createBookCommand = createBookCommand;
     _editBookCommand = editBookCommand;
     _deleteBookCommand = deleteBookCommand;
     _softDeleteBookCommand = softDeleteBookCommand;
