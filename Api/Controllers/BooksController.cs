@@ -144,9 +144,9 @@ public class BooksController : Controller
   [HttpGet("copy/{id}")]
   public async Task<ActionResult<SingleBookResponse>> GetBookByCopyIdAsync([Required][FromRoute] long id, [Required][FromQuery] string secretKey)
   {
-    var bookId = await _getBookByCopyIdQuery.GetBookIdByCopyIdAsync(id, User.GetTenantId());
+    var book = await _getBookByCopyIdQuery.GetByCopyIdAsync(id, User.GetTenantId());
 
-    if (bookId == 0)
+    if (book == null)
     {
       return NotFound(new
       {
@@ -164,7 +164,7 @@ public class BooksController : Controller
       });
     }
 
-    return await GetBookResponseAsync(bookId);
+    return await GetBookResponseAsync(book.Id);
   }
 
   /// <summary>

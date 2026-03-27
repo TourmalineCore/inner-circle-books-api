@@ -22,12 +22,12 @@ public class ReturnBookHandler
 
   public async Task HandleAsync(ReturnBookRequest returnBookRequest, Employee employee, long tenantId)
   {
-    var bookId = await _getBookByCopyIdQuery.GetBookIdByCopyIdAsync(returnBookRequest.BookCopyId, tenantId);
+    var book = await _getBookByCopyIdQuery.GetByCopyIdAsync(returnBookRequest.BookCopyId, tenantId);
 
     var returnBookCommandParams = new ReturnBookCommandParams
     {
       BookCopyId = returnBookRequest.BookCopyId,
-      BookId = bookId,
+      BookId = book.Id,
       ProgressOfReading = (ProgressOfReading)Enum.Parse(typeof(ProgressOfReading), returnBookRequest.ProgressOfReading),
       ActualReturnedAtUtc = DateTime.UtcNow,
       Rating = returnBookRequest.Rating,
