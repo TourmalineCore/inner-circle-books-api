@@ -61,7 +61,7 @@ public class GetBookFeedbackListByBookIdQueryTests
   {
     var book = new Book
     {
-      Id = 1,
+      Id = 2,
       TenantId = TENANT_ID,
       Title = "Test Book",
       Annotation = "Test annotation",
@@ -79,7 +79,7 @@ public class GetBookFeedbackListByBookIdQueryTests
 
     var bookFeedback = new BookFeedback
     {
-      Id = 1,
+      Id = 2,
       BookId = book.Id,
       Book = book,
       TenantId = TENANT_ID
