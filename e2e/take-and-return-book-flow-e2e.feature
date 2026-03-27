@@ -98,6 +98,10 @@ Scenario: Take and return book flow
     And assert response.employeesWhoReadNow[0].bookCopyId == bookCopyId
 
     * def readerFullName = response.employeesWhoReadNow[0].fullName
+    * def progressOfReading = 'ReadEntirely'
+    * def rating = 5
+    * def advantages = "Good book"
+    * def disadvantages = "Long book"
 
     # Return book copy
     And path '/return'
@@ -105,8 +109,10 @@ Scenario: Take and return book flow
     """
     {
         "bookCopyId": '#(bookCopyId)',
-        "progressOfReading": 'ReadEntirely',
-        "rating": 5,
+        "progressOfReading": '#(progressOfReading)',
+        "rating": '#(rating)',
+        "advantages": '#(advantages)',
+        "disadvantages": '#(disadvantages)',
     }
     """
     When method POST
@@ -117,6 +123,17 @@ Scenario: Take and return book flow
     When method GET
     Then status 200
     And assert response.employeesWhoReadNow.length == 0
+
+    # Check that book has feedback
+    And path '/feedback', newBookId
+    When method GET
+    Then status 200
+    And assert response.bookFeedbackList[0].employeeFullName == readerFullName
+    And assert response.bookFeedbackList[0].progressOfReading == 0
+    And assert response.bookFeedbackList[0].rating == rating
+    And assert response.bookFeedbackList[0].advantages == advantages
+    And assert response.bookFeedbackList[0].disadvantages == disadvantages
+    And assert response.feedbackCount == 1
 
     # Check book history
     And path '/history', newBookId
