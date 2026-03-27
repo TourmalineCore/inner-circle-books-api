@@ -61,4 +61,42 @@ public class ReturnBookCommandTests
     Assert.Equal(returnBookRequest.ActualReturnedAtUtc, completedCopyReadingHistory.ActualReturnedAtUtc);
     Assert.Equal(returnBookRequest.ProgressOfReading, completedCopyReadingHistory.ProgressOfReading);
   }
+
+  [Fact]
+  public async Task ReturnAsync_ShouldNotAddFeedbackIfBookCopyWasOvertaken()
+  {
+    var employee = new Employee
+    {
+      Id = 1
+    };
+
+    var bookCopyReadingHistory = new BookCopyReadingHistory
+    {
+      Id = 1,
+      BookCopyId = 1,
+      ReaderEmployeeId = employee.Id,
+      TenantId = TENANT_ID
+    };
+
+     _context
+      .BooksCopiesReadingHistory
+      .Add(bookCopyReadingHistory);
+      
+    await _context.SaveChangesAsync();
+
+    var returnBookRequest = new ReturnBookCommandParams
+    {
+      BookCopyId = 1,
+      ProgressOfReading = ProgressOfReading.Unknown,
+      ActualReturnedAtUtc = DateTime.UtcNow
+    };
+
+    await _command.ReturnAsync(returnBookRequest, employee, TENANT_ID);
+
+    var bookFeedback = await _context
+      .BookFeedback
+      .SingleOrDefaultAsync(x => x.EmployeeId == employee.Id);
+
+    Assert.Null(bookFeedback);
+  }
 }
