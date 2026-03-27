@@ -72,8 +72,8 @@ public class ReturnBookCommandTests
 
     var bookCopyReadingHistory = new BookCopyReadingHistory
     {
-      Id = 1,
-      BookCopyId = 1,
+      Id = 2,
+      BookCopyId = 2,
       ReaderEmployeeId = employee.Id,
       TenantId = TENANT_ID
     };
@@ -86,7 +86,7 @@ public class ReturnBookCommandTests
 
     var returnBookRequest = new ReturnBookCommandParams
     {
-      BookCopyId = 1,
+      BookCopyId = 2,
       ProgressOfReading = ProgressOfReading.Unknown,
       ActualReturnedAtUtc = DateTime.UtcNow
     };
