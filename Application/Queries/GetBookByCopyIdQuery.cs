@@ -3,7 +3,13 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Application.Queries;
 
-public class GetBookByCopyIdQuery
+
+public interface IGetBookByCopyIdQuery
+{
+  Task<Book?> GetByCopyIdAsync(long copyId, long tenantId);
+}
+
+public class GetBookByCopyIdQuery : IGetBookByCopyIdQuery
 {
   private readonly AppDbContext _context;
 

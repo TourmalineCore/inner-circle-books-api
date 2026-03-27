@@ -8,11 +8,11 @@ namespace Api.Controllers.Handlers;
 
 public class ReturnBookHandler
 {
-  private readonly GetBookByCopyIdQuery _getBookByCopyIdQuery;
+  private readonly IGetBookByCopyIdQuery _getBookByCopyIdQuery;
   private readonly ReturnBookCommand _returnBookCommand;
     
   public ReturnBookHandler(
-    GetBookByCopyIdQuery getBookByCopyIdQuery,
+    IGetBookByCopyIdQuery getBookByCopyIdQuery,
     ReturnBookCommand returnBookCommand
   )
   {
@@ -23,6 +23,11 @@ public class ReturnBookHandler
   public async Task HandleAsync(ReturnBookRequest returnBookRequest, Employee employee, long tenantId)
   {
     var book = await _getBookByCopyIdQuery.GetByCopyIdAsync(returnBookRequest.BookCopyId, tenantId);
+
+    if (book == null)
+    {
+      throw new ArgumentException($"Book copy with id {returnBookRequest.BookCopyId} not found");
+    }
 
     var returnBookCommandParams = new ReturnBookCommandParams
     {
