@@ -17,7 +17,7 @@ public class GetBookFeedbackListByBookIdQuery
   {
     return _context
       .BookFeedback
-      .Include(x => x.Book)
+      .AsNoTracking()
       .Where(x => x.TenantId == tenantId)
       .Where(x => x.BookId == bookId)
       .Where(x => x.Book.DeletedAtUtc == null)
