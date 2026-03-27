@@ -48,19 +48,22 @@ public class ReturnBookCommand
 
     _context.BooksCopiesReadingHistory.Update(bookCopyReadingHistory);
 
-    var bookFeedback = new BookFeedback
-    {
-      BookId = returnBookCommandParams.BookId,
-      EmployeeId = employee.Id,
-      LeftFeedbackAtUtc = DateTime.UtcNow,
-      ProgressOfReading = returnBookCommandParams.ProgressOfReading,
-      Rating = returnBookCommandParams.Rating,
-      Advantages = returnBookCommandParams.Advantages,
-      Disadvantages = returnBookCommandParams.Disadvantages
-    };
+    if (returnBookCommandParams.ProgressOfReading != ProgressOfReading.Unknown) {
+      var bookFeedback = new BookFeedback
+      {
+        TenantId = tenantId,
+        BookId = returnBookCommandParams.BookId,
+        EmployeeId = employee.Id,
+        LeftFeedbackAtUtc = DateTime.UtcNow,
+        ProgressOfReading = returnBookCommandParams.ProgressOfReading,
+        Rating = returnBookCommandParams.Rating,
+        Advantages = returnBookCommandParams.Advantages,
+        Disadvantages = returnBookCommandParams.Disadvantages
+      };
 
-    await _context.BookFeedback.AddAsync(bookFeedback);
-
+      await _context.BookFeedback.AddAsync(bookFeedback);
+    }
+    
     await _context.SaveChangesAsync();
   }
 }
