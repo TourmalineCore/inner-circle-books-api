@@ -45,11 +45,9 @@ public class BooksController : Controller
     GetBookHistoryByIdQuery getBookHistoryByIdQuery,
     BookCopyValidatorQuery bookCopyValidatorQuery,
     IGetKnowledgeAreasQuery getKnowledgeAreasQuery,
-    CreateBookCommand createBookCommand,
     EditBookCommand editBookCommand,
     DeleteBookCommand deleteBookCommand,
     SoftDeleteBookCommand softDeleteBookCommand,
-    ReturnBookCommand returnBookCommand,
     TakeBookService takeBookService,
     IInnerCircleHttpClient client
   )
@@ -196,6 +194,19 @@ public class BooksController : Controller
       BookTitle = book.Title,
       BookCopies = bookCopies
     };
+  }
+
+  /// <summary>
+  ///     Get book feedback by book id
+  /// </summary>
+  [RequiresPermission(UserClaimsProvider.CanViewBooks)]
+  [HttpGet("feedback/{bookId}")]
+  public Task<BooksFeedbackListResponse> GetBookFeedbackListByBookIdAsync(
+    [Required][FromRoute] long bookId,
+    [FromServices] GetBookFeedbackListByBookIdHandler getBookFeedbackListByBookIdHandler
+  )
+  {
+    return getBookFeedbackListByBookIdHandler.HandleAsync(bookId, User.GetTenantId());
   }
 
   /// <summary>

@@ -8,6 +8,8 @@ public class BookFeedback
     
     public long BookId { get; set; }
 
+    public Book Book { get; set; }
+
     public long EmployeeId { get; set; }
 
     public DateTime LeftFeedbackAtUtc { get; set; }
