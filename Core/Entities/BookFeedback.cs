@@ -16,7 +16,7 @@ public class BookFeedback
 
     public ProgressOfReading ProgressOfReading { get; set; }
 
-    public int Rating { get; set; }
+    public int? Rating { get; set; }
 
     public string? Advantages { get; set; }
 

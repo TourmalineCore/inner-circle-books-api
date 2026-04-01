@@ -10,8 +10,7 @@ public class ReturnBookRequest
   [Required]
   public string ProgressOfReading { get; set; }
 
-  [Required]
-  public int Rating { get; set; }
+  public int? Rating { get; set; }
 
   public string? Advantages { get; set; }
 

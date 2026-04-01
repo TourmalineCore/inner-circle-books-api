@@ -14,7 +14,7 @@ public class ReturnBookCommandParams
 
   public DateTime ActualReturnedAtUtc { get; set; }
 
-  public int Rating { get; set; }
+  public int? Rating { get; set; }
 
   public string? Advantages { get; set; }
 
@@ -48,7 +48,8 @@ public class ReturnBookCommand
 
     _context.BooksCopiesReadingHistory.Update(bookCopyReadingHistory);
 
-    if (returnBookCommandParams.ProgressOfReading != ProgressOfReading.Unknown) {
+    if (returnBookCommandParams.ProgressOfReading != ProgressOfReading.Unknown || 
+        returnBookCommandParams.ProgressOfReading != ProgressOfReading.NotReadAtAll) {
       var bookFeedback = new BookFeedback
       {
         TenantId = tenantId,
