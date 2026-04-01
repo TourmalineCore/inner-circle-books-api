@@ -3,8 +3,6 @@ namespace Api.Responses;
 public class BooksFeedbackListResponse
 {
   public List<BookFeedbackDto> BookFeedbackList { get; set; }
-
-  public int FeedbackCount { get; set; }
 }
 
 public class BookFeedbackDto

@@ -46,7 +46,6 @@ public class GetBookFeedbackListByBookIdHandler
                     };
                 })
                 .ToList(),
-            FeedbackCount = bookFeedback.Count
         };
     }
 }

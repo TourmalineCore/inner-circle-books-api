@@ -133,7 +133,6 @@ Scenario: Take and return book flow
     And assert response.bookFeedbackList[0].rating == rating
     And assert response.bookFeedbackList[0].advantages == advantages
     And assert response.bookFeedbackList[0].disadvantages == disadvantages
-    And assert response.feedbackCount == 1
 
     # Check book history
     And path '/history', newBookId
