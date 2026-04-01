@@ -46,8 +46,10 @@ public class ReturnBookCommand
     bookCopyReadingHistory.ActualReturnedAtUtc = returnBookCommandParams.ActualReturnedAtUtc;
     bookCopyReadingHistory.ProgressOfReading = returnBookCommandParams.ProgressOfReading;
 
-    if (returnBookCommandParams.ProgressOfReading != ProgressOfReading.Unknown && 
-        returnBookCommandParams.ProgressOfReading != ProgressOfReading.NotReadAtAll) {
+    if (returnBookCommandParams.ProgressOfReading == ProgressOfReading.ReadPartially ||
+        returnBookCommandParams.ProgressOfReading == ProgressOfReading.ReadEntirely
+      )
+    {
       var bookFeedback = new BookFeedback
       {
         TenantId = tenantId,
