@@ -48,7 +48,7 @@ public class ReturnBookCommand
 
     _context.BooksCopiesReadingHistory.Update(bookCopyReadingHistory);
 
-    if (returnBookCommandParams.ProgressOfReading != ProgressOfReading.Unknown || 
+    if (returnBookCommandParams.ProgressOfReading != ProgressOfReading.Unknown && 
         returnBookCommandParams.ProgressOfReading != ProgressOfReading.NotReadAtAll) {
       var bookFeedback = new BookFeedback
       {
