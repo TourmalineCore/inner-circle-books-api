@@ -99,4 +99,43 @@ public class ReturnBookCommandTests
 
     Assert.Null(bookFeedback);
   }
+
+
+  [Fact]
+  public async Task ReturnAsync_ShouldNotAddFeedbackIfBookCopyWasReturnedWithNotReadAtAllStatus()
+  {
+    var employee = new Employee
+    {
+      Id = 2
+    };
+
+    var bookCopyReadingHistory = new BookCopyReadingHistory
+    {
+      Id = 2,
+      BookCopyId = 2,
+      ReaderEmployeeId = employee.Id,
+      TenantId = TENANT_ID
+    };
+
+     _context
+      .BooksCopiesReadingHistory
+      .Add(bookCopyReadingHistory);
+      
+    await _context.SaveChangesAsync();
+
+    var returnBookRequest = new ReturnBookCommandParams
+    {
+      BookCopyId = 2,
+      ProgressOfReading = ProgressOfReading.NotReadAtAll,
+      ActualReturnedAtUtc = DateTime.UtcNow
+    };
+
+    await _command.ReturnAsync(returnBookRequest, employee, TENANT_ID);
+
+    var bookFeedback = await _context
+      .BookFeedback
+      .SingleOrDefaultAsync(x => x.EmployeeId == employee.Id);
+
+    Assert.Null(bookFeedback);
+  }
 }
