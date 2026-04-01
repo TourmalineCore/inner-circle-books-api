@@ -12,7 +12,7 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace Application.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20260327055645_AddBookFeedback")]
+    [Migration("20260401050622_AddBookFeedback")]
     partial class AddBookFeedback
     {
         /// <inheritdoc />
@@ -168,7 +168,7 @@ namespace Application.Migrations
                     b.Property<int>("ProgressOfReading")
                         .HasColumnType("integer");
 
-                    b.Property<int>("Rating")
+                    b.Property<int?>("Rating")
                         .HasColumnType("integer");
 
                     b.Property<long>("TenantId")

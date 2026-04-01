@@ -165,7 +165,7 @@ namespace Application.Migrations
                     b.Property<int>("ProgressOfReading")
                         .HasColumnType("integer");
 
-                    b.Property<int>("Rating")
+                    b.Property<int?>("Rating")
                         .HasColumnType("integer");
 
                     b.Property<long>("TenantId")

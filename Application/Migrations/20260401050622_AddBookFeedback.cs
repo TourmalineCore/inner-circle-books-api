@@ -23,7 +23,7 @@ namespace Application.Migrations
                     EmployeeId = table.Column<long>(type: "bigint", nullable: false),
                     LeftFeedbackAtUtc = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
                     ProgressOfReading = table.Column<int>(type: "integer", nullable: false),
-                    Rating = table.Column<int>(type: "integer", nullable: false),
+                    Rating = table.Column<int>(type: "integer", nullable: true),
                     Advantages = table.Column<string>(type: "text", nullable: true),
                     Disadvantages = table.Column<string>(type: "text", nullable: true)
                 },
