@@ -39,6 +39,7 @@ public class GetBookFeedbackListByBookIdHandler
                         Id = x.Id,
                         EmployeeFullName = employeesByIds.FirstOrDefault(employee => employee.EmployeeId == x.EmployeeId).FullName,
                         LeftFeedbackAtUtc = x.LeftFeedbackAtUtc,
+                        ProgressOfReading = x.ProgressOfReading.ToString(),
                         Rating = x.Rating,
                         Advantages = x.Advantages,
                         Disadvantages = x.Disadvantages

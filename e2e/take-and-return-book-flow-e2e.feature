@@ -129,7 +129,7 @@ Scenario: Take and return book flow
     When method GET
     Then status 200
     And assert response.bookFeedbackList[0].employeeFullName == readerFullName
-    And assert response.bookFeedbackList[0].progressOfReading == 0
+    And assert response.bookFeedbackList[0].progressOfReading == progressOfReading
     And assert response.bookFeedbackList[0].rating == rating
     And assert response.bookFeedbackList[0].advantages == advantages
     And assert response.bookFeedbackList[0].disadvantages == disadvantages

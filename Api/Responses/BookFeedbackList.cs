@@ -1,5 +1,3 @@
-using Core.Entities;
-
 namespace Api.Responses;
 
 public class BooksFeedbackListResponse
@@ -17,7 +15,7 @@ public class BookFeedbackDto
 
     public DateTime LeftFeedbackAtUtc { get; set; }
 
-    public ProgressOfReading ProgressOfReading { get; set; }
+    public string ProgressOfReading { get; set; }
 
     public int Rating { get; set; }
 
