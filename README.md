@@ -41,7 +41,7 @@ When you have made all the changes and are ready to add new migration, you need 
 1. You need to run db in docker, using command
 
 ```
-docker compose --profile db-only up -d
+docker compose --profile DbOnly up -d
 ```
 
 ### for MacOS
