@@ -128,11 +128,11 @@ Scenario: Take and return book flow
     And path '/feedback', newBookId
     When method GET
     Then status 200
-    And assert response.bookFeedbackList[0].employeeFullName == readerFullName
-    And assert response.bookFeedbackList[0].progressOfReading == progressOfReading
-    And assert response.bookFeedbackList[0].rating == rating
-    And assert response.bookFeedbackList[0].advantages == advantages
-    And assert response.bookFeedbackList[0].disadvantages == disadvantages
+    And assert response.bookFeedback[0].employeeFullName == readerFullName
+    And assert response.bookFeedback[0].progressOfReading == progressOfReading
+    And assert response.bookFeedback[0].rating == rating
+    And assert response.bookFeedback[0].advantages == advantages
+    And assert response.bookFeedback[0].disadvantages == disadvantages
 
     # Check book history
     And path '/history', newBookId
