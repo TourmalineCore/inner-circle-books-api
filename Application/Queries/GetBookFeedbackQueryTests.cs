@@ -21,7 +21,7 @@ public class GetBookFeedbackQueryTests
   }
 
   [Fact]
-  public async Task GetAnotherTenantsBookFeedbackAsync_ShouldNotGetAnotherTenantsBookFeedbackList()
+  public async Task GetAnotherTenantsBookFeedback_ShouldNotGetAnotherTenantsBookFeedback()
   {
     var book = new Book
     {
@@ -91,5 +91,15 @@ public class GetBookFeedbackQueryTests
     var result = await _query.GetAsync(bookFeedback.BookId, TENANT_ID);
 
     Assert.DoesNotContain(result, x => x.Id == bookFeedback.Id);
+  }
+
+  [Fact]
+  public async Task GetBookFeedbackForNonExistingBook_ShouldNotGetFeedbackForNonExistingBook()
+  {
+    var nonExistentBookId = 999;
+
+    var result = await _query.GetAsync(nonExistentBookId, TENANT_ID);
+
+    Assert.DoesNotContain(result, x => x.Id == nonExistentBookId);
   }
 }
