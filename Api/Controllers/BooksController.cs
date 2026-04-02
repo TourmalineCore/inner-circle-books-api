@@ -201,12 +201,12 @@ public class BooksController : Controller
   /// </summary>
   [RequiresPermission(UserClaimsProvider.CanViewBooks)]
   [HttpGet("feedback/{bookId}")]
-  public Task<BooksFeedbackListResponse> GetBookFeedbackListByBookIdAsync(
+  public Task<GetBookFeedbackResponse> GetBookFeedbackAsync(
     [Required][FromRoute] long bookId,
-    [FromServices] GetBookFeedbackListByBookIdHandler getBookFeedbackListByBookIdHandler
+    [FromServices] GetBookFeedbackHandler getBookFeedbackHandler
   )
   {
-    return getBookFeedbackListByBookIdHandler.HandleAsync(bookId, User.GetTenantId());
+    return getBookFeedbackHandler.HandleAsync(bookId, User.GetTenantId());
   }
 
   /// <summary>

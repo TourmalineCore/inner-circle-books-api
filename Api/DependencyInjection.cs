@@ -25,8 +25,8 @@ public static class DependencyInjection
     services.AddTransient<GetBookByIdQuery>();
     services.AddTransient<IGetBookByCopyIdQuery, GetBookByCopyIdQuery>();
     services.AddTransient<GetBookHistoryByIdQuery>();
-    services.AddTransient<GetBookFeedbackListByBookIdHandler>();
-    services.AddTransient<GetBookFeedbackListByBookIdQuery>();
+    services.AddTransient<GetBookFeedbackHandler>();
+    services.AddTransient<GetBookFeedbackQuery>();
     services.AddTransient<IGetKnowledgeAreasQuery, GetKnowledgeAreasQuery>();
     services.AddTransient<GetAllBooksQuery>();
     services.AddTransient<CreateBookHandler>();

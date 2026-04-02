@@ -4,20 +4,20 @@ using Core.Entities;
 using Microsoft.EntityFrameworkCore;
 using Xunit;
 
-public class GetBookFeedbackListByBookIdQueryTests
+public class GetBookFeedbackQueryTests
 {
   private const long TENANT_ID = 1;
   private readonly AppDbContext _context;
-  private readonly GetBookFeedbackListByBookIdQuery _query;
+  private readonly GetBookFeedbackQuery _query;
 
-  public GetBookFeedbackListByBookIdQueryTests()
+  public GetBookFeedbackQueryTests()
   {
     var options = new DbContextOptionsBuilder<AppDbContext>()
-      .UseInMemoryDatabase("GetBookFeedbackListByBookIdQueryDatabase")
+      .UseInMemoryDatabase("GetBookFeedbackQueryDatabase")
       .Options;
 
     _context = new AppDbContext(options);
-    _query = new GetBookFeedbackListByBookIdQuery(_context);
+    _query = new GetBookFeedbackQuery(_context);
   }
 
   [Fact]

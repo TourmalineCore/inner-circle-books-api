@@ -4,11 +4,11 @@ using Microsoft.EntityFrameworkCore;
 namespace Application.Queries;
 
 
-public class GetBookFeedbackListByBookIdQuery
+public class GetBookFeedbackQuery
 {
   private readonly AppDbContext _context;
 
-  public GetBookFeedbackListByBookIdQuery(AppDbContext context)
+  public GetBookFeedbackQuery(AppDbContext context)
   {
     _context = context;
   }

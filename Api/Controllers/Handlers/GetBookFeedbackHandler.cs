@@ -4,24 +4,24 @@ using Application.Queries;
 
 namespace Api.Controllers.Handlers;
 
-public class GetBookFeedbackListByBookIdHandler
+public class GetBookFeedbackHandler
 {
     private readonly IInnerCircleHttpClient _client;
 
-    private readonly GetBookFeedbackListByBookIdQuery _getBookFeedbackListByBookIdQuery;
+    private readonly GetBookFeedbackQuery _getBookFeedbackQuery;
     
-    public GetBookFeedbackListByBookIdHandler(
+    public GetBookFeedbackHandler(
         IInnerCircleHttpClient client,
-        GetBookFeedbackListByBookIdQuery getBookFeedbackListByBookIdQuery
+        GetBookFeedbackQuery getBookFeedbackQuery
     )
     {
         _client = client;
-        _getBookFeedbackListByBookIdQuery = getBookFeedbackListByBookIdQuery;
+        _getBookFeedbackQuery = getBookFeedbackQuery;
     }
 
-    public async Task<BooksFeedbackListResponse> HandleAsync(long bookId, long tenantId)
+    public async Task<GetBookFeedbackResponse> HandleAsync(long bookId, long tenantId)
     {
-        var bookFeedback = await _getBookFeedbackListByBookIdQuery.GetAsync(bookId, tenantId);
+        var bookFeedback = await _getBookFeedbackQuery.GetAsync(bookId, tenantId);
 
         var employeesIds = bookFeedback
             .Select(x => x.EmployeeId)
@@ -29,9 +29,9 @@ public class GetBookFeedbackListByBookIdHandler
 
         var employeesByIds = await _client.GetEmployeesByIdsAsync(employeesIds);
 
-        return new BooksFeedbackListResponse
+        return new GetBookFeedbackResponse
         {
-            BookFeedbackList = bookFeedback
+            BookFeedback = bookFeedback
                 .Select(x =>
                 {
                     return new BookFeedbackDto

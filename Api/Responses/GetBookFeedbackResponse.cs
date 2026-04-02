@@ -1,8 +1,8 @@
 namespace Api.Responses;
 
-public class BooksFeedbackListResponse
+public class GetBookFeedbackResponse
 {
-  public List<BookFeedbackDto> BookFeedbackList { get; set; }
+  public List<BookFeedbackDto> BookFeedback { get; set; }
 }
 
 public class BookFeedbackDto
