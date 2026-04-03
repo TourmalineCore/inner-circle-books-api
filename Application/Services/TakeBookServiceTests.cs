@@ -41,7 +41,7 @@ public class TakeBookServiceTests : IAsyncLifetime
 
   // Todo: move to karate test?
   [Fact]
-  public async Task TakeAsync_WhenBookIsAlreadyTaken_ShouldReturnPreviousAndAddNew()
+  public async Task TakeAsync_WhenBookWasTakenAndNotReturned_ShouldReassignBookCopyToNewReader()
   {
     var book = new Book
     {

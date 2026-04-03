@@ -21,18 +21,16 @@ namespace Api.Controllers;
 [Route("api/books")]
 public class BooksController : Controller
 {
-  private readonly CreateBookCommand _createBookCommand;
   private readonly DeleteBookCommand _deleteBookCommand;
   private readonly GetAllBooksQuery _getAllBooksQuery;
   private readonly GetBookByIdQuery _getBookByIdQuery;
-  private readonly GetBookByCopyIdQuery _getBookByCopyIdQuery;
+  private readonly IGetBookByCopyIdQuery _getBookByCopyIdQuery;
   private readonly GetBookCopyReadingHistoryByCopyIdQuery _getBookCopyReadingHistoryByCopyIdQuery;
   private readonly GetBookHistoryByIdQuery _getBookHistoryByIdQuery;
   private readonly IGetKnowledgeAreasQuery _getKnowledgeAreasQuery;
   private readonly BookCopyValidatorQuery _bookCopyValidatorQuery;
   private readonly SoftDeleteBookCommand _softDeleteBookCommand;
   private readonly EditBookCommand _editBookCommand;
-  private readonly ReturnBookCommand _returnBookCommand;
   private readonly TakeBookService _takeBookService;
   private readonly IInnerCircleHttpClient _client;
 
@@ -42,16 +40,14 @@ public class BooksController : Controller
   public BooksController(
     GetAllBooksQuery getAllBooksQuery,
     GetBookByIdQuery getBookByIdQuery,
-    GetBookByCopyIdQuery getBookByCopyIdQuery,
+    IGetBookByCopyIdQuery getBookByCopyIdQuery,
     GetBookCopyReadingHistoryByCopyIdQuery getBookCopyReadingHistoryByCopyIdQuery,
     GetBookHistoryByIdQuery getBookHistoryByIdQuery,
     BookCopyValidatorQuery bookCopyValidatorQuery,
     IGetKnowledgeAreasQuery getKnowledgeAreasQuery,
-    CreateBookCommand createBookCommand,
     EditBookCommand editBookCommand,
     DeleteBookCommand deleteBookCommand,
     SoftDeleteBookCommand softDeleteBookCommand,
-    ReturnBookCommand returnBookCommand,
     TakeBookService takeBookService,
     IInnerCircleHttpClient client
   )
@@ -63,11 +59,9 @@ public class BooksController : Controller
     _getBookHistoryByIdQuery = getBookHistoryByIdQuery;
     _bookCopyValidatorQuery = bookCopyValidatorQuery;
     _getKnowledgeAreasQuery = getKnowledgeAreasQuery;
-    _createBookCommand = createBookCommand;
     _editBookCommand = editBookCommand;
     _deleteBookCommand = deleteBookCommand;
     _softDeleteBookCommand = softDeleteBookCommand;
-    _returnBookCommand = returnBookCommand;
     _takeBookService = takeBookService;
     _client = client;
   }
@@ -146,9 +140,9 @@ public class BooksController : Controller
   [HttpGet("copy/{id}")]
   public async Task<ActionResult<SingleBookResponse>> GetBookByCopyIdAsync([Required][FromRoute] long id, [Required][FromQuery] string secretKey)
   {
-    var bookId = await _getBookByCopyIdQuery.GetBookIdByCopyIdAsync(id, User.GetTenantId());
+    var book = await _getBookByCopyIdQuery.GetByCopyIdAsync(id, User.GetTenantId());
 
-    if (bookId == 0)
+    if (book == null)
     {
       return NotFound(new
       {
@@ -166,7 +160,7 @@ public class BooksController : Controller
       });
     }
 
-    return await GetBookResponseAsync(bookId);
+    return await GetBookResponseAsync(book.Id);
   }
 
   /// <summary>
@@ -200,6 +194,19 @@ public class BooksController : Controller
       BookTitle = book.Title,
       BookCopies = bookCopies
     };
+  }
+
+  /// <summary>
+  ///     Get book feedback by book id
+  /// </summary>
+  [RequiresPermission(UserClaimsProvider.CanViewBooks)]
+  [HttpGet("feedback/{bookId}")]
+  public Task<GetBookFeedbackResponse> GetBookFeedbackAsync(
+    [Required][FromRoute] long bookId,
+    [FromServices] GetBookFeedbackHandler getBookFeedbackHandler
+  )
+  {
+    return getBookFeedbackHandler.HandleAsync(bookId, User.GetTenantId());
   }
 
   /// <summary>
@@ -262,18 +269,14 @@ public class BooksController : Controller
   /// <param name="returnBookRequest"></param>
   [RequiresPermission(UserClaimsProvider.CanViewBooks)]
   [HttpPost("return")]
-  public async Task ReturnBookAsync([Required][FromBody] ReturnBookRequest returnBookRequest)
+  public async Task ReturnBookAsync(
+    [Required][FromBody] ReturnBookRequest returnBookRequest,
+    [FromServices] ReturnBookHandler returnBookHandler
+  )
   {
     var employee = await _client.GetEmployeeAsync(User.GetCorporateEmail());
 
-    var returnBookCommandParams = new ReturnBookCommandParams
-    {
-      BookCopyId = returnBookRequest.BookCopyId,
-      ProgressOfReading = (ProgressOfReading)Enum.Parse(typeof(ProgressOfReading), returnBookRequest.ProgressOfReading),
-      ActualReturnedAtUtc = DateTime.UtcNow
-    };
-
-    await _returnBookCommand.ReturnAsync(returnBookCommandParams, employee, User.GetTenantId());
+    await returnBookHandler.HandleAsync(returnBookRequest, employee, User.GetTenantId());
   }
 
   /// <summary>

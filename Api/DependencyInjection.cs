@@ -23,8 +23,10 @@ public static class DependencyInjection
     services.AddTransient<DeleteBookCommand>();
     services.AddTransient<SoftDeleteBookCommand>();
     services.AddTransient<GetBookByIdQuery>();
-    services.AddTransient<GetBookByCopyIdQuery>();
+    services.AddTransient<IGetBookByCopyIdQuery, GetBookByCopyIdQuery>();
     services.AddTransient<GetBookHistoryByIdQuery>();
+    services.AddTransient<GetBookFeedbackHandler>();
+    services.AddTransient<GetBookFeedbackQuery>();
     services.AddTransient<IGetKnowledgeAreasQuery, GetKnowledgeAreasQuery>();
     services.AddTransient<GetAllBooksQuery>();
     services.AddTransient<CreateBookHandler>();
@@ -32,6 +34,7 @@ public static class DependencyInjection
     services.AddTransient<BookCopyValidatorQuery>();
     services.AddTransient<TakeBookCommand>();
     services.AddTransient<ReturnBookCommand>();
+    services.AddTransient<ReturnBookHandler>();
     services.AddTransient<IInnerCircleHttpClient, InnerCircleHttpClient>();
     services.AddTransient<TakeBookService>();
   }

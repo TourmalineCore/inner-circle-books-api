@@ -1,8 +1,14 @@
+using Core.Entities;
 using Microsoft.EntityFrameworkCore;
 
 namespace Application.Queries;
 
-public class GetBookByCopyIdQuery
+public interface IGetBookByCopyIdQuery
+{
+  Task<Book?> GetByCopyIdAsync(long copyId, long tenantId);
+}
+
+public class GetBookByCopyIdQuery : IGetBookByCopyIdQuery
 {
   private readonly AppDbContext _context;
 
@@ -11,13 +17,13 @@ public class GetBookByCopyIdQuery
     _context = context;
   }
 
-  public Task<long> GetBookIdByCopyIdAsync(long copyId, long tenantId)
+  public Task<Book?> GetByCopyIdAsync(long copyId, long tenantId)
   {
     return _context
       .BooksCopies
       .Where(x => x.TenantId == tenantId)
       .Where(x => x.Id == copyId)
-      .Select(x => x.BookId)
-      .FirstOrDefaultAsync();
+      .Select(x => x.Book)
+      .SingleOrDefaultAsync();
   }
 }

@@ -61,4 +61,81 @@ public class ReturnBookCommandTests
     Assert.Equal(returnBookRequest.ActualReturnedAtUtc, completedCopyReadingHistory.ActualReturnedAtUtc);
     Assert.Equal(returnBookRequest.ProgressOfReading, completedCopyReadingHistory.ProgressOfReading);
   }
+
+  [Fact]
+  public async Task ReturnAsync_ShouldNotAddFeedbackIfBookCopyWasOvertaken()
+  {
+    var employee = new Employee
+    {
+      Id = 2
+    };
+
+    var bookCopyReadingHistory = new BookCopyReadingHistory
+    {
+      Id = 2,
+      BookCopyId = 2,
+      ReaderEmployeeId = employee.Id,
+      TenantId = TENANT_ID
+    };
+
+     _context
+      .BooksCopiesReadingHistory
+      .Add(bookCopyReadingHistory);
+      
+    await _context.SaveChangesAsync();
+
+    var returnBookRequest = new ReturnBookCommandParams
+    {
+      BookCopyId = 2,
+      ProgressOfReading = ProgressOfReading.Unknown,
+      ActualReturnedAtUtc = DateTime.UtcNow
+    };
+
+    await _command.ReturnAsync(returnBookRequest, employee, TENANT_ID);
+
+    var bookFeedback = await _context
+      .BookFeedback
+      .SingleOrDefaultAsync(x => x.EmployeeId == employee.Id);
+
+    Assert.Null(bookFeedback);
+  }
+
+
+  [Fact]
+  public async Task ReturnAsync_ShouldNotAddFeedbackIfBookCopyWasReturnedWithNotReadAtAllStatus()
+  {
+    var employee = new Employee
+    {
+      Id = 3
+    };
+
+    var bookCopyReadingHistory = new BookCopyReadingHistory
+    {
+      Id = 3,
+      BookCopyId = 3,
+      ReaderEmployeeId = employee.Id,
+      TenantId = TENANT_ID
+    };
+
+     _context
+      .BooksCopiesReadingHistory
+      .Add(bookCopyReadingHistory);
+      
+    await _context.SaveChangesAsync();
+
+    var returnBookRequest = new ReturnBookCommandParams
+    {
+      BookCopyId = 3,
+      ProgressOfReading = ProgressOfReading.NotReadAtAll,
+      ActualReturnedAtUtc = DateTime.UtcNow
+    };
+
+    await _command.ReturnAsync(returnBookRequest, employee, TENANT_ID);
+
+    var bookFeedback = await _context
+      .BookFeedback
+      .SingleOrDefaultAsync(x => x.EmployeeId == employee.Id);
+
+    Assert.Null(bookFeedback);
+  }
 }

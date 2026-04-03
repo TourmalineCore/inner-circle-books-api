@@ -37,7 +37,7 @@ Scenario: Take and return book flow
     When method GET
     Then status 200
 
-    * def  firstKnowledgeAreaId = response.knowledgeAreas[0].id
+    * def firstKnowledgeAreaId = response.knowledgeAreas[0].id
 
     # Create a new book
     * def randomName = 'Test-book-' + Math.random()
@@ -98,6 +98,10 @@ Scenario: Take and return book flow
     And assert response.employeesWhoReadNow[0].bookCopyId == bookCopyId
 
     * def readerFullName = response.employeesWhoReadNow[0].fullName
+    * def progressOfReading = 'ReadEntirely'
+    * def rating = 5
+    * def advantages = "Good book"
+    * def disadvantages = "Long book"
 
     # Return book copy
     And path '/return'
@@ -105,7 +109,10 @@ Scenario: Take and return book flow
     """
     {
         "bookCopyId": '#(bookCopyId)',
-        "progressOfReading": 'ReadEntirely'
+        "progressOfReading": '#(progressOfReading)',
+        "rating": '#(rating)',
+        "advantages": '#(advantages)',
+        "disadvantages": '#(disadvantages)',
     }
     """
     When method POST
@@ -116,6 +123,16 @@ Scenario: Take and return book flow
     When method GET
     Then status 200
     And assert response.employeesWhoReadNow.length == 0
+
+    # Check that book has feedback
+    And path '/feedback', newBookId
+    When method GET
+    Then status 200
+    And assert response.bookFeedback[0].employeeFullName == readerFullName
+    And assert response.bookFeedback[0].progressOfReading == progressOfReading
+    And assert response.bookFeedback[0].rating == rating
+    And assert response.bookFeedback[0].advantages == advantages
+    And assert response.bookFeedback[0].disadvantages == disadvantages
 
     # Check book history
     And path '/history', newBookId

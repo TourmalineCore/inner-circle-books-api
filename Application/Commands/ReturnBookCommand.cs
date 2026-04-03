@@ -8,9 +8,17 @@ public class ReturnBookCommandParams
 {
   public long BookCopyId { get; set; }
 
+  public long BookId { get; set; }
+
   public ProgressOfReading ProgressOfReading { get; set; }
 
   public DateTime ActualReturnedAtUtc { get; set; }
+
+  public int? Rating { get; set; }
+
+  public string? Advantages { get; set; }
+
+  public string? Disadvantages { get; set; }
 }
 
 public class ReturnBookCommand
@@ -38,7 +46,25 @@ public class ReturnBookCommand
     bookCopyReadingHistory.ActualReturnedAtUtc = returnBookCommandParams.ActualReturnedAtUtc;
     bookCopyReadingHistory.ProgressOfReading = returnBookCommandParams.ProgressOfReading;
 
-    _context.BooksCopiesReadingHistory.Update(bookCopyReadingHistory);
+    if (returnBookCommandParams.ProgressOfReading == ProgressOfReading.ReadPartially ||
+        returnBookCommandParams.ProgressOfReading == ProgressOfReading.ReadEntirely
+      )
+    {
+      var bookFeedback = new BookFeedback
+      {
+        TenantId = tenantId,
+        BookId = returnBookCommandParams.BookId,
+        EmployeeId = employee.Id,
+        LeftFeedbackAtUtc = DateTime.UtcNow,
+        ProgressOfReading = returnBookCommandParams.ProgressOfReading,
+        Rating = returnBookCommandParams.Rating,
+        Advantages = returnBookCommandParams.Advantages,
+        Disadvantages = returnBookCommandParams.Disadvantages
+      };
+
+      await _context.BookFeedback.AddAsync(bookFeedback);
+    }
+    
     await _context.SaveChangesAsync();
   }
 }

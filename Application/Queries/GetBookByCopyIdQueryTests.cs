@@ -21,14 +21,32 @@ public class GetBookByCopyIdQueryTests
   }
 
   [Fact]
-  public async Task GetBookIdByCopyIdAsync_ShouldReturnBookId_WhenCopyExists()
+  public async Task GetBookByCopyIdAsync_ShouldReturnBook_WhenCopyExists()
   {
-    var bookId = 1;
+    var book = new Book
+    {
+      Id = 1,
+      TenantId = TENANT_ID,
+      Title = "Test Book",
+      Annotation = "Test annotation",
+      Authors = new List<Author>()
+      {
+        new Author()
+        {
+          FullName = "Test Author"
+        }
+      },
+      Language = Language.en,
+      CoverUrl = "http://test-images.com/img404.png"
+    };
+
+    _context.Books.Add(book);
+    await _context.SaveChangesAsync();
 
     var bookCopy = new BookCopy
     {
       Id = 4,
-      BookId = bookId,
+      BookId = book.Id,
       TenantId = TENANT_ID,
       SecretKey = "abcd"
     };
@@ -36,8 +54,8 @@ public class GetBookByCopyIdQueryTests
     _context.BooksCopies.Add(bookCopy);
     await _context.SaveChangesAsync();
 
-    var result = await _query.GetBookIdByCopyIdAsync(bookCopy.Id, TENANT_ID);
+    var result = await _query.GetByCopyIdAsync(bookCopy.Id, TENANT_ID);
 
-    Assert.Equal(bookId, result);
+    Assert.Equal(book, result);
   }
 }

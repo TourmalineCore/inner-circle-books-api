@@ -22,7 +22,8 @@ public class TakeBookService
   public async Task TakeAsync(
     TakeBookCommandParams takeBookCommandParams,
     ReturnBookCommandParams returnBookCommandParams,
-    Employee employee, long tenantId,
+    Employee employee,
+    long tenantId,
     BookCopyReadingHistory? activeReading
   )
   {
