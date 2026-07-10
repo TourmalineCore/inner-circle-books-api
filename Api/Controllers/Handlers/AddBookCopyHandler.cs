@@ -1,6 +1,5 @@
 using Application.Commands;
 
-
 namespace Api.Controllers.Handlers;
 
 public class AddBookCopyHandler
