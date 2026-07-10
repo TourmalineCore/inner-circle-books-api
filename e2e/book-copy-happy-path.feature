@@ -64,7 +64,7 @@ Scenario: Happy Path
     * def bookId = response.newBookId
 
     # Add new book copy
-    And path bookId '/add-copy', 
+    And path bookId, '/add-copy' 
     When method POST
     Then status 200
 
