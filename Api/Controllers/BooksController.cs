@@ -223,6 +223,19 @@ public class BooksController : Controller
   }
 
   /// <summary>
+  ///     Add book copy
+  /// </summary>
+  [RequiresPermission(UserClaimsProvider.CanManageBooks)]
+  [HttpPost("{bookId}/add-copy")]
+  public Task AddBookCopyAsync(
+      [Required][FromRoute] long bookId,
+      [FromServices] AddBookCopyHandler addBookCopyHandler
+  )
+  {
+      return addBookCopyHandler.HandleAsync(bookId, User.GetTenantId());
+  }
+
+  /// <summary>
   ///     Take book
   /// </summary>
   /// <param name="takeBookRequest"></param>

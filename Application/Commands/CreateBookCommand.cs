@@ -72,7 +72,7 @@ public class CreateBookCommand
         .Select(x => new BookCopy()
         {
           TenantId = tenantId,
-          SecretKey = GenerateSecretKey()
+          SecretKey = SecretKeyGenerator.Generate()
         })
         .ToList()
     };
