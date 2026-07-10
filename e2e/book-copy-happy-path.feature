@@ -63,14 +63,21 @@ Scenario: Happy Path
 
     * def bookId = response.newBookId
 
+    # Add new book copy
+    And path bookId '/add-copy', 
+    When method POST
+    Then status 200
+
     # Get book and copies by bookId
     And path '/copies', bookId
     When method GET
     Then status 200
-    And assert response.bookCopies.length == 1
+    And assert response.bookCopies.length == 2
     And match response.bookTitle == randomName
-    And match response.bookCopies[0].bookCopyId == "#notnull"
-    And match response.bookCopies[0].secretKey == "#notnull" 
+    And match response.bookCopies[0].bookCopyId == "#number"
+    And match response.bookCopies[0].secretKey == "#notnull"
+    And match response.bookCopies[1].bookCopyId == "#number"
+    And match response.bookCopies[1].secretKey == "#notnull"  
 
     * def bookCopyId = response.bookCopies[0].bookCopyId
     * def secretKey = response.bookCopies[0].secretKey
