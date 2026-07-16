@@ -23,20 +23,9 @@ public class CreateBookCommand
 {
   private readonly AppDbContext _context;
 
-  private static readonly Random _random = new Random();
-
-  private const string CHARS = "abcdefghijklmnopqrstuvwxyz0123456789";
-
   public CreateBookCommand(AppDbContext context)
   {
     _context = context;
-  }
-
-  private string GenerateSecretKey()
-  {
-    return new string(Enumerable
-      .Repeat(CHARS, 4)
-      .Select(s => s[_random.Next(s.Length)]).ToArray());
   }
 
   public async Task<long> CreateAsync(CreateBookCommandParams createBookCommandParams, long tenantId)
@@ -72,7 +61,7 @@ public class CreateBookCommand
         .Select(x => new BookCopy()
         {
           TenantId = tenantId,
-          SecretKey = GenerateSecretKey()
+          SecretKey = SecretKeyGenerator.Generate()
         })
         .ToList()
     };
