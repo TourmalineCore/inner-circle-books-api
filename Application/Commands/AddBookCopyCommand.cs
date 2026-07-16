@@ -1,4 +1,5 @@
 using Core.Entities;
+using Microsoft.EntityFrameworkCore;
 
 namespace Application.Commands;
 
@@ -18,6 +19,12 @@ public class AddBookCopyCommand
 
   public async Task ExecuteAsync(AddBookCopyCommandParams addBookCopyCommandParams, long tenantId)
   {
+    await _context
+      .Books
+      .Where(x => x.TenantId == tenantId)
+      .Where(x => x.Id == addBookCopyCommandParams.BookId)
+      .SingleAsync();
+
     var newBookCopy = new BookCopy()
     {
         TenantId = tenantId,
