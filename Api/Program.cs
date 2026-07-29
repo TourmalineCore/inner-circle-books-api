@@ -85,12 +85,13 @@ if (!app.Environment.IsDevelopment())
   app.UseHsts();
 }
 
+var corsOptions = configuration.GetSection(nameof(CorsOptions)).Get<CorsOptions>();
+
 app.UseCors(
   corsPolicyBuilder => corsPolicyBuilder
-    .AllowAnyHeader()
-    .SetIsOriginAllowed(_ => true)
-    .AllowAnyMethod()
-    .AllowAnyOrigin()
+      .WithOrigins(corsOptions!.AllowedOrigins)
+      .WithMethods("GET", "POST", "DELETE")
+      .WithHeaders("Authorization", "Content-Type")
 );
 
 app.UseStaticFiles();
