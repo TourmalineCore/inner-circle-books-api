@@ -88,6 +88,7 @@ services:
       # here the port is 1080 because it needs to be an internal port, not an external which is 8505 in this case
       AUTH_API_ROOT_URL: "http://inner-circle-books-api-mock-server:1080/api/auth"
       API_ROOT_URL: "http://inner-circle-books-api/api/books"
+      CORS_ALLOWED_ORIGINS: "*"
       SHOULD_USE_FAKE_EXTERNAL_DEPENDENCIES: "true"
     networks:
       - inner-circle-books-api-network
