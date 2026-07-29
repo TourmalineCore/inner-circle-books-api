@@ -4,14 +4,14 @@ Feature: CORS Settings
 
   Background:
     * header Content-Type = 'application/json'
-
+    
   Scenario: Verify API CORS settings
 
     * def jsUtils = read('./js-utils.js')
     * def authApiRootUrl = jsUtils().getEnvVariable('AUTH_API_ROOT_URL')
     * def apiRootUrl = jsUtils().getEnvVariable('API_ROOT_URL')
-    * def authSlytherineTenantDracoLoginWithAllPermissions = jsUtils().getEnvVariable('AUTH_SLYTHERINE_TENANT_DRACO_MALFOY_LOGIN_WITH_ALL_PERMISSIONS')
-    * def authSlytherineTenantDracoPasswordWithAllPermissions = jsUtils().getEnvVariable('AUTH_SLYTHERINE_TENANT_DRACO_MALFOY_PASSWORD_WITH_ALL_PERMISSIONS')
+    * def authLogin = jsUtils().getEnvVariable('AUTH_FIRST_TENANT_LOGIN_WITH_ALL_PERMISSIONS')
+    * def authPassword = jsUtils().getEnvVariable('AUTH_FIRST_TENANT_PASSWORD_WITH_ALL_PERMISSIONS')
     * def corsAllowedOrigins = jsUtils().getEnvVariable('CORS_ALLOWED_ORIGINS')
 
     # Authentication
@@ -20,8 +20,8 @@ Feature: CORS Settings
     And request
     """
     {
-        "login": "#(authSlytherineTenantDracoLoginWithAllPermissions)",
-        "password": "#(authSlytherineTenantDracoPasswordWithAllPermissions)"
+        "login": "#(authLogin)",
+        "password": "#(authPassword)"
     }
     """
     And method POST
