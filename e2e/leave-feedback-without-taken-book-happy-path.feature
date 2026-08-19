@@ -90,8 +90,8 @@ Scenario: Leave feedback without taken the book
     And path '/feedback', newBookId
     When method GET
     Then status 200
+    And match response.bookFeedback[0].employeeFullName == '#string'
     And assert response.bookFeedback[0].id == newFeedbackId
-    # And assert response.bookFeedback[0].employeeFullName == readerFullName
     And assert response.bookFeedback[0].progressOfReading == progressOfReading
     And assert response.bookFeedback[0].rating == rating
     And assert response.bookFeedback[0].advantages == advantages
