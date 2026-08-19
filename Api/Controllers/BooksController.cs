@@ -213,7 +213,7 @@ public class BooksController : Controller
   ///     Create book feedback
   /// </summary>
   [RequiresPermission(UserClaimsProvider.CanViewBooks)]
-  [HttpGet("{bookId}/feedback")]
+  [HttpPost("{bookId}/feedback")]
   public async Task<CreateBookFeedbackResponse> CreateBookFeedbackAsync(
     [Required][FromRoute] long bookId,
     [Required][FromBody] CreateBookFeedbackRequest createBookFeedbackRequest,
