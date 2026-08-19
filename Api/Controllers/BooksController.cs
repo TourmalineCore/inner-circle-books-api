@@ -210,6 +210,22 @@ public class BooksController : Controller
   }
 
   /// <summary>
+  ///     Create book feedback
+  /// </summary>
+  [RequiresPermission(UserClaimsProvider.CanViewBooks)]
+  [HttpGet("{bookId}/feedback")]
+  public async Task<CreateBookFeedbackResponse> CreateBookFeedbackAsync(
+    [Required][FromRoute] long bookId,
+    [Required][FromBody] CreateBookFeedbackRequest createBookFeedbackRequest,
+    [FromServices] CreateBookFeedbackHandler createBookFeedbackHandler
+  )
+  {
+    var employee = await _client.GetEmployeeAsync(User.GetCorporateEmail());
+
+    return await createBookFeedbackHandler.HandleAsync(bookId, createBookFeedbackRequest, employee, User.GetTenantId());
+  }
+
+  /// <summary>
   ///     Adds book
   /// </summary>
   [RequiresPermission(UserClaimsProvider.CanManageBooks)]
