@@ -78,7 +78,7 @@ Scenario: Leave feedback without taken the book
         "progressOfReading": '#(progressOfReading)',
         "rating": '#(rating)',
         "advantages": '#(advantages)',
-        "disadvantages": '#(disadvantages)',
+        "disadvantages": '#(disadvantages)'
     }
     """
     When method POST
@@ -86,7 +86,7 @@ Scenario: Leave feedback without taken the book
     
     * def newFeedbackId = response.newFeedbackId
 
-    Check that book has feedback
+    # Check that book has feedback
     And path '/feedback', newBookId
     When method GET
     Then status 200
