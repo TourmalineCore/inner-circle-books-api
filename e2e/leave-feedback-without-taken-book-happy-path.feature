@@ -98,7 +98,7 @@ Scenario: Leave feedback without taken the book
     And assert response.bookFeedback[0].disadvantages == disadvantages
 
     # Cleanup: Delete the book with feedback (hard delete)
-    And path bookId, 'hard-delete'
+    And path newBookId, 'hard-delete'
     When method DELETE
     Then status 200
     And match response == { isDeleted: true }
