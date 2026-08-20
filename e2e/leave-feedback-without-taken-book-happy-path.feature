@@ -32,8 +32,6 @@ Scenario: Leave feedback without taken the book
 
     * configure headers = jsUtils().getAuthHeaders(accessToken)
 
-    * def employeeId = jsUtils().getEmployeeIdFromToken(accessToken)
-
     Given url apiRootUrl
     And path '/knowledge-areas'
     When method GET
