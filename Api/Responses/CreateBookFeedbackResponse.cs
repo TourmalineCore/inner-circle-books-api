@@ -2,5 +2,5 @@ namespace Api.Responses;
 
 public class CreateBookFeedbackResponse
 {
-  public long NewFeedbackId { get; set; }
+  public long NewBookFeedbackId  { get; set; }
 }

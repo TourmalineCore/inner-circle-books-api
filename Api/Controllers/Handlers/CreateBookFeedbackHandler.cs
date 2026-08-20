@@ -25,7 +25,7 @@ public class CreateBookFeedbackHandler
     long tenantId
   )
   {
-    var createBookCommandParams = new CreateBookFeedbackCommandParams
+    var createBookFeedbackCommandParams = new CreateBookFeedbackCommandParams
     {
       BookId = bookId,
       ProgressOfReading = (ProgressOfReading)Enum.Parse(typeof(ProgressOfReading), createBookFeedbackRequest.ProgressOfReading),
@@ -34,11 +34,11 @@ public class CreateBookFeedbackHandler
       Disadvantages = createBookFeedbackRequest.Disadvantages
     };
 
-    var newFeedbackId = await _createBookFeedbackCommand.ExecuteAsync(createBookCommandParams, employee, tenantId);
+    var newBookFeedbackId = await _createBookFeedbackCommand.ExecuteAsync(createBookFeedbackCommandParams, employee, tenantId);
 
     return new CreateBookFeedbackResponse()
     {
-      NewFeedbackId = newFeedbackId
+      NewBookFeedbackId = newBookFeedbackId
     };
   }
 }

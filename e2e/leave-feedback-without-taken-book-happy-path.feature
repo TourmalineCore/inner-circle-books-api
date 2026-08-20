@@ -70,7 +70,7 @@ Scenario: Leave feedback without taken the book
     * def advantages = "Good book"
     * def disadvantages = "Long book"
 
-    # Leave feedback
+    # Create book feedback
     And path newBookId, 'feedback'
     And request
     """
@@ -84,14 +84,14 @@ Scenario: Leave feedback without taken the book
     When method POST
     Then status 200
     
-    * def newFeedbackId = response.newFeedbackId
+    * def newBookFeedbackId = response.newBookFeedbackId
 
     # Check that book has feedback
     And path '/feedback', newBookId
     When method GET
     Then status 200
     And match response.bookFeedback[0].employeeFullName == '#string'
-    And assert response.bookFeedback[0].id == newFeedbackId
+    And assert response.bookFeedback[0].id == newBookFeedbackId
     And assert response.bookFeedback[0].progressOfReading == progressOfReading
     And assert response.bookFeedback[0].rating == rating
     And assert response.bookFeedback[0].advantages == advantages
@@ -102,3 +102,8 @@ Scenario: Leave feedback without taken the book
     When method DELETE
     Then status 200
     And match response == { isDeleted: true }
+
+    # Cleanup Verification: Verify that book was deleted
+    When method GET
+    Then status 200
+    And assert response.books.filter(x => x.id == newBookId).length == 0
