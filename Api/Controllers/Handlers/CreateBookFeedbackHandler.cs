@@ -24,6 +24,12 @@ public class CreateBookFeedbackHandler
     long tenantId
   )
   {
+    if (createBookFeedbackRequest.ProgressOfReading != ProgressOfReading.ReadPartially.ToString() && 
+        createBookFeedbackRequest.ProgressOfReading != ProgressOfReading.ReadEntirely.ToString())
+    {
+        throw new ArgumentException($"Only {ProgressOfReading.ReadPartially} and {ProgressOfReading.ReadEntirely} are allowed.");
+    }
+
     var createBookFeedbackCommandParams = new CreateBookFeedbackCommandParams
     {
       BookId = bookId,
