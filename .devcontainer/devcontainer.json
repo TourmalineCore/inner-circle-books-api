@@ -1,21 +1,53 @@
 // For format details, see https://aka.ms/devcontainer.json. For config options, see the
-// README at: https://github.com/devcontainers/templates/tree/main/src/docker-existing-dockerfile
+// README at: https://github.com/devcontainers/templates/tree/main/src/dotnet-postgres
 {
-	"name": "Existing Dockerfile",
-	"build": {
-		// Sets the run context to one level up instead of the .devcontainer folder.
-		"context": "..",
-		// Update the 'dockerFile' property if you aren't using the standard 'Dockerfile' filename.
-		"dockerfile": "../e2e/KarateDockerfile"
-	},
-	"runArgs": [
-		"--network=host"
+	"name": "TC .NET API Dev Container",
+	// this combines base compose with all service with the one that contains .NET SDK and Karate
+	"dockerComposeFile": [
+		"../docker-compose.yml",
+		"docker-compose.yml"
 	],
+	// our terminal will need .NET SDK and Karate that are part of this docker compose service
+	"service": "dotnet-sdk-with-karate",
+	// https://github.com/microsoft/vscode-remote-release/issues/5795#issuecomment-2518255296
+	// it is not possible to pass a profile name MockForDevelopment thus we need to hadrcode here services that need to be run as part of Dev Container
+	"runServices": [
+		"inner-circle-books-api-db",
+		"inner-circle-books-api-mock-server",
+		"inner-circle-books-api-pgadmin"
+	],
+	"workspaceFolder": "/workspaces/${localWorkspaceFolderBasename}",
+	"features": {
+		// this is needed to be able to call Host OS Docker (DooD)
+		"ghcr.io/devcontainers/features/docker-outside-of-docker:1": {}
+	},
 	"customizations": {
 		"vscode": {
 			"extensions": [
 				"karatelabs.karate",
-				"bierner.markdown-mermaid"
+				"bierner.markdown-mermaid",
+				// --- .NET Related Extensions ---
+				// These extensions versions were fixed to try to stabilize working environment in VSCode
+				// There are several issues related to extensions and .NET Runtime/SDK versions incompatibility
+				// Related issues links:
+				// - https://stackoverflow.com/questions/79786199/issues-with-c-sharp-extension-with-vs-code-on-arch-linux
+				// - https://github.com/dotnet/vscode-csharp/issues/7679
+				// - https://github.com/microsoft/vscode-dotnettools/issues/2459
+				// - https://github.com/dotnet/vscode-csharp/issues/8718 (not directly related)
+				// - https://github.com/microsoft/vscode-dotnettools/issues/2416 (not directly related)
+				// If you need to upgrade these versions sync it with Dockerfile devcontainers/dotnet version
+				// It also needs to be tested checking:
+				// - if it finds tests in Tests Explorer
+				// - if there are no errors at the container start related to Roslyn
+				// - if there is no red syntax highlighting in .cs files related to custom NuGet packages even after their restore
+				// - if Debug of the running API and Debug of separate Unit tests work
+				"ms-dotnettools.csdevkit@1.73.8", // C# Dev Kit recommended extension
+				"ms-dotnettools.csharp@2.96.3",
+				"ms-dotnettools.vscode-dotnet-runtime@2.3.9",
+				// --- .NET Related Extensions ---
+				"humao.rest-client", // Rest Client for *.http files
+				"EditorConfig.EditorConfig", // For code auto-formatting using .editorconfig
+				"github.vscode-github-actions" // For workflows editing
 			]
 		}
 	},
@@ -23,8 +55,47 @@
 		"AUTH_FIRST_TENANT_LOGIN_WITH_ALL_PERMISSIONS": "first-tenant-login-with-all-permissions",
 		"AUTH_FIRST_TENANT_PASSWORD_WITH_ALL_PERMISSIONS": "first-tenant-password-with-all-permissions",
 		"AUTH_API_ROOT_URL": "http://localhost:8505/api/auth",
-		"API_ROOT_URL": "http://localhost:6505/api/books",
+		// Karate is run from within this Dev Container against the API started here by dotnet run,
+		// thus it is 4505 and not 6505 which is the Docker Compose one
+		"API_ROOT_URL": "http://localhost:4505/api/books",
 		"CORS_ALLOWED_ORIGINS": "*",
 		"SHOULD_USE_FAKE_EXTERNAL_DEPENDENCIES": "true"
+	},
+	// this root is needed e.g. in case when you edit files not inly in VSCode in Dev Container but also directly
+	// it might not have enough rights to write to files that are open in another editor with Admin rights
+	"remoteUser": "root",
+	"remoteEnv": {
+		"LOCAL_WORKSPACE_FOLDER": "${localWorkspaceFolder}",
+		// let's set our default envrironment here to not do it manually every time
+		"ASPNETCORE_ENVIRONMENT": "MockForDevelopment",
+		// https://learn.microsoft.com/en-us/aspnet/core/fundamentals/configuration/?view=aspnetcore-9.0#default-host-configuration-sources
+		// https://andrewlock.net/8-ways-to-set-the-urls-for-an-aspnetcore-app/
+		// this will override urls in appsettings.MockForDevelopment.json and use different port when run within Dev Container to avoid using the same port
+		"URLS": "http://*:4505"
+	},
+	// need to open the API, DB, and MockServer ports to be able to open them using Host OS localhost
+	"forwardPorts": [
+		4505,
+		7505,
+		8505,
+		9505
+	],
+	"portsAttributes": {
+		"4505": {
+			"label": "VSCode Dev Container API Running Port",
+			"requireLocalPort": true
+		},
+		"7505": {
+			"label": "VSCode Dev Container DB Running Port",
+			"requireLocalPort": true
+		},
+		"8505": {
+			"label": "VSCode Dev Container MockServer Running Port",
+			"requireLocalPort": true
+		},
+		"9505": {
+			"label": "VSCode Dev Container PgAdmin Running Port",
+			"requireLocalPort": true
+		}
 	}
 }

@@ -1,0 +1,21 @@
+# https://code.visualstudio.com/docs/devcontainers/create-dev-container#_extend-your-docker-compose-file-for-development
+
+services:
+  dotnet-sdk-with-karate:
+    # Note that the path of the Dockerfile and context is relative to the *primary*
+    # docker-compose.yml file (the first in the devcontainer.json "dockerComposeFile"
+    # array). The sample below assumes your primary file is in the root of your project.
+    build:
+      context: .
+      dockerfile: .devcontainer/Dockerfile
+
+    # Mounts the project folder to '/workspaces/inner-circle-books-api'
+    volumes:
+      - ${LOCAL_WORKSPACE_FOLDER:-./}:/workspaces/inner-circle-books-api
+
+    # Overrides default command so things don't shut down after the process ends.
+    command: sleep infinity
+
+    # this is needed so that we can access the API at localhost if we run it from this Dev Container
+    # this also allows API that is started from Dev Container using dotnet run to access DB at localhost
+    network_mode: "host"

@@ -1,0 +1,10 @@
+{
+    "configurations": [
+        {
+            "name": "Debug MockForDevelopment",
+            "projectPath": "${workspaceFolder}/Api/Api.csproj",
+            "type": "dotnet",
+            "request": "launch"
+        }
+    ]
+}

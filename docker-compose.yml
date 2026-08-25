@@ -5,6 +5,7 @@ services:
     container_name: inner-circle-books-api-db
     profiles:
       - DbOnly
+      - DbOnlyWithoutPgAdmin
       - MockForDevelopment
       - MockForTests
       - MockForPullRequest
@@ -21,6 +22,39 @@ services:
       retries: 5
     networks:
       - inner-circle-books-api-network
+
+  # https://event-driven.io/en/automatically_connect_pgadmin_to_database/
+  inner-circle-books-api-pgadmin:
+    image: dpage/pgadmin4
+    container_name: inner-circle-books-api-pgadmin
+    profiles:
+      - DbOnly
+      - MockForDevelopment
+    depends_on:
+      inner-circle-books-api-db:
+        condition: service_healthy
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: inner-circle-books-api-db
+      PGADMIN_DEFAULT_EMAIL: admin@admin.org
+      PGADMIN_DEFAULT_PASSWORD: postgres
+      PGADMIN_CONFIG_SERVER_MODE: 'False'
+      PGADMIN_CONFIG_MASTER_PASSWORD_REQUIRED: 'False'
+      # these 2 variables PGADMIN_CONFIG_PROXY_X_HOST_COUNT and PGADMIN_CONFIG_PROXY_X_PREFIX_COUNT
+      # are needed to enable PgAdmin in Codespaces scenario when it is behind a reverse proxy
+      # https://github.com/orgs/community/discussions/17918
+      PGADMIN_CONFIG_PROXY_X_HOST_COUNT: 1
+      PGADMIN_CONFIG_PROXY_X_PREFIX_COUNT: 1
+    ports:
+      - 9505:80
+    networks:
+      - inner-circle-books-api-network
+    volumes:
+      # this is needed so that we can spin it up from within Dev Container where LOCAL_WORKSPACE_FOLDER is defined and from a simple OS terminal of the repo root
+      # list of available config properties can be found here in the source code https://github.com/pgadmin-org/pgadmin4/blob/00dbe58125f0304186f1af5374c9c43bc22d0410/web/pgadmin/utils/__init__.py#L505
+      # Password is no longer a part of this list as it seems to be when the linked article was written
+      - ${LOCAL_WORKSPACE_FOLDER:-.}/pgAdmin.json:/pgadmin4/servers.json
 
   inner-circle-books-api:
     container_name: inner-circle-books-api

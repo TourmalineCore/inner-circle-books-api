@@ -1,92 +1,91 @@
-# Books API
+# inner-circle-books-api
 
-Service with books in the office for Inner Circle.
+This repo contains Inner Circle Books API.
 
-## Run in Visual Studio
+This repo and its infrastructure tailored for VSCode/GitHub Codespaces Dev Container centric development experience in Docker to achieve better isolation of the environment as well as its cross-platform support out of the box.
+For instance, Visual Studio for Mac support stops at .NET 8, thus, we needed something else rather than native Visual Studios for Mac and Windows. We decided to give a shot to VSCode since we already use it intensively in other stacks.
 
-First run this script to run a db and mocked external deps:
+Full info about Inner Circle .NET related code conventions, patterns, decisions, and reasoning can be found [here](https://github.com/TourmalineCore/inner-circle-documentation/blob/master/code-style/api-code-style.md).
 
-```bash
-docker compose --profile MockForDevelopment up --build
+More info about the Inner Circle project and its related repos can be found here: [inner-circle-documentation](https://github.com/TourmalineCore/inner-circle-documentation).
+
+## Prerequisites
+
+1. Install Docker Desktop (Windows, macOS) or Docker Engine (Linux)
+>Note: It seems like there is Docker Engine for Linux (https://docs.docker.com/desktop/setup/install/linux/ubuntu/).
+2. **Windows Only** [Install WSL](https://learn.microsoft.com/en-us/windows/wsl/install) and **clone** this repo only to the WSL file system. [This](https://github.com/microsoft/vscode-dotnettools/issues/2714#issuecomment-3818812500) GitHub issue explains what would happen otherwise. Your Solution Explorer won't work as expected.
+3. Install Visual Studio Code.
+4. Install all repo's recommended extensions including [Dev Containers](https://marketplace.visualstudio.com/items?itemName=ms-vscode-remote.remote-containers).
+
+>Note: this repo hardcodes `container_name` for its Docker Compose services, and container names are global in Docker, not scoped per Compose project. If another stack (e.g. `inner-circle-books-ui/local-run`) already runs containers named `inner-circle-books-api*`, the Dev Container will fail to start with `Conflict. The container name ... is already in use`. Stop that stack first.
+
+## Develop inside Dev Container
+
+Open this repo's folder in VSCode/Codespaces, it might immediately propose you to re-open it in a Dev Container or you can click on `Remote Explorer`, find plus button and choose the `Open Current Folder in Container` option and wait when it is ready.
+
+When your Dev Container is ready, the VSCode window will be re-opened. Open a new terminal in this Dev Container which will be executing the commands under this prepared Linux container where we already have all pre-installed and pre-configured development related dependencies.
+
+Db, MockServer, and PgAdmin are started automatically together with the Dev Container, see `runServices` in [devcontainer.json](.devcontainer/devcontainer.json).
+
+### Run API
+
+```cli
+dotnet run --project ./Api --verbosity detailed
 ```
 
-## Karate Tests
+>Note: `ASPNETCORE_ENVIRONMENT` is already set to `MockForDevelopment` by the Dev Container, so there is no need to pass `-- --environment MockForDevelopment` here.
 
-### Run Karate against Api, Db, and MockServer in Docker Compose
+### Run Unit and Integrational Tests
 
-Run Api, Db, and MockServer executing the following command (don't close the terminal unless you want to stop the containers)
-
-```bash
-docker compose --profile MockForTests up --build
+To run xUnit unit and integrational tests execute the following script in Terminal:
+```cli
+dotnet test --verbosity detailed
 ```
 
-Then execute following command inside of the dev-container
+### Run E2E Tests
 
-```bash
+E2E tests are run against the API started by `dotnet run` in this same Dev Container, see `API_ROOT_URL` in [devcontainer.json](.devcontainer/devcontainer.json).
+
+To run Karate E2E tests execute the following script in Terminal:
+```cli
 java -jar /karate.jar .
 ```
 
-### Running Karate Tests, Api, Db, and MockServer in Docker Compose
+### Migrations
 
-Run the docker compose with MockForPullRequest profile executing the following command (don't close the terminal unless you want to stop the containers)
+Full docs and useful snippets about migrations in this infrastructre setup are available [here](https://github.com/TourmalineCore/inner-circle-documentation/blob/master/code-style/api-code-style.md#migrations).
 
-```bash
-docker compose --profile MockForPullRequest up --build
+#### Add Migration
+
+To add a new migration with the domain changes execute the following script in Terminal:
+```cli
+dotnet ef migrations add <YOUR_NEW_MIGRATION_NAME> --startup-project ./Api/Api.csproj --project ./Application/Application.csproj --context AppDbContext --verbose
 ```
 
-## How add new migration
+#### Update Database
 
-When you have made all the changes and are ready to add new migration, you need to follow these steps
-
-1. You need to run db in docker, using command
-
-```
-docker compose --profile DbOnly up -d
+To apply pending migrations execute the following script in Terminal:
+```cli
+dotnet ef database update --startup-project ./Api/Api.csproj --project ./Application/Application.csproj --context AppDbContext --verbose
 ```
 
-### for MacOS
+### Allocated Ports & Services
 
-2. Then add new migration, using the following command and dont forget to change `YourNewMigrationName`
+| Service Name                   | Api in Dev Container/Codespaces | Api in IDE | Api in Docker Compose |  Db in Docker Compose | MockServer in Docker Compose | PgAdmin in Docker Compose |
+| :----------------------------  | :-----------------------------: | :--------: | :-------------------: | :-------------------: | :-------------------------: | :-------------------------: |
+| inner-circle-books-api         |               4505              |    5505    |          6505         |          7505         |             8505            |             9505            |
 
-```
-dotnet ef migrations add YourNewMigrationName --startup-project Api/ --project Application/ -- --environment MockForDevelopment
-```
+Full docs about the allocated ports, reasoning, and the other services bindings in this infrastructre setup are available [here](https://github.com/TourmalineCore/inner-circle-documentation/blob/master/code-style/api-code-style.md#ports).
 
-3. After adding your new migration you need to update db, using the following command
+You can go to `Ports` tab in the `Terminal` parent panel to find available services.
 
-```
-dotnet ef database update --startup-project Api/ --project Application/ -- --environment MockForDevelopment
-```
+The most useful is `PgAdmin` http://localhost:9505 (password is `postgres`).
 
-4. If you want to remove `last` migration, use the following command
+## Swagger
 
-```
-dotnet ef migrations remove --startup-project Api/ --project Application/ -- --environment MockForDevelopment
-```
+Swagger UI is accessible at http://localhost:4505/swagger/index.html and the OpenApi contract at http://localhost:4505/swagger/v1/swagger.json.
 
-### for Windows
-
-#### TODO: Most likely it will be so, but it is necessary to check on Windows the correctness of the work and if something is wrong here, then correct the README
-
-2. Then add new migration, using the following command and dont forget to change `YourNewMigrationName`
-
-```
-dotnet ef migrations add YourNewMigrationName -- --environment MockForDevelopment
-```
-
-3. After adding your new migration you need to update db, using the following command
-
-```
-dotnet ef database update -- --environment MockForDevelopment
-```
-
-4. If you want to remove `last` migration, use the following command
-
-```
-dotnet ef migrations remove -- --environment MockForDevelopment
-```
-
-## Database scheme 
+## Database Schema
 ```mermaid
 erDiagram
     Books ||--o{ BooksCopies : "1-to-many"
