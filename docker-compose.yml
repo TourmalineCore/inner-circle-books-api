@@ -5,7 +5,6 @@ services:
     container_name: inner-circle-books-api-db
     profiles:
       - DbOnly
-      - DbOnlyWithoutPgAdmin
       - MockForDevelopment
       - MockForTests
       - MockForPullRequest
