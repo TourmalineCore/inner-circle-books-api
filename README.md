@@ -75,7 +75,7 @@ dotnet ef database update --startup-project ./Api/Api.csproj --project ./Applica
 | :----------------------------  | :-----------------------------: | :--------: | :-------------------: | :-------------------: | :-------------------------: | :-------------------------: |
 | inner-circle-books-api         |               4505              |    5505    |          6505         |          7505         |             8505            |             9505            |
 
-Full docs about the allocated ports, reasoning, and the other services bindings in this infrastructre setup are available [here](https://github.com/TourmalineCore/inner-circle-documentation/blob/master/code-style/api-code-style.md#ports).
+Full docs about the allocated ports, reasoning, and the other services bindings in this infrastructre setup are available [here](https://github.com/TourmalineCore/inner-circle-documentation/blob/master/code-style/ports.md).
 
 You can go to `Ports` tab in the `Terminal` parent panel to find available services.
 
