@@ -33,8 +33,6 @@ Db, MockServer, and PgAdmin are started automatically together with the Dev Cont
 dotnet run --project ./Api --verbosity detailed
 ```
 
->Note: `ASPNETCORE_ENVIRONMENT` is already set to `MockForDevelopment` by the Dev Container, so there is no need to pass `-- --environment MockForDevelopment` here.
-
 ### Run Unit and Integrational Tests
 
 To run xUnit unit and integrational tests execute the following script in Terminal:
@@ -43,8 +41,6 @@ dotnet test --verbosity detailed
 ```
 
 ### Run E2E Tests
-
-E2E tests are run against the API started by `dotnet run` in this same Dev Container, see `API_ROOT_URL` in [devcontainer.json](.devcontainer/devcontainer.json).
 
 To run Karate E2E tests execute the following script in Terminal:
 ```cli
@@ -86,31 +82,59 @@ The most useful is `PgAdmin` http://localhost:9505 (password is `postgres`).
 Swagger UI is accessible at http://localhost:4505/swagger/index.html and the OpenApi contract at http://localhost:4505/swagger/v1/swagger.json.
 
 ## Database Schema
+
 ```mermaid
-erDiagram
-    Books ||--o{ BooksCopies : "1-to-many"
-    BooksCopies ||--o{ BooksCopiesReadingHistory : "1-to-many"
-    Books {
-        long id PK "Example: '1'"
-        long tenantId "Example: '1'"
-        text title "Example: 'Пиши, сокращай 2025: Как создавать сильный текст'" 
-        text annotation "Example: 'Книга о создании текста для всех, кто пишет по работе'"
-        text authors "Example: '[{'fullName': 'Максим Ильяхов'}, {'fullName': 'Людмила Сарычева'}]'"
-        enum language "Example: 'ru'"
-        datetime da "Example: '2024-12-25 09:20:25.695197+00'"
-        datetime deletedAtUtc "nullable, Example: '2024-12-25 09:20:25.695197+00'"
-        text artworkUrl "nullable, Example: 'https://cdn.litres.ru/pub/c/cover/70193008.jpg'"
-    }
-    BooksCopies {
-        long id PK "Example: '1'"
-        long bookId FK "Example: '1'"
-    }
-    BooksCopiesReadingHistory {
-        long id PK "Example: '1'"
-        long bookCopyId FK "Example: '1'"
-        long readerEmployeeId "Example: '1'"
-        datetime takenAtUtc "Example: '2024-12-25 09:20:25.695197+00'"
-        date sheduledReturnDate "Example: '2024-12-25'"
-        datetime actualReturnedAtUtc "Nullable" "Example: '2024-12-25 09:20:25.695197+00'"
-    }
+	erDiagram
+	%%{init: {'theme':'neutral'}}%%
+	BookFeedback {
+		bigint Id PK
+		text Advantages 
+		bigint BookId FK
+		text Disadvantages 
+		bigint EmployeeId 
+		timestampwithtimezone LeftFeedbackAtUtc 
+		integer ProgressOfReading 
+		integer Rating 
+		bigint TenantId 
+	}
+	BookKnowledgeArea {
+		bigint BooksId PK, FK
+		bigint KnowledgeAreasId PK, FK
+	}
+	Books {
+		bigint Id PK
+		text Annotation 
+		text Authors 
+		text CoverUrl 
+		timestampwithtimezone CreatedAtUtc 
+		timestampwithtimezone DeletedAtUtc 
+		text Language 
+		bigint TenantId 
+		text Title 
+	}
+	BooksCopies {
+		bigint Id PK
+		bigint BookId FK
+		text SecretKey 
+		bigint TenantId 
+	}
+	BooksCopiesReadingHistory {
+		bigint Id PK
+		timestampwithtimezone ActualReturnedAtUtc 
+		bigint BookCopyId FK
+		text ProgressOfReading 
+		bigint ReaderEmployeeId 
+		date ScheduledReturnDate 
+		timestampwithtimezone TakenAtUtc 
+		bigint TenantId 
+	}
+	KnowledgeAreas {
+		bigint Id PK
+		text Name 
+	}
+BookFeedback}o--||Books : ""
+BookKnowledgeArea}o--||Books : ""
+BookKnowledgeArea}o--||KnowledgeAreas : ""
+BooksCopies}o--||Books : ""
+BooksCopiesReadingHistory}o--||BooksCopies : ""
 ```
