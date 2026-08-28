@@ -1,22 +1,13 @@
 # https://hub.docker.com/r/microsoft/devcontainers-dotnet
 # You can update the version of the base image with .NET and SDK only checking it together with the related VSCode extensions
 # Please see the detailed comment in devcontainer.json
-FROM mcr.microsoft.com/devcontainers/dotnet:1.5.5-9.0-noble
+FROM mcr.microsoft.com/devcontainers/dotnet:8.0-noble
 
 # It is necessary to solve the problem described in this issue https://github.com/yarnpkg/yarn/issues/9218
 # Download and install a new key
 RUN curl -sS https://dl.yarnpkg.com/debian/pubkey.gpg | gpg --dearmor | tee /etc/apt/keyrings/yarn-archive-keyring.gpg > /dev/null
 # Set a new path to the key
 RUN echo "deb [signed-by=/etc/apt/keyrings/yarn-archive-keyring.gpg] https://dl.yarnpkg.com/debian stable main" | tee /etc/apt/sources.list.d/yarn.list
-
-# This repo still targets net8.0 while the base image above ships the .NET 9 SDK and the .NET 9 runtime only.
-# The .NET 9 SDK builds net8.0 projects fine, but dotnet run/test/ef need the matching .NET 8 runtime to be present,
-# otherwise they fail with "You must install or update .NET to run this application. Framework: 'Microsoft.AspNetCore.App', version '8.0.0'".
-# When this repo is migrated to net9.0 (see inner-circle-time-api) this block and the dotnet-ef version pin below can be dropped.
-RUN curl -fsSL https://dot.net/v1/dotnet-install.sh -o /tmp/dotnet-install.sh && \
-    chmod +x /tmp/dotnet-install.sh && \
-    /tmp/dotnet-install.sh --channel 8.0 --runtime aspnetcore --install-dir /usr/share/dotnet --no-path && \
-    rm /tmp/dotnet-install.sh
 
 # installing EntityFramework Core tooling for migrations
 # the version is kept in sync with the Microsoft.EntityFrameworkCore.* packages of this repo which are 8.x
