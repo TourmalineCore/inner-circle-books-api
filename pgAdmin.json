@@ -1,0 +1,22 @@
+{
+    "Servers": {
+        "1": {
+            "Group": "Servers",
+            "Name": "inner-circle-books-api-db (Windows, macOS)",
+            "Host": "host.docker.internal",
+            "Port": 7505,
+            "MaintenanceDB": "inner-circle-books-api-db",
+            "Username": "postgres",
+            "SSLMode": "prefer"
+        },
+        "2": {
+            "Group": "Servers",
+            "Name": "inner-circle-books-api-db (Ubuntu, Codespaces)",
+            "Host": "172.17.0.1",
+            "Port": 7505,
+            "MaintenanceDB": "inner-circle-books-api-db",
+            "Username": "postgres",
+            "SSLMode": "prefer"
+        }
+    }
+}
