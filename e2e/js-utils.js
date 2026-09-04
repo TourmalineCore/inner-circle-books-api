@@ -20,8 +20,10 @@ function fn() {
         },
 
         getAuthHeaderValue: function (tokenValue) {
+            // the debug token is the payload part of the jwt on its own,
+            // without the header and the signature
             return this.shouldUseFakeExternalDependencies()
-                ? tokenValue
+                ? tokenValue.split('.')[1]
                 : 'Bearer ' + tokenValue;
         },
 
@@ -43,16 +45,7 @@ function fn() {
         },
 
         getEmployeeIdFromToken: function (tokenValue) {
-            var decodedString;
-
-            if (tokenValue.includes('.')) {
-                var payload = tokenValue.split('.')[1];
-
-                decodedString = decodeString(payload);
-            } else {
-                decodedString = decodeString(tokenValue);
-            }
-
+            var decodedString = decodeString(tokenValue.split('.')[1]);
             var tokenData = JSON.parse(decodedString);
 
             return tokenData.employeeId;
