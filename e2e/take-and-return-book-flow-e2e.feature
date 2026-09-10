@@ -125,7 +125,7 @@ Scenario: Take and return book flow
     And assert response.employeesWhoReadNow.length == 0
 
     # Check that book has feedback
-    And path '/feedback', newBookId
+    And path newBookId, '/feedback'
     When method GET
     Then status 200
     And assert response.bookFeedback[0].employeeFullName == readerFullName
@@ -135,7 +135,7 @@ Scenario: Take and return book flow
     And assert response.bookFeedback[0].disadvantages == disadvantages
 
     # Check book history
-    And path '/history', newBookId
+    And path newBookId, '/history'
     And param page = 1
     And param pageSize = 10
     When method GET
