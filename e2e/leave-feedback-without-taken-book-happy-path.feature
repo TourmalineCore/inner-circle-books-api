@@ -85,7 +85,7 @@ Scenario: Leave feedback without taken the book
     * def newBookFeedbackId = response.newBookFeedbackId
 
     # Check that book has feedback
-    And path '/feedback', newBookId
+    And path newBookId, '/feedback'
     When method GET
     Then status 200
     And match response.bookFeedback[0].employeeFullName == '#string'

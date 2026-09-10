@@ -124,33 +124,33 @@ public class BooksController : Controller
   }
 
   /// <summary>
-  ///     Get book by id
+  ///     Get book by bookId
   /// </summary>
   [RequiresPermission(UserClaimsProvider.CanViewBooks)]
-  [HttpGet("{id}")]
-  public async Task<ActionResult<SingleBookResponse>> GetBookByIdAsync([Required][FromRoute] long id)
+  [HttpGet("{bookId}")]
+  public async Task<ActionResult<SingleBookResponse>> GetBookByIdAsync([Required][FromRoute] long bookId)
   {
-    return await GetBookResponseAsync(id);
+    return await GetBookResponseAsync(bookId);
   }
 
   /// <summary>
   ///     Get book by copyId
   /// </summary>
   [RequiresPermission(UserClaimsProvider.CanViewBooks)]
-  [HttpGet("copy/{id}")]
-  public async Task<ActionResult<SingleBookResponse>> GetBookByCopyIdAsync([Required][FromRoute] long id, [Required][FromQuery] string secretKey)
+  [HttpGet("copy/{copyId}")]
+  public async Task<ActionResult<SingleBookResponse>> GetBookByCopyIdAsync([Required][FromRoute] long copyId, [Required][FromQuery] string secretKey)
   {
-    var book = await _getBookByCopyIdQuery.GetByCopyIdAsync(id, User.GetTenantId());
+    var book = await _getBookByCopyIdQuery.GetByCopyIdAsync(copyId, User.GetTenantId());
 
     if (book == null)
     {
       return NotFound(new
       {
-        Message = $"Book copy with id {id} not found"
+        Message = $"Book copy with id {copyId} not found"
       });
     }
 
-    var isSecretKeyValid = await _bookCopyValidatorQuery.IsValidSecretKeyAsync(id, secretKey, User.GetTenantId());
+    var isSecretKeyValid = await _bookCopyValidatorQuery.IsValidSecretKeyAsync(copyId, secretKey, User.GetTenantId());
 
     if (!isSecretKeyValid)
     {
@@ -164,19 +164,52 @@ public class BooksController : Controller
   }
 
   /// <summary>
-  ///     Get book with copies by id
+  ///     Get book copies by bookId
   /// </summary>
   [RequiresPermission(UserClaimsProvider.CanManageBooks)]
-  [HttpGet("copies/{id}")]
-  public async Task<ActionResult<BookWithCopiesResponse>> GetBookCopiesByIdAsync([Required][FromRoute] long id)
+  [HttpGet("copies/{bookId}")]
+  public async Task<ActionResult<BookWithCopiesResponse>> GetBookCopiesByIdOldAsync([Required][FromRoute] long bookId)
   {
-    var book = await _getBookByIdQuery.GetByIdAsync(id, User.GetTenantId());
+    var book = await _getBookByIdQuery.GetByIdAsync(bookId, User.GetTenantId());
 
     if (book == null)
     {
       return NotFound(new
       {
-        Message = $"Book with id {id} not found"
+        Message = $"Book with id {bookId} not found"
+      });
+    }
+
+    var bookCopies = book
+      .Copies
+      .Select(copy => new BookCopyResponse
+      {
+        BookCopyId = copy.Id,
+        SecretKey = copy.SecretKey
+      })
+      .ToList();
+
+    return new BookWithCopiesResponse()
+    {
+      BookTitle = book.Title,
+      BookCopies = bookCopies
+    };
+  }
+
+   /// <summary>
+  ///     Get book copies by bookId
+  /// </summary>
+  [RequiresPermission(UserClaimsProvider.CanManageBooks)]
+  [HttpGet("{bookId}/copies")]
+  public async Task<ActionResult<BookWithCopiesResponse>> GetBookCopiesByIdAsync([Required][FromRoute] long bookId)
+  {
+    var book = await _getBookByIdQuery.GetByIdAsync(bookId, User.GetTenantId());
+
+    if (book == null)
+    {
+      return NotFound(new
+      {
+        Message = $"Book with id {bookId} not found"
       });
     }
 
@@ -197,10 +230,23 @@ public class BooksController : Controller
   }
 
   /// <summary>
-  ///     Get book feedback by book id
+  ///     Get book feedback by bookId
   /// </summary>
   [RequiresPermission(UserClaimsProvider.CanViewBooks)]
   [HttpGet("feedback/{bookId}")]
+  public Task<GetBookFeedbackResponse> GetBookFeedbackOldAsync(
+    [Required][FromRoute] long bookId,
+    [FromServices] GetBookFeedbackHandler getBookFeedbackHandler
+  )
+  {
+    return getBookFeedbackHandler.HandleAsync(bookId, User.GetTenantId());
+  }
+
+  /// <summary>
+  ///     Get book feedback by bookId
+  /// </summary>
+  [RequiresPermission(UserClaimsProvider.CanViewBooks)]
+  [HttpGet("{bookId}/feedback")]
   public Task<GetBookFeedbackResponse> GetBookFeedbackAsync(
     [Required][FromRoute] long bookId,
     [FromServices] GetBookFeedbackHandler getBookFeedbackHandler
@@ -309,17 +355,60 @@ public class BooksController : Controller
   }
 
   /// <summary>
-  ///     Get book history by id
+  ///     Get book history by bookId
   /// </summary>
   [RequiresPermission(UserClaimsProvider.CanViewBooks)]
-  [HttpGet("history/{id}")]
-  public async Task<BookHistoryResponse> GetBookHistoryByIdAsync(
-    [Required][FromRoute] long id,
+  [HttpGet("history/{bookId}")]
+  public async Task<BookHistoryResponse> GetBookHistoryByIdOldAsync(
+    [Required][FromRoute] long bookId,
     [FromQuery] int page,
     [FromQuery] int pageSize
   )
   {
-    var (bookHistory, totalCount) = await _getBookHistoryByIdQuery.GetByIdAsync(id, page, pageSize, User.GetTenantId());
+    var (bookHistory, totalCount) = await _getBookHistoryByIdQuery.GetByIdAsync(bookId, page, pageSize, User.GetTenantId());
+
+    var uniqueReaderEmployeeIds = bookHistory
+      .Select(x => x.ReaderEmployeeId)
+      .Distinct()
+      .ToList();
+
+    var employeesByIds = (!uniqueReaderEmployeeIds.Any())
+      ? new List<EmployeeById>()
+      : await _client.GetEmployeesByIdsAsync(uniqueReaderEmployeeIds);
+
+    return new BookHistoryResponse
+    {
+      List = bookHistory
+        .Select(history =>
+        {
+          return new BookHistoryItem
+          {
+            Id = history.Id,
+            BookCopyId = history.BookCopyId,
+            EmployeeFullName = employeesByIds.FirstOrDefault(x => x.EmployeeId == history.ReaderEmployeeId).FullName,
+            TakenDate = history.TakenAtUtc.ToString("yyyy-MM-dd"),
+            ScheduledReturnDate = history.ScheduledReturnDate.ToString("yyyy-MM-dd"),
+            ActualReturnedDate = history.ActualReturnedAtUtc?.ToString("yyyy-MM-dd"),
+            ProgressOfReading = history.ProgressOfReading?.ToString()
+          };
+        })
+        .ToList(),
+      TotalCount = totalCount
+    };
+  }
+
+  /// <summary>
+  ///     Get book history by bookId
+  /// </summary>
+  [RequiresPermission(UserClaimsProvider.CanViewBooks)]
+  [HttpGet("{bookId}/history")]
+  public async Task<BookHistoryResponse> GetBookHistoryByIdAsync(
+    [Required][FromRoute] long bookId,
+    [FromQuery] int page,
+    [FromQuery] int pageSize
+  )
+  {
+    var (bookHistory, totalCount) = await _getBookHistoryByIdQuery.GetByIdAsync(bookId, page, pageSize, User.GetTenantId());
 
     var uniqueReaderEmployeeIds = bookHistory
       .Select(x => x.ReaderEmployeeId)
@@ -354,12 +443,12 @@ public class BooksController : Controller
   /// <summary>
   ///     Edit book
   /// </summary>
-  /// <param name="id"></param>
+  /// <param name="bookId"></param>
   /// <param name="editBookRequest"></param>
   [RequiresPermission(UserClaimsProvider.CanManageBooks)]
-  [HttpPost("{id}/edit")]
+  [HttpPost("{bookId}/edit")]
   public Task EditBook(
-    [Required][FromRoute] long id,
+    [Required][FromRoute] long bookId,
     [Required][FromBody] EditBookRequest editBookRequest
   )
   {
@@ -380,48 +469,48 @@ public class BooksController : Controller
       CoverUrl = editBookRequest.CoverUrl,
     };
 
-    return _editBookCommand.EditAsync(id, editBookCommandParams, User.GetTenantId());
+    return _editBookCommand.EditAsync(bookId, editBookCommandParams, User.GetTenantId());
   }
 
   /// <summary>
   ///     Deletes specific book
   /// </summary>
-  /// <param name="id"></param>
+  /// <param name="bookId"></param>
   [RequiresPermission(UserClaimsProvider.IsBooksHardDeleteAllowed)]
-  [HttpDelete("{id}/hard-delete")]
-  public async Task<object> HardDeleteBook([Required][FromRoute] long id)
+  [HttpDelete("{bookId}/hard-delete")]
+  public async Task<object> HardDeleteBook([Required][FromRoute] long bookId)
   {
     return new
     {
-      isDeleted = await _deleteBookCommand.DeleteAsync(id, User.GetTenantId())
+      isDeleted = await _deleteBookCommand.DeleteAsync(bookId, User.GetTenantId())
     };
   }
 
   /// <summary>
   ///     Soft deletes specific book (mark as deleted, but not deleting from database)
   /// </summary>
-  /// <param name="id"></param>
+  /// <param name="bookId"></param>
   [RequiresPermission(UserClaimsProvider.CanManageBooks)]
-  [HttpDelete("{id}/soft-delete")]
-  public async Task<object> SoftDeleteBook([Required][FromRoute] long id)
+  [HttpDelete("{bookId}/soft-delete")]
+  public async Task<object> SoftDeleteBook([Required][FromRoute] long bookId)
   {
     return new
     {
-      isDeleted = await _softDeleteBookCommand.SoftDeleteAsync(id, User.GetTenantId())
+      isDeleted = await _softDeleteBookCommand.SoftDeleteAsync(bookId, User.GetTenantId())
     };
   }
 
-  private async Task<ActionResult<SingleBookResponse>> GetBookResponseAsync(long id)
+  private async Task<ActionResult<SingleBookResponse>> GetBookResponseAsync(long bookId)
   {
     try
     {
-      var book = await _getBookByIdQuery.GetByIdAsync(id, User.GetTenantId());
+      var book = await _getBookByIdQuery.GetByIdAsync(bookId, User.GetTenantId());
 
       if (book == null)
       {
         return NotFound(new
         {
-          Message = $"Book with id {id} not found"
+          Message = $"Book with id {bookId} not found"
         });
       }
 
