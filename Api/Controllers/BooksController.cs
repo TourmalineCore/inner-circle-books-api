@@ -163,39 +163,6 @@ public class BooksController : Controller
     return await GetBookResponseAsync(book.Id);
   }
 
-  /// <summary>
-  ///     Get book copies by bookId
-  /// </summary>
-  [RequiresPermission(UserClaimsProvider.CanManageBooks)]
-  [HttpGet("copies/{bookId}")]
-  public async Task<ActionResult<BookWithCopiesResponse>> GetBookCopiesByIdOldAsync([Required][FromRoute] long bookId)
-  {
-    var book = await _getBookByIdQuery.GetByIdAsync(bookId, User.GetTenantId());
-
-    if (book == null)
-    {
-      return NotFound(new
-      {
-        Message = $"Book with id {bookId} not found"
-      });
-    }
-
-    var bookCopies = book
-      .Copies
-      .Select(copy => new BookCopyResponse
-      {
-        BookCopyId = copy.Id,
-        SecretKey = copy.SecretKey
-      })
-      .ToList();
-
-    return new BookWithCopiesResponse()
-    {
-      BookTitle = book.Title,
-      BookCopies = bookCopies
-    };
-  }
-
    /// <summary>
   ///     Get book copies by bookId
   /// </summary>
@@ -227,19 +194,6 @@ public class BooksController : Controller
       BookTitle = book.Title,
       BookCopies = bookCopies
     };
-  }
-
-  /// <summary>
-  ///     Get book feedback by bookId
-  /// </summary>
-  [RequiresPermission(UserClaimsProvider.CanViewBooks)]
-  [HttpGet("feedback/{bookId}")]
-  public Task<GetBookFeedbackResponse> GetBookFeedbackOldAsync(
-    [Required][FromRoute] long bookId,
-    [FromServices] GetBookFeedbackHandler getBookFeedbackHandler
-  )
-  {
-    return getBookFeedbackHandler.HandleAsync(bookId, User.GetTenantId());
   }
 
   /// <summary>
@@ -352,49 +306,6 @@ public class BooksController : Controller
     var employee = await _client.GetEmployeeAsync(User.GetCorporateEmail());
 
     await returnBookHandler.HandleAsync(returnBookRequest, employee, User.GetTenantId());
-  }
-
-  /// <summary>
-  ///     Get book history by bookId
-  /// </summary>
-  [RequiresPermission(UserClaimsProvider.CanViewBooks)]
-  [HttpGet("history/{bookId}")]
-  public async Task<BookHistoryResponse> GetBookHistoryByIdOldAsync(
-    [Required][FromRoute] long bookId,
-    [FromQuery] int page,
-    [FromQuery] int pageSize
-  )
-  {
-    var (bookHistory, totalCount) = await _getBookHistoryByIdQuery.GetByIdAsync(bookId, page, pageSize, User.GetTenantId());
-
-    var uniqueReaderEmployeeIds = bookHistory
-      .Select(x => x.ReaderEmployeeId)
-      .Distinct()
-      .ToList();
-
-    var employeesByIds = (!uniqueReaderEmployeeIds.Any())
-      ? new List<EmployeeById>()
-      : await _client.GetEmployeesByIdsAsync(uniqueReaderEmployeeIds);
-
-    return new BookHistoryResponse
-    {
-      List = bookHistory
-        .Select(history =>
-        {
-          return new BookHistoryItem
-          {
-            Id = history.Id,
-            BookCopyId = history.BookCopyId,
-            EmployeeFullName = employeesByIds.FirstOrDefault(x => x.EmployeeId == history.ReaderEmployeeId).FullName,
-            TakenDate = history.TakenAtUtc.ToString("yyyy-MM-dd"),
-            ScheduledReturnDate = history.ScheduledReturnDate.ToString("yyyy-MM-dd"),
-            ActualReturnedDate = history.ActualReturnedAtUtc?.ToString("yyyy-MM-dd"),
-            ProgressOfReading = history.ProgressOfReading?.ToString()
-          };
-        })
-        .ToList(),
-      TotalCount = totalCount
-    };
   }
 
   /// <summary>
