@@ -69,7 +69,7 @@ Scenario: Happy Path
     Then status 200
 
     # Get book and copies by bookId
-    And path bookId, '/copies' 
+    And path bookId, '/copies'
     When method GET
     Then status 200
     And assert response.bookCopies.length == 2
