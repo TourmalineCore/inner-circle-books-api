@@ -58,12 +58,12 @@
       "method": "GET",
       "path" : "/internal/get-employee",
       "queryStringParameters" : {
-        "corporateEmail" : [ "mail@mail.ru" ]
+        "corporateEmail" : [ "mmail@mail.ru" ]
       }
     },
     "httpResponse": {
       "statusCode": 200,
-      "body": "{ \"id\": 2, \"fullName\": \"Name Name Name\", \"corporateEmail\": \"mail@mail.ru\", \"tenantId\": 1 }",
+      "body": "{ \"id\": 2, \"fullName\": \"Name Name Name\", \"corporateEmail\": \"mmail@mail.ru\", \"tenantId\": 1 }",
       "headers": {
         "Content-Type": ["application/json"]
       }

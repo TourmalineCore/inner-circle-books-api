@@ -94,32 +94,36 @@ public class BooksController : Controller
   [HttpGet]
   public async Task<BooksListResponse> GetAllBooksAsync()
   {
-    var books = await _getAllBooksQuery.GetAllAsync(User.GetTenantId());
+    // var books = await _getAllBooksQuery.GetAllAsync(User.GetTenantId());
 
     return new BooksListResponse
     {
-      Books = books.Select(x => new BookListItem()
+      Books = new List<BookListItem> ()
       {
-        Id = x.Id,
-        Title = x.Title,
-        Annotation = x.Annotation,
-        CoverUrl = x.CoverUrl,
-        Authors = x.Authors
-          .Select(a => new AuthorResponse()
+        new BookListItem
+        {
+          Id = 1,
+          Title = "Test",
+          Annotation = "Test",
+          CoverUrl = "",
+          Authors = new List<AuthorResponse>
           {
-            FullName = a.FullName
-          })
-          .ToList(),
-        Language = x.Language.ToString(),
-        KnowledgeAreas = x.KnowledgeAreas
-          .Select(k => new KnowledgeAreaItem()
+            new AuthorResponse
+            {
+              FullName = "Test"
+            }
+          },
+          Language = Language.ru.ToString(),
+          KnowledgeAreas = new List<KnowledgeAreaItem>
           {
-              Id = k.Id,
-              Name = k.Name
-          })
-          .ToList()
-      })
-      .ToList()
+            new KnowledgeAreaItem
+            {
+              Id = 1,
+              Name = "Frontend"
+            }
+          }
+        }
+      }
     };
   }
 
