@@ -37,7 +37,7 @@ public class BooksController : Controller
   /// </summary>
   public BooksController(
     GetAllBooksQuery getAllBooksQuery,
-    GetBookByIdQuery getBookByIdQuery,
+    IGetBookByIdQuery getBookByIdQuery,
     GetBookCopyReadingHistoryByCopyIdQuery getBookCopyReadingHistoryByCopyIdQuery,
     GetBookHistoryByIdQuery getBookHistoryByIdQuery,
     IGetKnowledgeAreasQuery getKnowledgeAreasQuery,
