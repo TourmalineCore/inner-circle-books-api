@@ -28,7 +28,6 @@ public class BooksController : Controller
   private readonly GetBookCopyReadingHistoryByCopyIdQuery _getBookCopyReadingHistoryByCopyIdQuery;
   private readonly GetBookHistoryByIdQuery _getBookHistoryByIdQuery;
   private readonly IGetKnowledgeAreasQuery _getKnowledgeAreasQuery;
-  private readonly BookCopyValidatorQuery _bookCopyValidatorQuery;
   private readonly SoftDeleteBookCommand _softDeleteBookCommand;
   private readonly EditBookCommand _editBookCommand;
   private readonly TakeBookService _takeBookService;
@@ -43,7 +42,6 @@ public class BooksController : Controller
     IGetBookByCopyIdQuery getBookByCopyIdQuery,
     GetBookCopyReadingHistoryByCopyIdQuery getBookCopyReadingHistoryByCopyIdQuery,
     GetBookHistoryByIdQuery getBookHistoryByIdQuery,
-    BookCopyValidatorQuery bookCopyValidatorQuery,
     IGetKnowledgeAreasQuery getKnowledgeAreasQuery,
     EditBookCommand editBookCommand,
     DeleteBookCommand deleteBookCommand,
@@ -57,7 +55,6 @@ public class BooksController : Controller
     _getBookByCopyIdQuery = getBookByCopyIdQuery;
     _getBookCopyReadingHistoryByCopyIdQuery = getBookCopyReadingHistoryByCopyIdQuery;
     _getBookHistoryByIdQuery = getBookHistoryByIdQuery;
-    _bookCopyValidatorQuery = bookCopyValidatorQuery;
     _getKnowledgeAreasQuery = getKnowledgeAreasQuery;
     _editBookCommand = editBookCommand;
     _deleteBookCommand = deleteBookCommand;
@@ -128,9 +125,12 @@ public class BooksController : Controller
   /// </summary>
   [RequiresPermission(UserClaimsProvider.CanViewBooks)]
   [HttpGet("{bookId}")]
-  public async Task<ActionResult<SingleBookResponse>> GetBookByIdAsync([Required][FromRoute] long bookId)
+  public Task<SingleBookResponse> GetBookByIdAsync(
+    [Required][FromRoute] long bookId,
+    [FromServices] GetBookByIdHandler getBookByIdHandler
+  )
   {
-    return await GetBookResponseAsync(bookId);
+    return getBookByIdHandler.HandleAsync(bookId, User.GetTenantId());
   }
 
   /// <summary>
@@ -138,29 +138,13 @@ public class BooksController : Controller
   /// </summary>
   [RequiresPermission(UserClaimsProvider.CanViewBooks)]
   [HttpGet("copy/{copyId}")]
-  public async Task<ActionResult<SingleBookResponse>> GetBookByCopyIdAsync([Required][FromRoute] long copyId, [Required][FromQuery] string secretKey)
+  public Task<SingleBookResponse> GetBookByCopyIdAsync(
+    [Required][FromRoute] long copyId,
+    [Required][FromQuery] string secretKey,
+    [FromServices] GetBookByCopyIdHandler getBookByCopyIdHandler
+  )
   {
-    var book = await _getBookByCopyIdQuery.GetByCopyIdAsync(copyId, User.GetTenantId());
-
-    if (book == null)
-    {
-      return NotFound(new
-      {
-        Message = $"Book copy with id {copyId} not found"
-      });
-    }
-
-    var isSecretKeyValid = await _bookCopyValidatorQuery.IsValidSecretKeyAsync(copyId, secretKey, User.GetTenantId());
-
-    if (!isSecretKeyValid)
-    {
-      return NotFound(new
-      {
-        Message = "Secret key is not valid"
-      });
-    }
-
-    return await GetBookResponseAsync(book.Id);
+    return getBookByCopyIdHandler.HandleAsync(copyId, secretKey, User.GetTenantId());
   }
 
    /// <summary>
@@ -409,85 +393,5 @@ public class BooksController : Controller
     {
       isDeleted = await _softDeleteBookCommand.SoftDeleteAsync(bookId, User.GetTenantId())
     };
-  }
-
-  private async Task<ActionResult<SingleBookResponse>> GetBookResponseAsync(long bookId)
-  {
-    try
-    {
-      var book = await _getBookByIdQuery.GetByIdAsync(bookId, User.GetTenantId());
-
-      if (book == null)
-      {
-        return NotFound(new
-        {
-          Message = $"Book with id {bookId} not found"
-        });
-      }
-
-      var bookCopiesIds = book
-        .Copies
-        .Select(x => x.Id)
-        .ToList();
-
-      var employeesWhoReadNowWithoutFullNames = await _getBookByIdQuery.GetEmployeesWhoReadNowAsync(bookCopiesIds, User.GetTenantId());
-
-      var employeesByIds = (!employeesWhoReadNowWithoutFullNames.Any())
-        ? new List<EmployeeById>()
-        : await _client.GetEmployeesByIdsAsync(employeesWhoReadNowWithoutFullNames
-          .Select(x => x.EmployeeId)
-          .ToList());
-
-      var employeesWhoReadNow = (!employeesByIds.Any())
-        ? new List<EmployeeWhoReadsNow>()
-        : employeesWhoReadNowWithoutFullNames.Select(reader =>
-          {
-            var employee = employeesByIds.FirstOrDefault(x => x.EmployeeId == reader.EmployeeId);
-
-            return new EmployeeWhoReadsNow
-            {
-              EmployeeId = reader.EmployeeId,
-              FullName = employee.FullName,
-              BookCopyId = reader.BookCopyId
-            };
-          })
-          .ToList();
-
-      var response = new SingleBookResponse()
-      {
-        Id = book.Id,
-        Title = book.Title,
-        Annotation = book.Annotation,
-        CoverUrl = book.CoverUrl,
-        Authors = book
-          .Authors
-          .Select(a => new AuthorResponse()
-          {
-            FullName = a.FullName
-          })
-          .ToList(),
-        Language = book.Language.ToString(),
-        KnowledgeAreas = book
-          .KnowledgeAreas
-          .Select(k => new KnowledgeAreaItem
-          {
-              Id = k.Id,
-              Name = k.Name
-          })
-          .ToList(),
-        BookCopiesIds = bookCopiesIds,
-        EmployeesWhoReadNow = employeesWhoReadNow
-      };
-
-      return Ok(response);
-    }
-    catch (Exception ex)
-    {
-      return StatusCode(StatusCodes.Status500InternalServerError, new
-      {
-        Exception = ex.Message,
-        Stack = ex.StackTrace
-      });
-    }
   }
 }

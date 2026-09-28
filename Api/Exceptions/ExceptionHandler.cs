@@ -15,6 +15,15 @@ public class ErrorHandlerMiddleware
     {
       await _next(context);
     }
+    catch (NotFoundException ex)
+    {
+        context.Response.StatusCode = StatusCodes.Status404NotFound;
+        await context.Response.WriteAsJsonAsync(new ExceptionResponse<object>
+        {
+            Success = false,
+            Message = ex.Message
+        });
+    }
     catch (Exception ex)
     {
       Console.WriteLine($"Unhandled Exception: {ex}");

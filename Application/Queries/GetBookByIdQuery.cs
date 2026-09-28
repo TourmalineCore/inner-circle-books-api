@@ -4,7 +4,13 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Application.Queries;
 
-public class GetBookByIdQuery
+public interface IGetBookByIdQuery
+{
+  Task<Book?> GetByIdAsync(long copyId, long tenantId);
+  Task<List<EmployeeWhoReadsNow>> GetEmployeesWhoReadNowAsync(List<long> copiesIds, long tenantId);
+}
+
+public class GetBookByIdQuery: IGetBookByIdQuery
 {
   private readonly AppDbContext _context;
 
@@ -13,7 +19,7 @@ public class GetBookByIdQuery
     _context = context;
   }
 
-  public Task<Book> GetByIdAsync(long id, long tenantId)
+  public Task<Book?> GetByIdAsync(long id, long tenantId)
   {
     return _context
       .Books
@@ -21,7 +27,7 @@ public class GetBookByIdQuery
       .Where(x => x.TenantId == tenantId)
       .Include(x => x.Copies)
       .Include(x => x.KnowledgeAreas) 
-      .SingleAsync(x => x.Id == id);
+      .SingleOrDefaultAsync(x => x.Id == id);
   }
 
   public Task<List<EmployeeWhoReadsNow>> GetEmployeesWhoReadNowAsync(List<long> copiesIds, long tenantId)
