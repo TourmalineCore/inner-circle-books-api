@@ -1,5 +1,6 @@
 using Api.Exceptions;
 using Application.Queries;
+using Application.Services;
 using Core.Entities;
 using Moq;
 using Xunit;
@@ -16,8 +17,8 @@ public class GetBookByCopyIdHandlerTests
     var nonExistingBookCopyId = 999;
 
     var getBookByCopyIdQueryMock = new Mock<IGetBookByCopyIdQuery>();
-    var getBookByIdQueryMock = new Mock<IGetBookByIdQuery>();
     var bookCopyValidatorQueryMock = new Mock<IBookCopyValidatorQuery>();
+    var bookReaderServiceMock = new Mock<IBookReadersService>();
 
     getBookByCopyIdQueryMock
       .Setup(x => x.GetByCopyIdAsync(nonExistingBookCopyId, TENANT_ID))
@@ -25,9 +26,8 @@ public class GetBookByCopyIdHandlerTests
 
     var getBookByCopyIdHandler = new GetBookByCopyIdHandler(
       getBookByCopyIdQueryMock.Object,
-      getBookByIdQueryMock.Object,
       bookCopyValidatorQueryMock.Object,
-      null
+      bookReaderServiceMock.Object
     );
 
     var exception = await Assert.ThrowsAsync<NotFoundException>(
@@ -44,8 +44,8 @@ public class GetBookByCopyIdHandlerTests
     var invalidSecretKey = "invalidSecretKey";
 
     var getBookByCopyIdQueryMock = new Mock<IGetBookByCopyIdQuery>();
-    var getBookByIdQueryMock = new Mock<IGetBookByIdQuery>();
     var bookCopyValidatorQueryMock = new Mock<IBookCopyValidatorQuery>();
+    var bookReaderServiceMock = new Mock<IBookReadersService>();
 
     getBookByCopyIdQueryMock
       .Setup(x => x.GetByCopyIdAsync(bookCopyId, TENANT_ID))
@@ -62,9 +62,8 @@ public class GetBookByCopyIdHandlerTests
 
     var getBookByCopyIdHandler = new GetBookByCopyIdHandler(
       getBookByCopyIdQueryMock.Object,
-      getBookByIdQueryMock.Object,
       bookCopyValidatorQueryMock.Object,
-      null
+      bookReaderServiceMock.Object
     );
 
     var exception = await Assert.ThrowsAsync<ArgumentException>(

@@ -43,5 +43,6 @@ public static class DependencyInjection
     services.AddTransient<CreateBookFeedbackHandler>();
     services.AddTransient<IInnerCircleHttpClient, InnerCircleHttpClient>();
     services.AddTransient<TakeBookService>();
+    services.AddTransient<IBookReadersService, BookReadersService>();
   }
 }

@@ -1,8 +1,7 @@
 using Api.Exceptions;
 using Api.Responses;
-using Application;
 using Application.Queries;
-using Core;
+using Application.Services;
 
 namespace Api.Controllers.Handlers;
 
@@ -10,15 +9,15 @@ public class GetBookByIdHandler
 {
   private readonly IGetBookByIdQuery _getBookByIdQuery;
 
-  private readonly IInnerCircleHttpClient _client;
+  private readonly IBookReadersService _bookReadersService;
 
   public GetBookByIdHandler(
     IGetBookByIdQuery getBookByIdQuery,
-    IInnerCircleHttpClient client
+    IBookReadersService bookReadersService
   )
   {
     _getBookByIdQuery = getBookByIdQuery;
-    _client = client;
+    _bookReadersService = bookReadersService;
   }
 
   public async Task<SingleBookResponse> HandleAsync(long bookId, long tenantId)
@@ -35,26 +34,7 @@ public class GetBookByIdHandler
       .Select(x => x.Id)
       .ToList();
 
-    var employeesWhoReadNowWithoutFullNames = await _getBookByIdQuery.GetEmployeesWhoReadNowAsync(bookCopiesIds, tenantId);
-
-    var employeesByIds = (!employeesWhoReadNowWithoutFullNames.Any())
-      ? new List<EmployeeById>()
-      : await _client.GetEmployeesByIdsAsync(employeesWhoReadNowWithoutFullNames
-          .Select(x => x.EmployeeId)
-          .ToList());
-
-    var employeesDict = employeesByIds.ToDictionary(x => x.EmployeeId);
-
-    var employeesWhoReadNow = (!employeesByIds.Any())
-      ? new List<EmployeeWhoReadsNow>()
-      : employeesWhoReadNowWithoutFullNames.Select(reader =>
-          new EmployeeWhoReadsNow
-          {
-            EmployeeId = reader.EmployeeId,
-            FullName = employeesDict[reader.EmployeeId].FullName,
-            BookCopyId = reader.BookCopyId
-          })
-          .ToList();
+    var employeesWhoReadNow = await _bookReadersService.GetEmployeesWhoReadNowAsync(bookCopiesIds, tenantId);
 
     return new SingleBookResponse
     {
