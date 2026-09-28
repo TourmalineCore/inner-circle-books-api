@@ -45,6 +45,7 @@ public class BookReadersService : IBookReadersService
             EmployeeId = reader.EmployeeId,
             FullName = employeesDict[reader.EmployeeId].FullName,
             BookCopyId = reader.BookCopyId
-        }).ToList();
+        })
+        .ToList();
     }
 }
