@@ -30,8 +30,8 @@ public static class SingleBookResponseMapper
           .KnowledgeAreas
           .Select(k => new KnowledgeAreaItem
           {
-              Id = k.Id,
-              Name = k.Name
+            Id = k.Id,
+            Name = k.Name
           })
           .ToList(),
         BookCopiesIds = bookCopiesIds,
