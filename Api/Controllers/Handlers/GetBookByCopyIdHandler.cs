@@ -30,18 +30,18 @@ public class GetBookByCopyIdHandler
     long tenantId
   )
   {
-    var book = await _getBookByCopyIdQuery.GetByCopyIdAsync(copyId, tenantId);
-
-    if (book == null)
-    {
-      throw new NotFoundException($"Book copy with id {copyId} not found");
-    }
-
     var isSecretKeyValid = await _bookCopyValidatorQuery.IsValidSecretKeyAsync(copyId, secretKey, tenantId);
 
     if (!isSecretKeyValid)
     {
       throw new ForbiddenException("Secret key is not valid");
+    }
+
+    var book = await _getBookByCopyIdQuery.GetByCopyIdAsync(copyId, tenantId);
+
+    if (book == null)
+    {
+      throw new NotFoundException($"Book copy with id {copyId} not found");
     }
 
     var bookCopiesIds = book
