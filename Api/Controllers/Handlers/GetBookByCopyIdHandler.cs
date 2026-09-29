@@ -13,7 +13,6 @@ public class GetBookByCopyIdHandler
 
   private readonly IBookReadersService _bookReadersService;
 
-
   public GetBookByCopyIdHandler(
     IGetBookByCopyIdQuery getBookByCopyIdQuery,
     IBookCopyValidatorQuery bookCopyValidatorQuery,
@@ -25,7 +24,11 @@ public class GetBookByCopyIdHandler
     _bookReadersService = bookReadersService;
   }
 
-  public async Task<SingleBookResponse> HandleAsync(long copyId, string secretKey, long tenantId)
+  public async Task<SingleBookResponse> HandleAsync(
+    long copyId,
+    string secretKey,
+    long tenantId
+  )
   {
     var book = await _getBookByCopyIdQuery.GetByCopyIdAsync(copyId, tenantId);
 

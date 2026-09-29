@@ -14,14 +14,14 @@ public class GetBookByCopyIdHandlerTests
   [Fact]
   public async Task HandleAsyncWithNonExistedBookCopyId_ShouldThrowNotFoundException()
   {
-    var nonExistingBookCopyId = 999;
+    var nonExistentBookCopyId = 999;
 
     var getBookByCopyIdQueryMock = new Mock<IGetBookByCopyIdQuery>();
     var bookCopyValidatorQueryMock = new Mock<IBookCopyValidatorQuery>();
     var bookReaderServiceMock = new Mock<IBookReadersService>();
 
     getBookByCopyIdQueryMock
-      .Setup(x => x.GetByCopyIdAsync(nonExistingBookCopyId, TENANT_ID))
+      .Setup(x => x.GetByCopyIdAsync(nonExistentBookCopyId, TENANT_ID))
       .ReturnsAsync((Book?)null);
 
     var getBookByCopyIdHandler = new GetBookByCopyIdHandler(
@@ -31,10 +31,10 @@ public class GetBookByCopyIdHandlerTests
     );
 
     var exception = await Assert.ThrowsAsync<NotFoundException>(
-      async () => await getBookByCopyIdHandler.HandleAsync(nonExistingBookCopyId, "", TENANT_ID)
+      async () => await getBookByCopyIdHandler.HandleAsync(nonExistentBookCopyId, "", TENANT_ID)
     );
 
-    Assert.Equal($"Book copy with id {nonExistingBookCopyId} not found", exception.Message);
+    Assert.Equal($"Book copy with id {nonExistentBookCopyId} not found", exception.Message);
   }
 
   [Fact]

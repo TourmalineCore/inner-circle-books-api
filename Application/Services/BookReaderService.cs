@@ -40,11 +40,11 @@ public class BookReadersService : IBookReadersService
       var employeesDict = employeesByIds.ToDictionary(x => x.EmployeeId);
 
       return employeesWhoReadNowWithoutFullNames
-        .Select(reader => new EmployeeWhoReadsNow
+        .Select(x => new EmployeeWhoReadsNow
         {
-            EmployeeId = reader.EmployeeId,
-            FullName = employeesDict[reader.EmployeeId].FullName,
-            BookCopyId = reader.BookCopyId
+            EmployeeId = x.EmployeeId,
+            FullName = employeesDict[x.EmployeeId].FullName,
+            BookCopyId = x.BookCopyId
         })
         .ToList();
     }
