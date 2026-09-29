@@ -41,22 +41,22 @@ public class AvailabilityStatusCalculatorTests
 
         // 3. Should return list with InOffice and OnHand when somebody is reading book now and book has available copies
         {
-            1,
-            2,
-            new List<EmployeeWhoReadsNow>
+          1,
+          2,
+          new List<EmployeeWhoReadsNow>
+          {
+            new EmployeeWhoReadsNow
             {
-              new EmployeeWhoReadsNow
-              {
-                EmployeeId = 3,
-                FullName = "Test",
-                BookCopyId = 1
-              }
-            },
-            new List<AvailabilityStatus>
-            {
-              AvailabilityStatus.InOffice,
-              AvailabilityStatus.OnHand
+              EmployeeId = 3,
+              FullName = "Test",
+              BookCopyId = 1
             }
+          },
+          new List<AvailabilityStatus>
+          {
+            AvailabilityStatus.InOffice,
+            AvailabilityStatus.OnHand
+          }
         },
 
         // 4. Should return list with OnYou when you are reading book now and book has no available copies
