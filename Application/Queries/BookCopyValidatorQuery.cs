@@ -2,7 +2,12 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Application.Queries;
 
-public class BookCopyValidatorQuery
+public interface IBookCopyValidatorQuery
+{
+  Task<bool> IsValidSecretKeyAsync(long bookCopyId, string secretKey, long tenantId);
+}
+
+public class BookCopyValidatorQuery: IBookCopyValidatorQuery
 {
   private readonly AppDbContext _context;
 

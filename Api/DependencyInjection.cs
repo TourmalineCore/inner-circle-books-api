@@ -22,16 +22,18 @@ public static class DependencyInjection
     services.AddTransient<EditBookCommand>();
     services.AddTransient<DeleteBookCommand>();
     services.AddTransient<SoftDeleteBookCommand>();
-    services.AddTransient<GetBookByIdQuery>();
+    services.AddTransient<IGetBookByIdQuery, GetBookByIdQuery>();
     services.AddTransient<IGetBookByCopyIdQuery, GetBookByCopyIdQuery>();
     services.AddTransient<GetBookHistoryByIdQuery>();
     services.AddTransient<GetBookFeedbackHandler>();
     services.AddTransient<GetBookFeedbackQuery>();
+    services.AddTransient<GetBookByIdHandler>();
+    services.AddTransient<GetBookByCopyIdHandler>();
     services.AddTransient<IGetKnowledgeAreasQuery, GetKnowledgeAreasQuery>();
     services.AddTransient<GetAllBooksQuery>();
     services.AddTransient<CreateBookHandler>();
     services.AddTransient<GetBookCopyReadingHistoryByCopyIdQuery>();
-    services.AddTransient<BookCopyValidatorQuery>();
+    services.AddTransient<IBookCopyValidatorQuery, BookCopyValidatorQuery>();
     services.AddTransient<TakeBookCommand>();
     services.AddTransient<ReturnBookCommand>();
     services.AddTransient<ReturnBookHandler>();
@@ -41,5 +43,6 @@ public static class DependencyInjection
     services.AddTransient<CreateBookFeedbackHandler>();
     services.AddTransient<IInnerCircleHttpClient, InnerCircleHttpClient>();
     services.AddTransient<TakeBookService>();
+    services.AddTransient<IBookReadersService, BookReadersService>();
   }
 }

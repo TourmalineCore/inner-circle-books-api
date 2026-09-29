@@ -20,10 +20,13 @@ public class GetBookByCopyIdQuery : IGetBookByCopyIdQuery
   public Task<Book?> GetByCopyIdAsync(long copyId, long tenantId)
   {
     return _context
-      .BooksCopies
+      .Books
+      .AsNoTracking()
       .Where(x => x.TenantId == tenantId)
-      .Where(x => x.Id == copyId)
-      .Select(x => x.Book)
+      .Where(x => x.DeletedAtUtc == null)
+      .Where(x => x.Copies.Any(x => x.Id == copyId))
+      .Include(x => x.Copies)
+      .Include(x => x.KnowledgeAreas)
       .SingleOrDefaultAsync();
   }
 }

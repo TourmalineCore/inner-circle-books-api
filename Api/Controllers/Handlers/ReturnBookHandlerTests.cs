@@ -1,11 +1,10 @@
-using Api.Controllers.Handlers;
 using Api.Requests;
 using Application.Queries;
 using Core.Entities;
 using Moq;
 using Xunit;
 
-namespace Application.Commands;
+namespace Api.Controllers.Handlers;
 
 public class ReturnBookHandlerTests
 {
