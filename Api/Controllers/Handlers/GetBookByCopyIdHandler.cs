@@ -1,4 +1,5 @@
 using Api.Exceptions;
+using Api.Mappers;
 using Api.Responses;
 using Application.Queries;
 using Application.Services;
@@ -51,30 +52,6 @@ public class GetBookByCopyIdHandler
 
     var employeesWhoReadNow = await _bookReadersService.GetEmployeesWhoReadNowAsync(bookCopiesIds, tenantId);
 
-    return new SingleBookResponse
-    {
-        Id = book.Id,
-        Title = book.Title,
-        Annotation = book.Annotation,
-        CoverUrl = book.CoverUrl,
-        Authors = book
-            .Authors
-            .Select(a => new AuthorResponse()
-            {
-              FullName = a.FullName
-            })
-            .ToList(),
-        Language = book.Language.ToString(),
-        KnowledgeAreas = book
-            .KnowledgeAreas
-            .Select(k => new KnowledgeAreaItem
-            {
-                Id = k.Id,
-                Name = k.Name
-            })
-            .ToList(),
-        BookCopiesIds = bookCopiesIds,
-        EmployeesWhoReadNow = employeesWhoReadNow
-    };
+    return SingleBookResponseMapper.Map(book, bookCopiesIds, employeesWhoReadNow);
   }
 }
