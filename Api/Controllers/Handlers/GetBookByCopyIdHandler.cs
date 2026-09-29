@@ -41,7 +41,7 @@ public class GetBookByCopyIdHandler
 
     if (!isSecretKeyValid)
     {
-      throw new ArgumentException("Secret key is not valid");
+      throw new ForbiddenException("Secret key is not valid");
     }
 
     var bookCopiesIds = book

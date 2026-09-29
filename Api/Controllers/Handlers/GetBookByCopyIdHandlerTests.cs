@@ -66,7 +66,7 @@ public class GetBookByCopyIdHandlerTests
       bookReaderServiceMock.Object
     );
 
-    var exception = await Assert.ThrowsAsync<ArgumentException>(
+    var exception = await Assert.ThrowsAsync<ForbiddenException>(
       async () => await getBookByCopyIdHandler.HandleAsync(bookCopyId, invalidSecretKey, TENANT_ID)
     );
 

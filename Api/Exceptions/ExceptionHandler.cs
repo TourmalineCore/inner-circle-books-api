@@ -24,6 +24,15 @@ public class ErrorHandlerMiddleware
             Message = ex.Message
         });
     }
+    catch (ForbiddenException ex)
+    {
+        context.Response.StatusCode = StatusCodes.Status403Forbidden;
+        await context.Response.WriteAsJsonAsync(new ExceptionResponse<object>
+        {
+            Success = false,
+            Message = ex.Message
+        });
+    }
     catch (Exception ex)
     {
       Console.WriteLine($"Unhandled Exception: {ex}");
