@@ -12,16 +12,16 @@ public class AvailabilityStatusCalculator
   {
     var availabilityStatuses = new List<AvailabilityStatus>();
 
-    var numberOfReadableCopies = employeeWhoReadsNow
+    var booksBeingReadNowCount = employeeWhoReadsNow
       .Select(x => x.BookCopyId)
       .ToList()
       .Count();
 
-    var hasAvailableCopies = totalBookCopies > numberOfReadableCopies;
+    var hasAvailableCopies = totalBookCopies > booksBeingReadNowCount;
 
     var isCurrentEmployeeReader = employeeWhoReadsNow.Any(x => x.EmployeeId == currentEmployeeId);
 
-    var isSomebodyEmployeeReader = numberOfReadableCopies > 0; 
+    var isSomebodyEmployeeReader = booksBeingReadNowCount > 0; 
 
     if (hasAvailableCopies)
     {
