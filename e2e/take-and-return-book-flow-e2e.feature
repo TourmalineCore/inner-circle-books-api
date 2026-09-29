@@ -38,6 +38,7 @@ Scenario: Take and return book flow
     Then status 200
 
     * def firstKnowledgeAreaId = response.knowledgeAreas[0].id
+    * def firstKnowledgeAreaName = response.knowledgeAreas[0].name
 
     # Create a new book
     * def randomName = 'Test-book-' + Math.random()
@@ -65,11 +66,50 @@ Scenario: Take and return book flow
 
     * def newBookId = response.newBookId
 
-    # Get book data to get book copy ID
+    # Check the created books using the endpoint to get a list of books
+    When method GET
+    Then status 200
+    And match response.books contains
+    """
+    {
+        "id": "#(newBookId)",
+        "title": "#(randomName)",
+        "annotation": "Test annotation",
+        "language": "en",
+        "authors": [{
+            "fullName": "Author Name"
+        }],
+        "knowledgeAreas": [{
+            "id": #(firstKnowledgeAreaId),
+            "name": #(firstKnowledgeAreaName)
+        }],
+        "coverUrl": "http://example.com/artwork.jpg",
+        "availabilityStatuses": ["InOffice"]
+    }
+    """
+
+    # Check the created books using the endpoint to get a books by id
     And path newBookId
     When method GET
     Then status 200
-    And match response.title == randomName
+    And match response contains
+    """
+    {
+        "id": "#(newBookId)",
+        "title": "#(randomName)",
+        "annotation": "Test annotation",
+        "language": "en",
+        "authors": [{
+            "fullName": "Author Name"
+        }],
+        "knowledgeAreas": [{
+            "id": #(firstKnowledgeAreaId),
+            "name": #(firstKnowledgeAreaName)
+        }],
+        "coverUrl": "http://example.com/artwork.jpg",
+        "availabilityStatuses": ["InOffice"]
+    }
+    """
     And assert response.bookCopiesIds.length == 1
     And assert response.employeesWhoReadNow.length == 0
 
@@ -96,6 +136,7 @@ Scenario: Take and return book flow
     And assert response.employeesWhoReadNow.length == 1
     And assert response.employeesWhoReadNow[0].employeeId == employeeId
     And assert response.employeesWhoReadNow[0].bookCopyId == bookCopyId
+    And assert response.availabilityStatuses == "OnHand"
 
     * def readerFullName = response.employeesWhoReadNow[0].fullName
     * def progressOfReading = 'ReadEntirely'
