@@ -17,21 +17,21 @@ public class ErrorHandlerMiddleware
     }
     catch (NotFoundException ex)
     {
-        context.Response.StatusCode = StatusCodes.Status404NotFound;
-        await context.Response.WriteAsJsonAsync(new ExceptionResponse<object>
-        {
-            Success = false,
-            Message = ex.Message
-        });
+      context.Response.StatusCode = StatusCodes.Status404NotFound;
+      await context.Response.WriteAsJsonAsync(new ExceptionResponse<object>
+      {
+          Success = false,
+          Message = ex.Message
+      });
     }
     catch (ForbiddenException ex)
     {
-        context.Response.StatusCode = StatusCodes.Status403Forbidden;
-        await context.Response.WriteAsJsonAsync(new ExceptionResponse<object>
-        {
-            Success = false,
-            Message = ex.Message
-        });
+      context.Response.StatusCode = StatusCodes.Status403Forbidden;
+      await context.Response.WriteAsJsonAsync(new ExceptionResponse<object>
+      {
+          Success = false,
+          Message = ex.Message
+      });
     }
     catch (Exception ex)
     {
