@@ -23,6 +23,10 @@ public class GetBookByCopyIdHandlerTests
     getBookByCopyIdQueryMock
       .Setup(x => x.GetByCopyIdAsync(nonExistentBookCopyId, TENANT_ID))
       .ReturnsAsync((Book?)null);
+    
+    bookCopyValidatorQueryMock
+      .Setup(x => x.IsValidSecretKeyAsync(It.IsAny<long>(), It.IsAny<string>(), TENANT_ID))
+      .ReturnsAsync(true);
 
     var getBookByCopyIdHandler = new GetBookByCopyIdHandler(
       getBookByCopyIdQueryMock.Object,
@@ -46,15 +50,6 @@ public class GetBookByCopyIdHandlerTests
     var getBookByCopyIdQueryMock = new Mock<IGetBookByCopyIdQuery>();
     var bookCopyValidatorQueryMock = new Mock<IBookCopyValidatorQuery>();
     var bookReaderServiceMock = new Mock<IBookReadersService>();
-
-    getBookByCopyIdQueryMock
-      .Setup(x => x.GetByCopyIdAsync(bookCopyId, TENANT_ID))
-      .ReturnsAsync(
-        new Book
-        {
-          Id = 1,
-        }
-      );
 
     bookCopyValidatorQueryMock
       .Setup(x => x.IsValidSecretKeyAsync(bookCopyId, invalidSecretKey, TENANT_ID))
