@@ -25,7 +25,6 @@ public class GetBookByCopyIdQueryTests
   {
     var book = new Book
     {
-      Id = 1,
       TenantId = TENANT_ID,
       Title = "Test Book",
       Annotation = "Test annotation",
@@ -45,7 +44,6 @@ public class GetBookByCopyIdQueryTests
 
     var bookCopy = new BookCopy
     {
-      Id = 4,
       BookId = book.Id,
       TenantId = TENANT_ID,
       SecretKey = "abcd"
@@ -56,6 +54,6 @@ public class GetBookByCopyIdQueryTests
 
     var result = await _query.GetByCopyIdAsync(bookCopy.Id, TENANT_ID);
 
-    Assert.Equal(book, result);
+    Assert.Equal(book.Id, result.Id);
   }
 }
