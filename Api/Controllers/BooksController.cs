@@ -22,7 +22,6 @@ namespace Api.Controllers;
 public class BooksController : Controller
 {
   private readonly DeleteBookCommand _deleteBookCommand;
-  private readonly GetAllBooksQuery _getAllBooksQuery;
   private readonly IGetBookByIdQuery _getBookByIdQuery;
   private readonly GetBookCopyReadingHistoryByCopyIdQuery _getBookCopyReadingHistoryByCopyIdQuery;
   private readonly GetBookHistoryByIdQuery _getBookHistoryByIdQuery;
@@ -36,7 +35,6 @@ public class BooksController : Controller
   ///     Controller with actions to books
   /// </summary>
   public BooksController(
-    GetAllBooksQuery getAllBooksQuery,
     IGetBookByIdQuery getBookByIdQuery,
     GetBookCopyReadingHistoryByCopyIdQuery getBookCopyReadingHistoryByCopyIdQuery,
     GetBookHistoryByIdQuery getBookHistoryByIdQuery,
@@ -48,7 +46,6 @@ public class BooksController : Controller
     IInnerCircleHttpClient client
   )
   {
-    _getAllBooksQuery = getAllBooksQuery;
     _getBookByIdQuery = getBookByIdQuery;
     _getBookCopyReadingHistoryByCopyIdQuery = getBookCopyReadingHistoryByCopyIdQuery;
     _getBookHistoryByIdQuery = getBookHistoryByIdQuery;
@@ -86,35 +83,13 @@ public class BooksController : Controller
   /// </summary>
   [RequiresPermission(UserClaimsProvider.CanViewBooks)]
   [HttpGet]
-  public async Task<BooksListResponse> GetAllBooksAsync()
+  public async Task<BooksListResponse> GetAllBooksAsync(
+    [FromServices] GetAllBooksHandler getAllBooksHandler
+  )
   {
-    var books = await _getAllBooksQuery.GetAllAsync(User.GetTenantId());
+    var employee = await _client.GetEmployeeAsync(User.GetCorporateEmail());
 
-    return new BooksListResponse
-    {
-      Books = books.Select(x => new BookListItem()
-      {
-        Id = x.Id,
-        Title = x.Title,
-        Annotation = x.Annotation,
-        CoverUrl = x.CoverUrl,
-        Authors = x.Authors
-          .Select(a => new AuthorResponse()
-          {
-            FullName = a.FullName
-          })
-          .ToList(),
-        Language = x.Language.ToString(),
-        KnowledgeAreas = x.KnowledgeAreas
-          .Select(k => new KnowledgeAreaItem()
-          {
-              Id = k.Id,
-              Name = k.Name
-          })
-          .ToList()
-      })
-      .ToList()
-    };
+    return await getAllBooksHandler.HandleAsync(employee);
   }
 
   /// <summary>
