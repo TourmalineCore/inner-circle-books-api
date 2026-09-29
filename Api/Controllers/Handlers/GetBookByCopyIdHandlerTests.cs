@@ -12,7 +12,7 @@ public class GetBookByCopyIdHandlerTests
   private const long TENANT_ID = 1;
 
   [Fact]
-  public async Task HandleAsyncWithNonExistedBookCopyId_ShouldThrowNotFoundException()
+  public async Task HandleAsyncWithNonExistentBookId_ShouldThrowNotFoundException()
   {
     var nonExistentBookCopyId = 999;
 
@@ -38,7 +38,7 @@ public class GetBookByCopyIdHandlerTests
   }
 
   [Fact]
-  public async Task HandleAsyncWithIvalidSecretKey_ShouldThrowArgumentException()
+  public async Task HandleAsyncWithInvalidSecretKey_ShouldThrowForbiddenException()
   {
     var bookCopyId = 1;
     var invalidSecretKey = "invalidSecretKey";
