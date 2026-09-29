@@ -1,6 +1,7 @@
 using Api.Exceptions;
 using Application.Queries;
 using Application.Services;
+using Core;
 using Core.Entities;
 using Moq;
 using Xunit;
@@ -15,6 +16,11 @@ public class GetBookByCopyIdHandlerTests
   public async Task HandleAsyncWithNonExistentBookId_ShouldThrowNotFoundException()
   {
     var nonExistentBookCopyId = 999;
+    var employee = new Employee
+    {
+      Id = 1,
+      TenantId = TENANT_ID
+    };
 
     var getBookByCopyIdQueryMock = new Mock<IGetBookByCopyIdQuery>();
     var bookCopyValidatorQueryMock = new Mock<IBookCopyValidatorQuery>();
@@ -35,7 +41,7 @@ public class GetBookByCopyIdHandlerTests
     );
 
     var exception = await Assert.ThrowsAsync<NotFoundException>(
-      async () => await getBookByCopyIdHandler.HandleAsync(nonExistentBookCopyId, "", TENANT_ID)
+      async () => await getBookByCopyIdHandler.HandleAsync(nonExistentBookCopyId, "", employee)
     );
 
     Assert.Equal($"Book copy with id {nonExistentBookCopyId} not found", exception.Message);
@@ -46,6 +52,11 @@ public class GetBookByCopyIdHandlerTests
   {
     var bookCopyId = 1;
     var invalidSecretKey = "invalidSecretKey";
+    var employee = new Employee
+    {
+      Id = 1,
+      TenantId = TENANT_ID
+    };
 
     var getBookByCopyIdQueryMock = new Mock<IGetBookByCopyIdQuery>();
     var bookCopyValidatorQueryMock = new Mock<IBookCopyValidatorQuery>();
@@ -62,7 +73,7 @@ public class GetBookByCopyIdHandlerTests
     );
 
     var exception = await Assert.ThrowsAsync<ForbiddenException>(
-      async () => await getBookByCopyIdHandler.HandleAsync(bookCopyId, invalidSecretKey, TENANT_ID)
+      async () => await getBookByCopyIdHandler.HandleAsync(bookCopyId, invalidSecretKey, employee)
     );
 
     Assert.Equal("Secret key is not valid", exception.Message);

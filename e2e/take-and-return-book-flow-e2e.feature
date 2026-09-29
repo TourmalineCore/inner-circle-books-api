@@ -136,7 +136,7 @@ Scenario: Take and return book flow
     And assert response.employeesWhoReadNow.length == 1
     And assert response.employeesWhoReadNow[0].employeeId == employeeId
     And assert response.employeesWhoReadNow[0].bookCopyId == bookCopyId
-    And assert response.availabilityStatuses == "OnHand"
+    And assert response.availabilityStatuses == "OnYou"
 
     * def readerFullName = response.employeesWhoReadNow[0].fullName
     * def progressOfReading = 'ReadEntirely'

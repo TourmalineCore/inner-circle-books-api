@@ -38,6 +38,8 @@ public static class SingleBookResponseMapper
         BookCopiesIds = bookCopiesIds,
         EmployeesWhoReadNow = employeesWhoReadNow,
         AvailabilityStatuses = availabilityStatuses
+          .Select(s => s.ToString())
+          .ToList()
       };
     }
 }

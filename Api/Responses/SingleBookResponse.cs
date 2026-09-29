@@ -1,5 +1,4 @@
 using Core;
-using Core.Entities;
 
 namespace Api.Responses;
 
@@ -23,5 +22,5 @@ public class SingleBookResponse
 
   public List<EmployeeWhoReadsNow> EmployeesWhoReadNow { get; set; }
 
-  public List<AvailabilityStatus> AvailabilityStatuses { get; set; }
+  public List<string> AvailabilityStatuses { get; set; }
 }
