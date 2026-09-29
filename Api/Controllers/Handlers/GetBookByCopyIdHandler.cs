@@ -3,6 +3,7 @@ using Api.Mappers;
 using Api.Responses;
 using Application.Queries;
 using Application.Services;
+using Core;
 
 namespace Api.Controllers.Handlers;
 
@@ -28,17 +29,17 @@ public class GetBookByCopyIdHandler
   public async Task<SingleBookResponse> HandleAsync(
     long copyId,
     string secretKey,
-    long tenantId
+    Employee employee
   )
   {
-    var isSecretKeyValid = await _bookCopyValidatorQuery.IsValidSecretKeyAsync(copyId, secretKey, tenantId);
+    var isSecretKeyValid = await _bookCopyValidatorQuery.IsValidSecretKeyAsync(copyId, secretKey, employee.TenantId);
 
     if (!isSecretKeyValid)
     {
       throw new ForbiddenException("Secret key is not valid");
     }
 
-    var book = await _getBookByCopyIdQuery.GetByCopyIdAsync(copyId, tenantId);
+    var book = await _getBookByCopyIdQuery.GetByCopyIdAsync(copyId, employee.TenantId);
 
     if (book == null)
     {
@@ -50,8 +51,19 @@ public class GetBookByCopyIdHandler
       .Select(x => x.Id)
       .ToList();
 
-    var employeesWhoReadNow = await _bookReadersService.GetEmployeesWhoReadNowAsync(bookCopiesIds, tenantId);
+    var employeesWhoReadNow = await _bookReadersService.GetEmployeesWhoReadNowAsync(bookCopiesIds, employee.TenantId);
 
-    return SingleBookResponseMapper.Map(book, bookCopiesIds, employeesWhoReadNow);
+     var availabilityStatuses = AvailabilityStatusCalculator.Calculate(
+      bookCopiesIds.Count,
+      employeesWhoReadNow,
+      employee.Id
+    );
+
+    return SingleBookResponseMapper.Map(
+      book,
+      bookCopiesIds,
+      employeesWhoReadNow,
+      availabilityStatuses
+    );
   }
 }

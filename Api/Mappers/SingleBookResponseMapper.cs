@@ -9,7 +9,8 @@ public static class SingleBookResponseMapper
     public static SingleBookResponse Map(
       Book book,
       List<long> bookCopiesIds,
-      List<EmployeeWhoReadsNow> employeesWhoReadNow
+      List<EmployeeWhoReadsNow> employeesWhoReadNow,
+      List<AvailabilityStatus> availabilityStatuses 
     )
     {
       return new SingleBookResponse
@@ -35,7 +36,8 @@ public static class SingleBookResponseMapper
           })
           .ToList(),
         BookCopiesIds = bookCopiesIds,
-        EmployeesWhoReadNow = employeesWhoReadNow
+        EmployeesWhoReadNow = employeesWhoReadNow,
+        AvailabilityStatuses = availabilityStatuses
       };
     }
 }

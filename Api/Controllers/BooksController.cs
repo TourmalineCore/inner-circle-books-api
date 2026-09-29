@@ -122,12 +122,14 @@ public class BooksController : Controller
   /// </summary>
   [RequiresPermission(UserClaimsProvider.CanViewBooks)]
   [HttpGet("{bookId}")]
-  public Task<SingleBookResponse> GetBookByIdAsync(
+  public async Task<SingleBookResponse> GetBookByIdAsync(
     [Required][FromRoute] long bookId,
     [FromServices] GetBookByIdHandler getBookByIdHandler
   )
   {
-    return getBookByIdHandler.HandleAsync(bookId, User.GetTenantId());
+    var employee = await _client.GetEmployeeAsync(User.GetCorporateEmail());
+
+    return await getBookByIdHandler.HandleAsync(bookId, employee);
   }
 
   /// <summary>
@@ -135,13 +137,15 @@ public class BooksController : Controller
   /// </summary>
   [RequiresPermission(UserClaimsProvider.CanViewBooks)]
   [HttpGet("copy/{copyId}")]
-  public Task<SingleBookResponse> GetBookByCopyIdAsync(
+  public async Task<SingleBookResponse> GetBookByCopyIdAsync(
     [Required][FromRoute] long copyId,
     [Required][FromQuery] string secretKey,
     [FromServices] GetBookByCopyIdHandler getBookByCopyIdHandler
   )
   {
-    return getBookByCopyIdHandler.HandleAsync(copyId, secretKey, User.GetTenantId());
+    var employee = await _client.GetEmployeeAsync(User.GetCorporateEmail());
+
+    return await getBookByCopyIdHandler.HandleAsync(copyId, secretKey, employee);
   }
 
    /// <summary>
