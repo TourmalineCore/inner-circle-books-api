@@ -6,7 +6,7 @@ namespace Application.Queries;
 
 public interface IGetBookByIdQuery
 {
-  Task<Book?> GetByIdAsync(long copyId, long tenantId);
+  Task<Book?> GetByIdAsync(long bookId, long tenantId);
   Task<List<EmployeeWhoReadsNow>> GetEmployeesWhoReadNowAsync(List<long> copiesIds, long tenantId);
 }
 
@@ -19,7 +19,7 @@ public class GetBookByIdQuery: IGetBookByIdQuery
     _context = context;
   }
 
-  public Task<Book?> GetByIdAsync(long id, long tenantId)
+  public Task<Book?> GetByIdAsync(long bookId, long tenantId)
   {
     return _context
       .Books
@@ -27,7 +27,7 @@ public class GetBookByIdQuery: IGetBookByIdQuery
       .Where(x => x.TenantId == tenantId)
       .Include(x => x.Copies)
       .Include(x => x.KnowledgeAreas) 
-      .SingleOrDefaultAsync(x => x.Id == id);
+      .SingleOrDefaultAsync(x => x.Id == bookId);
   }
 
   public Task<List<EmployeeWhoReadsNow>> GetEmployeesWhoReadNowAsync(List<long> copiesIds, long tenantId)
