@@ -75,7 +75,7 @@ public class GetAllBooksHandler
             })
             .ToList(),
           AvailabilityStatuses = availabilityStatuses
-            .Select(s => s.ToString())
+            .Select(x => x.ToString())
             .ToList()
       };
     })
