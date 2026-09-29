@@ -56,4 +56,42 @@ public class GetBookByCopyIdQueryTests
 
     Assert.Equal(book.Id, result.Id);
   }
+
+  [Fact]
+  public async Task GetBookByCopyIdAsync_ShouldReturnNull_WhenBookIsDeleted()
+  {
+    var book = new Book
+    {
+      TenantId = TENANT_ID,
+      Title = "Test Book",
+      Annotation = "Test annotation",
+      Authors = new List<Author>()
+      {
+        new Author()
+        {
+          FullName = "Test Author"
+        }
+      },
+      DeletedAtUtc = DateTime.UtcNow,
+      Language = Language.en,
+      CoverUrl = "http://test-images.com/img404.png"
+    };
+
+    _context.Books.Add(book);
+    await _context.SaveChangesAsync();
+
+    var bookCopy = new BookCopy
+    {
+      BookId = book.Id,
+      TenantId = TENANT_ID,
+      SecretKey = "abcd"
+    };
+
+    _context.BooksCopies.Add(bookCopy);
+    await _context.SaveChangesAsync();
+
+    var result = await _query.GetByCopyIdAsync(bookCopy.Id, TENANT_ID);
+
+    Assert.Null(result);
+  }
 }

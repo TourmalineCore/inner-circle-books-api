@@ -23,6 +23,7 @@ public class GetBookByCopyIdQuery : IGetBookByCopyIdQuery
       .Books
       .AsNoTracking()
       .Where(x => x.TenantId == tenantId)
+      .Where(x => x.DeletedAtUtc == null)
       .Where(x => x.Copies.Any(x => x.Id == copyId))
       .Include(x => x.Copies)
       .Include(x => x.KnowledgeAreas)

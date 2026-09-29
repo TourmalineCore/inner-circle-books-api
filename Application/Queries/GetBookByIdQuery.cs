@@ -25,6 +25,7 @@ public class GetBookByIdQuery: IGetBookByIdQuery
       .Books
       .AsNoTracking()
       .Where(x => x.TenantId == tenantId)
+      .Where(x => x.DeletedAtUtc == null)
       .Include(x => x.Copies)
       .Include(x => x.KnowledgeAreas) 
       .SingleOrDefaultAsync(x => x.Id == bookId);

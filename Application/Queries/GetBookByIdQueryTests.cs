@@ -34,27 +34,55 @@ public class GetBookByIdQueryTests
   public async Task GetByIdAsync_ShouldReturnNull_WhenBookBelongsToAnotherTenant()
   {
     var book = new Book
+    {
+      TenantId = TENANT_ID,
+      Title = "Test Book 1",
+      Annotation = "Test annotation 1",
+      Authors = new List<Author>()
       {
-        TenantId = TENANT_ID,
-        Title = "Test Book 1",
-        Annotation = "Test annotation 1",
-        Authors = new List<Author>()
+        new Author()
         {
-          new Author()
-          {
-            FullName = "Test Author"
-          }
-        },
-        Language = Language.en,
-        CoverUrl = ""
-      };
+          FullName = "Test Author"
+        }
+      },
+      Language = Language.en,
+      CoverUrl = ""
+    };
 
-      _context.Books.Add(book);
-   
-      await _context.SaveChangesAsync();
+    _context.Books.Add(book);
+  
+    await _context.SaveChangesAsync();
 
-      var result = await _query.GetByIdAsync(book.Id, 999);
+    var result = await _query.GetByIdAsync(book.Id, 999);
 
-      Assert.Null(result);
+    Assert.Null(result);
+  }
+
+  [Fact]
+  public async Task GetBookIdAsync_ShouldReturnNull_WhenBookIsDeleted()
+  {
+    var book = new Book
+    {
+      TenantId = TENANT_ID,
+      Title = "Test Book 1",
+      Annotation = "Test annotation 1",
+      Authors = new List<Author>()
+      {
+        new Author()
+        {
+          FullName = "Test Author"
+        }
+      },
+      DeletedAtUtc = DateTime.UtcNow,
+      Language = Language.en,
+      CoverUrl = ""
+    };
+
+    _context.Books.Add(book);
+    await _context.SaveChangesAsync();
+
+    var result = await _query.GetByIdAsync(book.Id, TENANT_ID);
+
+    Assert.Null(result);
   }
 }
