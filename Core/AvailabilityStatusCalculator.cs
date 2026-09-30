@@ -6,20 +6,17 @@ public class AvailabilityStatusCalculator
 {
   public static List<AvailabilityStatus> Calculate(
     int totalBookCopies,
-    List<EmployeeWhoReadsNow> employeeWhoReadsNow,
+    List<EmployeeWhoReadsNow> employeesWhoReadsNow,
     long currentEmployeeId
   )
   {
     var availabilityStatuses = new List<AvailabilityStatus>();
 
-    var booksBeingReadNowCount = employeeWhoReadsNow
-      .Select(x => x.BookCopyId)
-      .ToList()
-      .Count();
+    var booksBeingReadNowCount = employeesWhoReadsNow.Count();
 
     var hasAvailableCopies = totalBookCopies > booksBeingReadNowCount;
 
-    var isCurrentEmployeeReader = employeeWhoReadsNow.Any(x => x.EmployeeId == currentEmployeeId);
+    var isCurrentEmployeeReader = employeesWhoReadsNow.Any(x => x.EmployeeId == currentEmployeeId);
 
     var isSomebodyEmployeeReader = booksBeingReadNowCount > 0; 
 
