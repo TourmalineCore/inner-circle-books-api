@@ -77,9 +77,9 @@ public class GetAllBooksHandler
           AvailabilityStatuses = availabilityStatuses
             .Select(x => x.ToString())
             .ToList()
-      };
-    })
-    .ToList();
+        };
+      })
+      .ToList();
 
     return new BooksListResponse
     {
