@@ -56,30 +56,30 @@ public class GetAllBooksHandler
 
       return new BookListItem
       {
-          Id = book.Id,
-          Title = book.Title,
-          Annotation = book.Annotation,
-          CoverUrl = book.CoverUrl,
-          Authors = book.Authors
-            .Select(x => new AuthorResponse
-            {
-              FullName = x.FullName
-            })
-            .ToList(),
-          Language = book.Language.ToString(),
-          KnowledgeAreas = book.KnowledgeAreas
-            .Select(x => new KnowledgeAreaItem
-            { 
-              Id = x.Id,
-              Name = x.Name
-            })
-            .ToList(),
-          AvailabilityStatuses = availabilityStatuses
-            .Select(x => x.ToString())
-            .ToList()
-        };
-      })
-      .ToList();
+        Id = book.Id,
+        Title = book.Title,
+        Annotation = book.Annotation,
+        CoverUrl = book.CoverUrl,
+        Authors = book.Authors
+          .Select(x => new AuthorResponse
+          {
+            FullName = x.FullName
+          })
+          .ToList(),
+        Language = book.Language.ToString(),
+        KnowledgeAreas = book.KnowledgeAreas
+          .Select(x => new KnowledgeAreaItem
+          { 
+            Id = x.Id,
+            Name = x.Name
+          })
+          .ToList(),
+        AvailabilityStatuses = availabilityStatuses
+          .Select(x => x.ToString())
+          .ToList()
+      };
+    })
+    .ToList();
 
     return new BooksListResponse
     {
