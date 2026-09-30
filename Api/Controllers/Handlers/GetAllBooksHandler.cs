@@ -48,7 +48,7 @@ public class GetAllBooksHandler
         .SelectMany(bookCopyId => readersGroupedByBookCopyId[bookCopyId])
         .ToList();
 
-      var availabilityStatuses = AvailabilityStatusCalculator.Calculate(
+      var availabilityStatuses = BookAvailabilityStatusCalculator.Calculate(
         bookCopiesIds.Count,
         employeesWhoReadNow,
         employee.Id

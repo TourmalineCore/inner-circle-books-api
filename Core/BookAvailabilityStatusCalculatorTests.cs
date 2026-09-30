@@ -3,20 +3,20 @@ using Xunit;
 
 namespace Core;
 
-public class AvailabilityStatusCalculatorTests
+public class BookAvailabilityStatusCalculatorTests
 {
-  public static TheoryData<int, int, List<EmployeeWhoReadsNow>, List<AvailabilityStatus>> CalculateTestData()
+  public static TheoryData<int, int, List<EmployeeWhoReadsNow>, List<BookAvailabilityStatus>> CalculateTestData()
   {
-    return new TheoryData<int, int, List<EmployeeWhoReadsNow>, List<AvailabilityStatus>>
+    return new TheoryData<int, int, List<EmployeeWhoReadsNow>, List<BookAvailabilityStatus>>
     {
         // 1. Should return list with InOffice when nobody is reading book now
         {
           1, // currentEmployeeId
           1, // totalBookCopies
           new List<EmployeeWhoReadsNow>(), // employeeWhoReadsNow
-          new List<AvailabilityStatus>
+          new List<BookAvailabilityStatus>
           {
-            AvailabilityStatus.InOffice  // expected
+            BookAvailabilityStatus.InOffice  // expected
           }
         },
 
@@ -33,9 +33,9 @@ public class AvailabilityStatusCalculatorTests
               BookCopyId = 1
             }
           },
-          new List<AvailabilityStatus>
+          new List<BookAvailabilityStatus>
           {
-            AvailabilityStatus.OnHand
+            BookAvailabilityStatus.OnHand
           }
         },
 
@@ -52,10 +52,10 @@ public class AvailabilityStatusCalculatorTests
               BookCopyId = 1
             }
           },
-          new List<AvailabilityStatus>
+          new List<BookAvailabilityStatus>
           {
-            AvailabilityStatus.InOffice,
-            AvailabilityStatus.OnHand
+            BookAvailabilityStatus.InOffice,
+            BookAvailabilityStatus.OnHand
           }
         },
 
@@ -72,9 +72,9 @@ public class AvailabilityStatusCalculatorTests
               BookCopyId = 1
             }
           },
-          new List<AvailabilityStatus>
+          new List<BookAvailabilityStatus>
           {
-            AvailabilityStatus.OnYou
+            BookAvailabilityStatus.OnYou
           }
         },
 
@@ -91,10 +91,10 @@ public class AvailabilityStatusCalculatorTests
               BookCopyId = 1
             }
           },
-          new List<AvailabilityStatus>
+          new List<BookAvailabilityStatus>
           {
-            AvailabilityStatus.InOffice,
-            AvailabilityStatus.OnYou
+            BookAvailabilityStatus.InOffice,
+            BookAvailabilityStatus.OnYou
           }
         }
     };
@@ -106,10 +106,10 @@ public class AvailabilityStatusCalculatorTests
     int currentEmployeeId,
     int totalBookCopies,
     List<EmployeeWhoReadsNow> employeeWhoReadsNow,
-    List<AvailabilityStatus> expected
+    List<BookAvailabilityStatus> expected
   )
   {
-    var result = AvailabilityStatusCalculator.Calculate(
+    var result = BookAvailabilityStatusCalculator.Calculate(
       totalBookCopies,
       employeeWhoReadsNow,
       currentEmployeeId

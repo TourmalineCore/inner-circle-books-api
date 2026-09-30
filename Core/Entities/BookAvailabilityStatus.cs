@@ -1,6 +1,6 @@
 namespace Core.Entities;
 
-public enum AvailabilityStatus
+public enum BookAvailabilityStatus
 {
   InOffice = 0,
   OnHand = 1,

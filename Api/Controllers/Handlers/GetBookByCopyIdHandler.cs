@@ -53,7 +53,7 @@ public class GetBookByCopyIdHandler
 
     var employeesWhoReadNow = await _bookReadersService.GetEmployeesWhoReadNowAsync(bookCopiesIds, employee.TenantId);
 
-    var availabilityStatuses = AvailabilityStatusCalculator.Calculate(
+    var availabilityStatuses = BookAvailabilityStatusCalculator.Calculate(
       bookCopiesIds.Count,
       employeesWhoReadNow,
       employee.Id
