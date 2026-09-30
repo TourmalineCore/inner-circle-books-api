@@ -23,13 +23,13 @@ public class GetBookByIdHandlerTests
     };
 
     var getBookByIdQueryMock = new Mock<IGetBookByIdQuery>();
-    var bookReadersServicMock = new Mock<IBookReadersService>();
+    var bookReadersServiceMock = new Mock<IBookReadersService>();
 
     getBookByIdQueryMock
       .Setup(x => x.GetByIdAsync(nonExistentBookId, TENANT_ID))
       .ReturnsAsync((Book?)null);
 
-    var getBookByCopyIdHandler = new GetBookByIdHandler(getBookByIdQueryMock.Object, bookReadersServicMock.Object);
+    var getBookByCopyIdHandler = new GetBookByIdHandler(getBookByIdQueryMock.Object, bookReadersServiceMock.Object);
 
     var exception = await Assert.ThrowsAsync<NotFoundException>(
       async () => await getBookByCopyIdHandler.HandleAsync(nonExistentBookId, employee)
