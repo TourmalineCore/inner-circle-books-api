@@ -13,7 +13,7 @@ public class BookAvailabilityStatusCalculatorTests
         {
           1, // currentEmployeeId
           1, // totalBookCopies
-          new List<EmployeeWhoReadsNow>(), // employeeWhoReadsNow
+          new List<EmployeeWhoReadsNow>(), // employeesWhoReadNow
           new List<BookAvailabilityStatus>
           {
             BookAvailabilityStatus.InOffice  // expected
@@ -105,13 +105,13 @@ public class BookAvailabilityStatusCalculatorTests
   public void Calculate_ShouldReturnExpectedStatuses(
     int currentEmployeeId,
     int totalBookCopies,
-    List<EmployeeWhoReadsNow> employeeWhoReadsNow,
+    List<EmployeeWhoReadsNow> employeesWhoReadNow,
     List<BookAvailabilityStatus> expected
   )
   {
     var result = BookAvailabilityStatusCalculator.Calculate(
       totalBookCopies,
-      employeeWhoReadsNow,
+      employeesWhoReadNow,
       currentEmployeeId
     );
 
