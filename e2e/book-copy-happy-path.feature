@@ -35,7 +35,8 @@ Scenario: Happy Path
     When method GET
     Then status 200
 
-    * def  firstKnowledgeAreaId = response.knowledgeAreas[0].id
+    * def firstKnowledgeAreaId = response.knowledgeAreas[0].id
+    * def firstKnowledgeAreaName = response.knowledgeAreas[0].name
 
     # Create a new book with 1 copy
     * def randomName = 'Test-book-' + Math.random()
@@ -82,14 +83,31 @@ Scenario: Happy Path
     * def bookCopyId = response.bookCopies[0].bookCopyId
     * def secretKey = response.bookCopies[0].secretKey
 
-    # Get book copy by bookCopyId
+    # Get book by book copy id
     And path '/copy', bookCopyId
     And param secretKey = secretKey
     When method GET
     Then status 200
-    And match response.title == randomName
-    And match response.annotation == 'Test annotation'
-    And match response.language == 'en'
+    And match response contains
+    """
+    {
+        "id": "#(bookId)",
+        "title": "#(randomName)",
+        "annotation": "Test annotation",
+        "language": "en",
+        "authors": [{
+            "fullName": "Author Name"
+        }],
+        "knowledgeAreas": [{
+            "id": #(firstKnowledgeAreaId),
+            "name": #(firstKnowledgeAreaName)
+        }],
+        "coverUrl": "http://example.com/artwork.jpg",
+        "availabilityStatuses": ["InOffice"]
+    }
+    """
+    And assert response.bookCopiesIds.length == 2
+    And assert response.employeesWhoReadNow.length == 0
 
     # Cleanup: Delete the book (hard delete)
     And path bookId, 'hard-delete'

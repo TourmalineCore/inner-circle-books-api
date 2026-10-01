@@ -3,6 +3,7 @@ using Api.Mappers;
 using Api.Responses;
 using Application.Queries;
 using Application.Services;
+using Core;
 
 namespace Api.Controllers.Handlers;
 
@@ -21,9 +22,12 @@ public class GetBookByIdHandler
     _bookReadersService = bookReadersService;
   }
 
-  public async Task<SingleBookResponse> HandleAsync(long bookId, long tenantId)
+  public async Task<SingleBookResponse> HandleAsync(
+    long bookId,
+    Employee employee
+  )
   {
-    var book = await _getBookByIdQuery.GetByIdAsync(bookId, tenantId);
+    var book = await _getBookByIdQuery.GetByIdAsync(bookId, employee.TenantId);
 
     if (book == null)
     {
@@ -35,8 +39,19 @@ public class GetBookByIdHandler
       .Select(x => x.Id)
       .ToList();
 
-    var employeesWhoReadNow = await _bookReadersService.GetEmployeesWhoReadNowAsync(bookCopiesIds, tenantId);
+    var employeesWhoReadNow = await _bookReadersService.GetEmployeesWhoReadNowAsync(bookCopiesIds, employee.TenantId);
 
-    return SingleBookResponseMapper.Map(book, bookCopiesIds, employeesWhoReadNow);
+    var bookAvailabilityStatuses = BookAvailabilityStatusCalculator.Calculate(
+      bookCopiesIds.Count,
+      employeesWhoReadNow,
+      employee.Id
+    );
+
+    return SingleBookResponseMapper.Map(
+      book,
+      bookCopiesIds,
+      employeesWhoReadNow,
+      bookAvailabilityStatuses
+    );
   }
 }

@@ -21,4 +21,6 @@ public class SingleBookResponse
   public List<long> BookCopiesIds { get; set; }
 
   public List<EmployeeWhoReadsNow> EmployeesWhoReadNow { get; set; }
+
+  public List<string> AvailabilityStatuses { get; set; }
 }

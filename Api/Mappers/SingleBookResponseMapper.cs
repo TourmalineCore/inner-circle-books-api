@@ -9,7 +9,8 @@ public static class SingleBookResponseMapper
     public static SingleBookResponse Map(
       Book book,
       List<long> bookCopiesIds,
-      List<EmployeeWhoReadsNow> employeesWhoReadNow
+      List<EmployeeWhoReadsNow> employeesWhoReadNow,
+      List<BookAvailabilityStatus> bookAvailabilityStatuses 
     )
     {
       return new SingleBookResponse
@@ -20,22 +21,25 @@ public static class SingleBookResponseMapper
         CoverUrl = book.CoverUrl,
         Authors = book
           .Authors
-          .Select(a => new AuthorResponse()
+          .Select(x => new AuthorResponse()
           {
-            FullName = a.FullName
+            FullName = x.FullName
           })
           .ToList(),
         Language = book.Language.ToString(),
         KnowledgeAreas = book
           .KnowledgeAreas
-          .Select(k => new KnowledgeAreaItem
+          .Select(x => new KnowledgeAreaItem
           {
-            Id = k.Id,
-            Name = k.Name
+            Id = x.Id,
+            Name = x.Name
           })
           .ToList(),
         BookCopiesIds = bookCopiesIds,
-        EmployeesWhoReadNow = employeesWhoReadNow
+        EmployeesWhoReadNow = employeesWhoReadNow,
+        AvailabilityStatuses = bookAvailabilityStatuses
+          .Select(x => x.ToString())
+          .ToList()
       };
     }
 }
