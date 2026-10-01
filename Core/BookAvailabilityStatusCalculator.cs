@@ -10,30 +10,30 @@ public class BookAvailabilityStatusCalculator
     long currentEmployeeId
   )
   {
-    var availabilityStatuses = new List<BookAvailabilityStatus>();
+    var bookAvailabilityStatuses = new List<BookAvailabilityStatus>();
 
-    var readersCount = employeesWhoReadNow.Count();
+    var readersCount = employeesWhoReadNow.Count;
 
     var hasAvailableCopies = totalBookCopies > readersCount;
 
-    var isCurrentEmployeeReader = employeesWhoReadNow.Any(x => x.EmployeeId == currentEmployeeId);
+    var isReadByCurrentEmployee = employeesWhoReadNow.Any(x => x.EmployeeId == currentEmployeeId);
 
-    var isSomebodyEmployeeReader = readersCount > 0; 
+    var isReadByAnyone = readersCount > 0; 
 
     if (hasAvailableCopies)
     {
-      availabilityStatuses.Add(BookAvailabilityStatus.InOffice);
+      bookAvailabilityStatuses.Add(BookAvailabilityStatus.InOffice);
     }
     
-    if (isCurrentEmployeeReader)
+    if (isReadByCurrentEmployee)
     {
-      availabilityStatuses.Add(BookAvailabilityStatus.OnYou);
+      bookAvailabilityStatuses.Add(BookAvailabilityStatus.OnYou);
     }
-    else if (isSomebodyEmployeeReader)
+    else if (isReadByAnyone)
     {
-      availabilityStatuses.Add(BookAvailabilityStatus.OnHand);
+      bookAvailabilityStatuses.Add(BookAvailabilityStatus.OnHand);
     }
 
-    return availabilityStatuses;
+    return bookAvailabilityStatuses;
   }
 }
