@@ -7,6 +7,8 @@ For instance, Visual Studio for Mac support stops at .NET 8, thus, we needed som
 
 Full info about Inner Circle .NET related code conventions, patterns, decisions, and reasoning can be found [here](https://github.com/TourmalineCore/inner-circle-documentation/blob/master/code-style/api-code-style.md).
 
+Details on available run configurations (e.g., `DbOnly`, `MockForDevelopment` or `MockForPullRequest`) can be found [here](https://github.com/TourmalineCore/inner-circle-documentation/blob/master/code-style/api-configurations.md).
+
 More info about the Inner Circle project and its related repos can be found here: [inner-circle-documentation](https://github.com/TourmalineCore/inner-circle-documentation).
 
 ## Prerequisites
@@ -49,7 +51,7 @@ java -jar /karate.jar .
 
 ### Migrations
 
-Full docs and useful snippets about migrations in this infrastructre setup are available [here](https://github.com/TourmalineCore/inner-circle-documentation/blob/master/code-style/api-code-style.md#migrations).
+Full docs and useful snippets about migrations in this infrastructre setup are available [here](https://github.com/TourmalineCore/inner-circle-documentation/blob/master/code-style/api-migrations.md).
 
 #### Add Migration
 
