@@ -91,28 +91,6 @@ Scenario: Book flow from creation to deletion
     And match response.knowledgeAreas contains { id: #(firstKnowledgeAreaId), name: '#(firstKnowledgeAreaName)' }
     And match response.knowledgeAreas[*].id contains secondKnowledgeAreaId
 
-    # Edit the book's details
-    # the edited details are checked below using the endpoints to get book copies and to get a book by copy id
-    * def editedName = 'Test-edited-book' + Math.random()
-
-    And path newBookId, 'edit'
-    And request
-    """
-    {
-        title: '#(editedName)',
-        annotation: 'Edited annotation',
-        language: 'ru',
-        authors: [
-            {
-                fullName: 'Edited Author'
-            }
-        ],
-        coverUrl: 'http://example.com/edited-artwork.jpg'
-    }
-    """
-    When method POST
-    Then status 200
-
     # Add new book copy
     And path newBookId, '/add-copy'
     When method POST
@@ -123,7 +101,7 @@ Scenario: Book flow from creation to deletion
     When method GET
     Then status 200
     And assert response.bookCopies.length == 3
-    And match response.bookTitle == editedName
+    And match response.bookTitle == randomName
     And match response.bookCopies[0].bookCopyId == "#number"
     And match response.bookCopies[0].secretKey == "#notnull"
     And match response.bookCopies[1].bookCopyId == "#number"
@@ -171,7 +149,7 @@ Scenario: Book flow from creation to deletion
     When method POST
     Then status 200
 
-    # Get book by book copy id and check that book has the edited details and one reader
+    # Get book by book copy id and check that book has one reader
     And path '/copy', bookCopyId
     And param secretKey = secretKey
     When method GET
@@ -180,13 +158,13 @@ Scenario: Book flow from creation to deletion
     """
     {
         "id": "#(newBookId)",
-        "title": "#(editedName)",
-        "annotation": "Edited annotation",
-        "language": "ru",
+        "title": "#(randomName)",
+        "annotation": "Test annotation",
+        "language": "en",
         "authors": [{
-            "fullName": "Edited Author"
+            "fullName": "Author Name"
         }],
-        "coverUrl": "http://example.com/edited-artwork.jpg",
+        "coverUrl": "http://example.com/artwork.jpg",
         "availabilityStatuses": ["InOffice", "OnYou"]
     }
     """
@@ -250,6 +228,27 @@ Scenario: Book flow from creation to deletion
     And assert response.list.length == 1
     And assert response.list[0].employeeFullName == readerFullName
     And assert response.list[0].bookCopyId == bookCopyId
+
+    # Edit the book's details
+    * def editedName = 'Test-edited-book' + Math.random()
+
+    And path newBookId, 'edit'
+    And request
+    """
+    {
+        title: '#(editedName)',
+        annotation: 'Edited annotation',
+        language: 'ru',
+        authors: [
+            {
+                fullName: 'Edited Author'
+            }
+        ],
+        coverUrl: 'http://example.com/edited-artwork.jpg'
+    }
+    """
+    When method POST
+    Then status 200
 
     # Check the edited and returned book using the endpoint to get a list of books
     When method GET
