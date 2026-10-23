@@ -88,7 +88,13 @@ Scenario: Book flow from creation to deletion
     And assert response.bookCopiesIds.length == 2
     And assert response.employeesWhoReadNow.length == 0
     # let's check that name matches only for one knowledge area, we don't need to check for all
-    And match response.knowledgeAreas contains { id: #(firstKnowledgeAreaId), name: '#(firstKnowledgeAreaName)' }
+    And match response.knowledgeAreas contains
+    """
+    {
+        "id": "#(firstKnowledgeAreaId)",
+        "name": "#(firstKnowledgeAreaName)"
+    }
+    """
     And match response.knowledgeAreas[*].id contains secondKnowledgeAreaId
 
     # Add new book copy
@@ -168,7 +174,13 @@ Scenario: Book flow from creation to deletion
         "availabilityStatuses": ["InOffice", "OnYou"]
     }
     """
-    And match response.knowledgeAreas contains { id: #(firstKnowledgeAreaId), name: '#(firstKnowledgeAreaName)' }
+    And match response.knowledgeAreas contains
+    """
+    {
+        "id": "#(firstKnowledgeAreaId)",
+        "name": "#(firstKnowledgeAreaName)"
+    }
+    """
     And match response.knowledgeAreas[*].id contains secondKnowledgeAreaId
     And assert response.bookCopiesIds.length == 3
     And assert response.employeesWhoReadNow.length == 1
@@ -274,7 +286,13 @@ Scenario: Book flow from creation to deletion
         "availabilityStatuses": ["InOffice"]
     }
     """
-    And match editedBook.knowledgeAreas contains { id: #(firstKnowledgeAreaId), name: '#(firstKnowledgeAreaName)' }
+    And match editedBook.knowledgeAreas contains
+    """
+    {
+        "id": "#(firstKnowledgeAreaId)",
+        "name": "#(firstKnowledgeAreaName)"
+    }
+    """
     And match editedBook.knowledgeAreas[*].id contains secondKnowledgeAreaId
 
     # Delete the book (soft delete)
