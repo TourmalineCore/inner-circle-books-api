@@ -177,9 +177,9 @@ Scenario: Book flow from creation to deletion
 
     * def readerFullName = response.employeesWhoReadNow[0].fullName
     * def returnProgressOfReading = 'ReadEntirely'
-    * def returnRating = 5
-    * def returnAdvantages = "Good book"
-    * def returnDisadvantages = "Long book"
+    * def returnRating = 4
+    * def returnAdvantages = "Interesting book"
+    * def returnDisadvantages = "Hard to read"
 
     # Return book copy
     And path '/return'
@@ -201,22 +201,26 @@ Scenario: Book flow from creation to deletion
     When method GET
     Then status 200
     And assert response.bookFeedback.length == 2
-
-    # feedback order is not guaranteed, so we find each feedback by id instead of using an index
-    * def feedbackWithoutTakingBook = response.bookFeedback.find(x => x.id == newBookFeedbackId)
-    * def feedbackOnReturn = response.bookFeedback.find(x => x.id != newBookFeedbackId)
-
-    And match feedbackWithoutTakingBook.employeeFullName == '#string'
-    And assert feedbackWithoutTakingBook.progressOfReading == progressOfReading
-    And assert feedbackWithoutTakingBook.rating == rating
-    And assert feedbackWithoutTakingBook.advantages == advantages
-    And assert feedbackWithoutTakingBook.disadvantages == disadvantages
-
-    And assert feedbackOnReturn.employeeFullName == readerFullName
-    And assert feedbackOnReturn.progressOfReading == returnProgressOfReading
-    And assert feedbackOnReturn.rating == returnRating
-    And assert feedbackOnReturn.advantages == returnAdvantages
-    And assert feedbackOnReturn.disadvantages == returnDisadvantages
+    And match response.bookFeedback contains deep
+    """
+    [
+        {
+            "id": "#(newBookFeedbackId)",
+            "employeeFullName": "#string",
+            "progressOfReading": "#(progressOfReading)",
+            "rating": "#(rating)",
+            "advantages": "#(advantages)",
+            "disadvantages": "#(disadvantages)"
+        },
+        {
+            "employeeFullName": "#(readerFullName)",
+            "progressOfReading": "#(returnProgressOfReading)",
+            "rating": "#(returnRating)",
+            "advantages": "#(returnAdvantages)",
+            "disadvantages": "#(returnDisadvantages)"
+        }
+    ]
+    """
 
     # Check book history
     And path newBookId, '/history'
